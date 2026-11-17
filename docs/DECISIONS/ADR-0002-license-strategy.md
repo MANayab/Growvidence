@@ -152,3 +152,77 @@ This document is a product and engineering decision aid, not legal advice. Licen
 - Eclipse Foundation — [Developer Certificate of Origin 1.1](https://www.eclipse.org/legal/dco/dco.html)
 - Linux Foundation — [DCO and contribution mechanisms guidance](https://bestpractices.linuxfoundation.org/ip/contribution-mechanisms.html)
 - European Commission Interoperable Europe — [Licences and complementary agreements](https://interoperable-europe.ec.europa.eu/collection/eupl/licences-complementary-agreements)
+
+
+## Contribution and commercialization model decision table
+
+The project currently has **no outside contributors**. Therefore, choosing between these models is a low-cost governance decision today, provided the maintainer owns or controls the copyright in all project-authored code and has not incorporated third-party code on incompatible terms. The absence of outside contributors does not remove third-party dependency obligations, and it does not mean the project owns dependency code.
+
+| Model | Core and commercial rights | Contribution method normally needed | Fit for Growvidence's goals | Main trade-off |
+|---|---|---|---|---|
+| **Open-core + DCO** | Keep the learner-facing core under one public open-source license (the current proposal is AGPL-3.0). Build paid cloud hosting/sync, classroom operations, support, and certificate services as separate offerings; only genuinely separate proprietary code stays closed. | **DCO** is normally sufficient for an inbound-equals-outbound contribution model: contributors certify they have the right to submit code under the project's public license. It does not assign copyright or grant a general right to relicense their contributions. | **Best current fit.** Learners can use and self-host the core for free. Revenue can come from hosted convenience, operations, collaboration services, and human assessment while the useful core remains open. | AGPL's copyleft boundary may make tightly integrated proprietary extensions difficult. DCO does not give the maintainer unilateral dual-licensing rights over outside contributions. |
+| **Dual licensing + CLA** | Offer the same project code under AGPL-3.0 for community use and a separate commercial license to customers who need different terms (for example, proprietary integration or removal of AGPL obligations). | A **carefully drafted CLA** is normally used to obtain the necessary copyright license and explicit sublicensing/relicensing permission from contributors. A CLA is not automatically a copyright assignment; its exact grant controls. | Could support enterprise licensing and proprietary integrations later, while free AGPL use remains available. It may fit if customers specifically need a commercial license to the same core code. | More legal administration and contributor friction; broad relicensing rights can reduce community confidence. It does not itself create demand for a commercial license, and it does not make independently developed paid services proprietary by magic. |
+| **Open-core + CLA** | Same open core and separate commercial services as above, but with broader contributor rights reserved for future relicensing or proprietary reuse. | CLA granting only the rights actually needed; DCO may still be used for sign-off but does not replace the CLA's relicensing grant. | Provides more future flexibility if the maintainer later wants to move selected contributions into a commercial edition. | More contributor paperwork and trust cost than the current project needs. Do not collect broad rights “just in case.” |
+| **Dual licensing + DCO only** | Maintainer can dual-license code whose rights they control, but cannot assume they can offer third-party contributions under a second license. | DCO supports contribution under the public license; it is **not sufficient by itself** to grant broad dual-licensing authority over contributors' code. | Possible while the code is entirely maintainer-authored, but becomes difficult as external contributions accumulate. | Future permissions may need to be requested contributor by contributor; some contributions may need to be excluded or rewritten. |
+
+### Proposed choice for now
+
+**Proposed: open-core with AGPL-3.0 core + DCO, not dual licensing + CLA at this stage.**
+
+This matches the present goal: keep the core genuinely open and free for learners, while charging later for the managed service, sync convenience, classroom/team operations, support, and transparent human assessment/certificate services. Keep essential learning, practice, evidence recording, and learner data export in the open core.
+
+Because there are no outside contributors yet, this choice is **not costly or difficult to change today**. Before accepting outside contributions, publish the selected license and contribution process. If a concrete customer later requires proprietary licensing of the same core, revisit dual licensing and introduce a narrowly drafted CLA prospectively, after legal review and clear contributor communication. Do not imply that DCO sign-offs already grant those rights.
+
+The distinction is important: **open-core + DCO** is a product strategy with one open license for the core; **dual licensing + CLA** is a rights strategy that may let the copyright holder offer the same code under multiple licenses. A CLA is not required merely to sell hosting, support, classroom administration, or a separate assessment service.
+
+## Mobile distribution: AGPL and app stores
+
+AGPL-3.0 does not contain a blanket statement that an app may never be distributed through an app store. The practical issue is whether the store's developer/distribution agreement and end-user terms impose additional restrictions that conflict with the freedoms and conditions required by AGPL-3.0, and whether the app conveys the corresponding source and any required installation information. This needs a review of the exact store terms, release method, app packaging, and user-product status at the time of submission.
+
+- **Apple App Store:** Apple's developer agreement controls distribution through the App Store and includes program, distribution, and end-user licensing terms. Some standard store terms may conflict with the rights an AGPL recipient must retain (for example, restrictions on copying, modification, or redistribution). Do not assume an AGPL app will be accepted or that the standard agreement is compatible. Obtain specialist legal review and review the then-current Apple agreement and applicable EULA before submission.
+- **Google Play:** Google Play distribution is governed by Google's Developer Distribution Agreement and related program policies and user-facing terms. Do not assume compatibility or incompatibility from the store name alone; compare the current terms with AGPL-3.0 and the actual distribution arrangement before release. The exact app licensing, signing, update, and redistribution restrictions need review.
+- **Other distribution:** Direct downloads, alternative Android stores, or open-source app catalogs may provide different terms, but each channel still needs a license and compliance review. Do not treat an alternative store as automatically compatible.
+
+### Why PWA-first reduces the risk
+
+The current PWA-first roadmap reduces this particular distribution risk because the first installable experience is delivered through the web, rather than being packaged and submitted under Apple App Store or Google Play distribution agreements. A PWA can be accessed through a browser and, where supported, installed from the browser without app-store listing approval.
+
+PWA-first does **not** remove AGPL obligations for the server-side application, nor does it resolve every browser, hosting, or platform policy issue. If a native iOS or Android wrapper is later considered, treat store distribution as a separate legal and release gate. Re-check the current terms and obtain advice before building the wrapper around an AGPL-covered client.
+
+## Preliminary dependency-license compatibility screen
+
+This is a **pre-implementation screening of the proposed architecture**, not a completed software bill of materials (SBOM), legal opinion, or guarantee that every package/version is compatible. The repository has no application dependencies or lockfile yet. Exact versions, transitive dependencies, optional packages, generated code, fonts, icons, templates, and assets have not been selected or scanned. The license shown is the upstream project's currently published repository/package license located during this review; verify the exact package artifact and version at implementation time.
+
+| Proposed component | Upstream license found | Preliminary AGPL-3.0 core assessment | Evidence / status |
+|---|---|---|---|
+| Next.js | MIT | **Generally compatible** as permissive code; retain required notices. | [Next.js license](https://github.com/vercel/next.js/blob/canary/license.md) — checked. |
+| React | MIT | **Generally compatible** as permissive code; retain required notices. | [React repository](https://github.com/facebook/react) — repository identifies MIT; checked. |
+| Tailwind CSS | MIT | **Generally compatible** as permissive code; retain required notices. | [Tailwind license](https://github.com/tailwindlabs/tailwindcss/blob/main/LICENSE) — checked. |
+| shadcn/ui | MIT for the upstream component collection/repository | **Generally compatible** for components copied/used under that license; check each copied component, generated file, icon, and any separately sourced asset. | [shadcn/ui license](https://github.com/shadcn-ui/ui/blob/main/LICENSE.md) — checked at repository level; generated/copied output still needs provenance review. |
+| Radix UI Primitives | MIT | **Generally compatible** as permissive code; retain required notices. | [Radix Primitives license](https://github.com/radix-ui/primitives/blob/main/LICENSE) — checked. |
+| Recharts | MIT | **Generally compatible** as permissive code; retain required notices. | [Recharts license](https://github.com/recharts/recharts/blob/main/LICENSE) — checked. |
+| Prisma ORM | Apache-2.0 | **Generally compatible with AGPL-3.0** when incorporated in an AGPLv3-covered combined work, subject to Apache notice, attribution, and patent terms. GNU guidance says Apache-2.0 is compatible with GNU licenses version 3 and later; keep Prisma's license and notices. | [Prisma license](https://github.com/prisma/prisma/blob/main/LICENSE), [GNU license compatibility](https://www.gnu.org/licenses/license-compatibility.en.html) — checked at repository level. |
+| Zod | MIT | **Generally compatible** as permissive code; retain required notices. | [Zod license](https://github.com/colinhacks/zod/blob/main/LICENSE) — checked. |
+| Auth.js / NextAuth.js | ISC | **Generally compatible** as permissive code; retain required notices. | [Auth.js license](https://github.com/nextauthjs/next-auth/blob/main/LICENSE) — checked. |
+| PostgreSQL | PostgreSQL License (permissive, similar to BSD/MIT) | **Generally compatible** as a separately licensed database dependency; preserve notices. A database server used as infrastructure is distinct from bundling its code into the application. | [PostgreSQL license](https://www.postgresql.org/about/licence/) — checked. |
+| tRPC (optional API layer in the architecture proposal) | **Unverified in this review** | Do not approve for inclusion until the exact package and version's license and all relevant package subcomponents are checked. | Upstream license evidence not confirmed in this review. |
+
+### Compatibility interpretation and implementation gate
+
+- The permissive MIT and ISC licenses generally allow redistribution as part of a larger AGPL-licensed work, provided their notices and conditions are preserved.
+- Apache-2.0 is compatible with GNU version 3 copyleft according to GNU's compatibility guidance; AGPLv3/GPLv3 compatibility is addressed in GNU's licensing guidance. Preserve Apache license copies, copyright notices, modification notices, and applicable NOTICE material.
+- A dependency's permissive license does **not** mean the dependency itself is relicensed as AGPL when distributed separately. Preserve component-level license notices and identify third-party code.
+- This review does not decide whether a particular integration, plugin, generated artifact, or service forms a derivative/combined work. Linking, bundling, generated code, and service boundaries need fact-specific review.
+- Before the first implementation release, generate an SBOM from the committed lockfile (including production and development dependencies), scan every direct and transitive package, review licenses and notices, and resolve unknown, dual, custom, or source-available licenses. Record the tool, date, package version, detected license, and disposition.
+- Re-run the review on dependency changes and before each release. Do not rely solely on package metadata; inspect the actual license text and notices for packages whose metadata is missing, ambiguous, or inconsistent.
+- Keep this as a preliminary screen. It does not approve any dependency or replace counsel's review of the final distribution model.
+
+### Sources for this screen
+
+- GNU Project — [License compatibility and relicensing](https://www.gnu.org/licenses/license-compatibility.en.html)
+- Apache Software Foundation — [Apache-2.0 and GPL compatibility explanation](https://www.apache.org/licenses/GPL-compatibility.html)
+- Apple — [Apple Developer Program License Agreement](https://developer.apple.com/support/terms/apple-developer-program-license-agreement/)
+- Google — [Google Play Developer Distribution Agreement](https://play.google.com/about/developer-distribution-agreement.html)
+- GNU Project — [GNU AGPL version 3](https://www.gnu.org/licenses/agpl-3.0.en.html)
+
+**Verification limitation:** The proposed stack is a design list, not a dependency manifest. Except for the upstream project licenses linked above, exact package versions and transitive dependency compatibility remain unverified. No dependency was installed, no SBOM was generated, and no license scanner was run in this documentation-only phase.
