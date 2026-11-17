@@ -2,7 +2,7 @@
 
 > **Don't just learn. Prove your progress.**
 
-Growvidence is a planned evidence-based skill tracker and learning task manager for IT beginners, students, and self-taught learners. It is intended to help people turn learning activity into demonstrable, independently verified capability.
+Growvidence is an open-source, evidence-based skill tracker and learning task manager for IT beginners, students, and self-taught learners. It is intended to help people turn learning activity into demonstrable, independently verified capability.
 
 **Project status:** Foundation / planning. Phase 0 documentation is in progress. No working application is available yet.
 
