@@ -4,7 +4,7 @@
 
 Growvidence is a proposed evidence-based skill tracker for IT beginners, students and self-taught learners.
 
-**Status:** Architecture revision / pre-implementation. Phase 0 documentation is merged. Static GitHub Pages and local-first design are proposed in the current documentation PR; no working app exists yet.
+**Status:** Phase 1 static Astro foundation is committed on a review branch. The public foundation is implemented; learner workspace features are not yet available. Reproducible installation remains pending the maintainer-generated lockfile.
 
 **Hosting:** GitHub Pages static files only. No server, database, runtime SSR, API routes, mandatory accounts or cloud sync in MVP.
 
