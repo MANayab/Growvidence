@@ -18,4 +18,18 @@ for (const pattern of required) {
   );
 }
 
+const jsonLdScripts = [
+  ...html.matchAll(
+    /<script type="application\\/ld\\+json">([\\s\\S]*?)<\\/script>/g,
+  ),
+];
+assert.ok(jsonLdScripts.length >= 2, "Expected Organization and WebSite JSON-LD scripts.");
+const structuredData = jsonLdScripts.map(([, json]) => JSON.parse(json));
+const structuredDataUrls = structuredData.map((item) => item.url);
+assert.ok(
+  structuredDataUrls.length >= 2 &&
+    structuredDataUrls.every((url) => url === "https://manayab.github.io/Growvidence/"),
+  "Organization and WebSite JSON-LD URLs must include /Growvidence/.",
+);
+
 console.log("Built homepage SEO smoke check passed.");
