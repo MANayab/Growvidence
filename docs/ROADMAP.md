@@ -1,12 +1,14 @@
 # Growvidence roadmap
 
-**Status:** Proposed; timelines and targets are planning goals, not commitments.
+**Status:** Phase 1 static foundation is implemented on a review branch; merge and reproducible-install verification are pending. Remaining milestones are planning goals, not commitments.
 
 ## Milestone 1 — Static MVP on GitHub Pages
 
-**Scope:** Astro static site, client-side learner workspace, IndexedDB tasks/log/evidence/competencies, JSON backup/restore, selected CSV export, responsive accessible UI. No backend, login, database, runtime SSR, API routes or cloud sync.
+**Foundation delivered in Phase 1:** Astro static output, strict TypeScript configuration, shared page layout, public homepage and 404 page, SEO metadata helper/tests, robots.txt, sitemap.xml, llms.txt, lint/format/typecheck/test/build scripts and CI guardrails.
 
-**Deliverables:** Static public routes; tested local repository layer; validated import/export; PWA after storage lifecycle tests; Pages Actions deployment with least privilege and post-deploy checks; security, privacy and accessibility review.
+**Still required:** Maintainer-generated committed package-lock.json; green CI on the latest PR head; remaining public routes; client-side learner workspace; IndexedDB tasks/log/evidence/competencies; JSON backup/restore; selected CSV export; accessibility/security review; Pages deployment workflow and post-deploy checks.
+
+**Scope:** No backend, login, database, runtime SSR, API routes or cloud sync in MVP.
 
 **Exit measures:** Public routes load directly under /Growvidence/; task-to-evidence workflow works without account; data survives reload in supported browsers; JSON round-trip preserves records; users can export and clear data; offline behavior is documented; no unresolved critical/high data-loss or security defects; CI and post-deploy checks pass on deployed commit.
 
