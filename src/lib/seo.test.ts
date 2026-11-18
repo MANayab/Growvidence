@@ -6,7 +6,8 @@ describe("buildPageMetadata", () => {
   it("creates an absolute canonical and indexable robots directive", () => {
     const metadata = buildPageMetadata({
       title: "Growvidence — Evidence-Based Skill Tracker",
-      description: "Track practice and demonstrate skills with reviewable evidence.",
+      description:
+        "Track practice and demonstrate skills with reviewable evidence.",
       pathname: "/Growvidence/",
       siteUrl: "https://manayab.github.io",
     });

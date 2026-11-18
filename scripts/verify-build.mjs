@@ -11,7 +11,11 @@ const required = [
 ];
 
 for (const pattern of required) {
-  assert.match(html, pattern, `Built homepage is missing expected SEO output: ${pattern}`);
+  assert.match(
+    html,
+    pattern,
+    `Built homepage is missing expected SEO output: ${pattern}`,
+  );
 }
 
 console.log("Built homepage SEO smoke check passed.");
