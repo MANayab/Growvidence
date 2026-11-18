@@ -57,7 +57,7 @@ jobs:
 
       - name: Development dependency audit (informational)
         continue-on-error: true
-        run: npm audit --omit=prod
+        run: npm audit
 
       - name: Installed dependency license metadata (informational)
         continue-on-error: true
