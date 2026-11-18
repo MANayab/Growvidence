@@ -37,7 +37,9 @@ describe("buildStructuredData", () => {
 
     expect(data.organization["@type"]).toBe("Organization");
     expect(data.website["@type"]).toBe("WebSite");
-    expect(data.organization.url).toBe("https://manayab.github.io/Growvidence/");
+    expect(data.organization.url).toBe(
+      "https://manayab.github.io/Growvidence/",
+    );
     expect(data.website.url).toBe("https://manayab.github.io/Growvidence/");
   });
 });
