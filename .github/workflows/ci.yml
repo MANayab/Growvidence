@@ -61,4 +61,4 @@ jobs:
 
       - name: Installed dependency license metadata (informational)
         continue-on-error: true
-        run: npm query .license
+        run: npm query '[license]'
