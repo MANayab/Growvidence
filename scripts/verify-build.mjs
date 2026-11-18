@@ -18,11 +18,10 @@ for (const pattern of required) {
   );
 }
 
-const jsonLdScripts = [
-  ...html.matchAll(
-    /<script type="application\\/ld\\+json">([\\s\\S]*?)<\\/script>/g,
-  ),
-];
+const jsonLdScripts = html
+  .split('<script type="application/ld+json">')
+  .slice(1)
+  .map((script) => script.split("</script>")[0]);
 assert.ok(jsonLdScripts.length >= 2, "Expected Organization and WebSite JSON-LD scripts.");
 const structuredData = jsonLdScripts.map(([, json]) => JSON.parse(json));
 const structuredDataUrls = structuredData.map((item) => item.url);
