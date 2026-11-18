@@ -33,10 +33,11 @@ describe("buildPageMetadata", () => {
 
 describe("buildStructuredData", () => {
   it("returns Organization and WebSite data using the canonical site URL", () => {
-    const data = buildStructuredData("https://manayab.github.io");
+    const data = buildStructuredData("https://manayab.github.io/Growvidence/");
 
     expect(data.organization["@type"]).toBe("Organization");
     expect(data.website["@type"]).toBe("WebSite");
-    expect(data.website.url).toBe("https://manayab.github.io/");
+    expect(data.organization.url).toBe("https://manayab.github.io/Growvidence/");
+    expect(data.website.url).toBe("https://manayab.github.io/Growvidence/");
   });
 });
