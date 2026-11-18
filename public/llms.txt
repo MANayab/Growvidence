@@ -1,0 +1,22 @@
+# Growvidence
+
+> Don't just learn. Prove your progress.
+
+Growvidence is a proposed evidence-based skill tracker for IT beginners, students and self-taught learners.
+
+## Product principles
+
+- Task completion is activity, not proof of competency.
+- Evidence connects practice, artifacts, independent demonstration and feedback.
+- AI assistance should be disclosed clearly.
+- The MVP is planned as a static, local-first GitHub Pages application.
+
+## Current status
+
+The project is in its foundation phase. The public homepage explains the product concept; learner workspace features are not yet implemented.
+
+## Documentation
+
+- [README](https://github.com/MANayab/Growvidence/blob/main/README.md)
+- [Roadmap](https://github.com/MANayab/Growvidence/blob/main/docs/ROADMAP.md)
+- [Architecture](https://github.com/MANayab/Growvidence/blob/main/docs/ARCHITECTURE.md)
