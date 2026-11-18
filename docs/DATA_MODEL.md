@@ -1,249 +1,56 @@
-# Data model proposal
+# Data model proposal — IndexedDB first
 
-**Status:** Draft domain model for discussion. Not implemented and not a migration contract.
+**Status:** Draft; no browser schema or database migration is implemented.
 
-## Modeling principles
+## Principles
+- Task completion is activity, not proof of mastery.
+- Learning entries record attempts and AI-use disclosure.
+- Evidence and competency assessments are separate.
+- Local records have stable IDs and schema versions for export/import and future sync.
+- MVP has no server User row: the browser profile is the local data container, not an authenticated identity.
 
-- A task represents planned activity; completing it is not proof of competency.
-- A learning entry records an attempt and its context, including AI assistance.
-- Evidence is a separately addressable artifact or reference.
-- Competency definitions and criteria are versioned so historical assessments remain interpretable.
-- Assessment events preserve who assessed, which criteria were applied, and what evidence supported the result.
-- All user-owned records must have explicit ownership and authorization rules.
-
-## Entity relationship diagram
+## Local entity relationship diagram
 
 ```mermaid
 erDiagram
-  USER ||--o{ TASK : owns
-  USER ||--o{ LEARNING_ENTRY : writes
-  USER ||--o{ EVIDENCE : owns
-  USER ||--o{ COMPETENCY_ASSESSMENT : receives
-  LEARNING_TRACK ||--o{ TASK : organizes
-  TASK ||--o{ LEARNING_ENTRY : prompts
-  LEARNING_ENTRY ||--o{ EVIDENCE : produces
-  COMPETENCY ||--o{ COMPETENCY_CRITERION : defines
-  COMPETENCY ||--o{ COMPETENCY_ASSESSMENT : assessed_by
-  COMPETENCY_ASSESSMENT }o--o{ EVIDENCE : supported_by
-  USER ||--o{ REVIEW : writes
-  EVIDENCE ||--o{ REVIEW : receives
-
-  USER {
-    string id PK
-    string email
-    datetime createdAt
-  }
-  TASK {
-    string id PK
-    string ownerId FK
-    string title
-    string status
-    datetime dueAt
-  }
-  LEARNING_ENTRY {
-    string id PK
-    string ownerId FK
-    string taskId FK
-    string aiUse
-    string reflection
-    datetime createdAt
-  }
-  EVIDENCE {
-    string id PK
-    string ownerId FK
-    string learningEntryId FK
-    string kind
-    string uri
-  }
-  COMPETENCY {
-    string id PK
-    string slug
-    string version
-    string title
-  }
-  COMPETENCY_CRITERION {
-    string id PK
-    string competencyId FK
-    string description
-  }
-  COMPETENCY_ASSESSMENT {
-    string id PK
-    string ownerId FK
-    string competencyId FK
-    string status
-    datetime assessedAt
-  }
-  REVIEW {
-    string id PK
-    string reviewerId FK
-    string evidenceId FK
-    string feedback
-  }
-  LEARNING_TRACK {
-    string id PK
-    string ownerId FK
-    string name
-  }
+ LEARNING_TRACK ||--o{ TASK : groups
+ TASK ||--o{ LEARNING_ENTRY : prompts
+ LEARNING_ENTRY ||--o{ EVIDENCE : produces
+ COMPETENCY ||--o{ COMPETENCY_CRITERION : defines
+ COMPETENCY ||--o{ COMPETENCY_ASSESSMENT : assessed
+ COMPETENCY_ASSESSMENT }o--o{ EVIDENCE : supported_by
+ EVIDENCE ||--o{ REVIEW : receives
+ LEARNING_TRACK { string id PK; string name; int schemaVersion }
+ TASK { string id PK; string trackId FK; string title; string status; datetime updatedAt }
+ LEARNING_ENTRY { string id PK; string taskId FK; string aiUse; string reflection; datetime createdAt }
+ EVIDENCE { string id PK; string entryId FK; string kind; string uri; datetime createdAt }
+ COMPETENCY { string id PK; string slug; int version; string title }
+ COMPETENCY_CRITERION { string id PK; string competencyId FK; string key; string description }
+ COMPETENCY_ASSESSMENT { string id PK; string competencyId FK; string status; datetime assessedAt }
+ REVIEW { string id PK; string evidenceId FK; string feedback; datetime createdAt }
 ```
 
-## Proposed Prisma schema draft
+## Proposed IndexedDB stores
 
-This is a conceptual starting point. Validate relation syntax, indexes, deletion behavior, and authorization before adopting it in a migration.
+| Store | Key | Important fields and indexes |
+|---|---|---|
+| meta | key | schemaVersion, exportVersion |
+| tracks | id | name, createdAt, updatedAt |
+| tasks | id | trackId, title, status, dueAt; indexes trackId/status/updatedAt |
+| learningEntries | id | taskId, summary, reflection, aiUse, independentWorkDescription; indexes taskId/createdAt |
+| evidence | id | learningEntryId, kind, title, uri, description |
+| competencies | id | slug, version, title, description, criteria |
+| assessments | id | competencyId, status, rationale, evidenceIds, assessedAt |
+| reviews | id | evidenceId, feedback, reviewerLabel, createdAt |
+| tombstones | id | entityType, entityId, deletedAt; reserved for future sync |
 
-```prisma
-enum TaskStatus {
-  BACKLOG
-  TODO
-  IN_PROGRESS
-  BLOCKED
-  DONE
-  ARCHIVED
-}
+Mutable records include schemaVersion, createdAt and updatedAt. Prefer links over binary attachments initially. IndexedDB is not proposed as encrypted storage and is not protection against compromised same-origin scripts or devices.
 
-enum AiUse {
-  NONE
-  ASSISTED
-  GENERATED_OR_SUBSTANTIAL
-  UNKNOWN
-}
+## Backup format
+JSON backup includes format identifier, export version, timestamp, app schema version and arrays for supported stores. Validate all records and relationships before import; preview counts and require confirmation. Define merge/replace behavior explicitly. Reject unsupported versions, malformed records, duplicate IDs and broken references. CSV is not full-fidelity backup; escape formula-leading cells.
 
-enum EvidenceKind {
-  REPOSITORY
-  URL
-  DOCUMENT
-  IMAGE
-  TEST_RESULT
-  REVIEW_NOTE
-  OTHER
-}
+## Optional future sync schema — not MVP
+If approved, add Account and Device models. Candidate sync envelope fields: ownerId, deviceId, clientMutationId, serverVersion, baseVersion, syncedAt and deletedAt. Require explicit opt-in account linking, idempotent mutations, owner-scoped authorization and conflict detection. Preserve local-only use and export. This is conceptual, not a selected Supabase schema.
 
-enum CompetencyStatus {
-  NOT_ASSESSED
-  IN_PROGRESS
-  NEEDS_MORE_EVIDENCE
-  DEMONSTRATED
-}
-
-model User {
-  id          String         @id @default(cuid())
-  email       String         @unique
-  createdAt   DateTime       @default(now())
-  tasks       Task[]
-  entries     LearningEntry[]
-  evidence    Evidence[]
-  assessments CompetencyAssessment[]
-  tracks      LearningTrack[]
-}
-
-model LearningTrack {
-  id        String   @id @default(cuid())
-  ownerId   String
-  name      String
-  createdAt DateTime @default(now())
-  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  tasks     Task[]
-  @@index([ownerId])
-}
-
-model Task {
-  id          String       @id @default(cuid())
-  ownerId     String
-  trackId     String?
-  title       String
-  description String?
-  status      TaskStatus   @default(TODO)
-  dueAt       DateTime?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  owner       User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  track       LearningTrack? @relation(fields: [trackId], references: [id], onDelete: SetNull)
-  entries     LearningEntry[]
-  @@index([ownerId, status])
-  @@index([ownerId, dueAt])
-}
-
-model LearningEntry {
-  id          String    @id @default(cuid())
-  ownerId     String
-  taskId      String?
-  summary     String
-  reflection  String?
-  aiUse       AiUse     @default(UNKNOWN)
-  independentWorkDescription String?
-  createdAt   DateTime  @default(now())
-  owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  task        Task?     @relation(fields: [taskId], references: [id], onDelete: SetNull)
-  evidence    Evidence[]
-  @@index([ownerId, createdAt])
-}
-
-model Evidence {
-  id              String   @id @default(cuid())
-  ownerId         String
-  learningEntryId String?
-  kind            EvidenceKind
-  title           String
-  uri             String?
-  description     String?
-  createdAt       DateTime @default(now())
-  owner           User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  learningEntry   LearningEntry? @relation(fields: [learningEntryId], references: [id], onDelete: SetNull)
-  @@index([ownerId, createdAt])
-}
-
-model Competency {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  version     Int
-  title       String
-  description String
-  criteria    CompetencyCriterion[]
-  assessments CompetencyAssessment[]
-}
-
-model CompetencyCriterion {
-  id           String @id @default(cuid())
-  competencyId String
-  key          String
-  description  String
-  competency   Competency @relation(fields: [competencyId], references: [id], onDelete: Cascade)
-  @@unique([competencyId, key])
-}
-
-model CompetencyAssessment {
-  id           String   @id @default(cuid())
-  ownerId      String
-  competencyId String
-  status       CompetencyStatus @default(NOT_ASSESSED)
-  rationale    String
-  assessedAt   DateTime @default(now())
-  owner        User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  competency   Competency @relation(fields: [competencyId], references: [id], onDelete: Restrict)
-  @@index([ownerId, competencyId, assessedAt])
-}
-```
-
-## Proposed initial competency framework
-
-These are initial learning rubrics, not externally accredited standards:
-
-1. **Independent coding:** build a small feature without AI-generated code and explain the implementation.
-2. **Debugging:** diagnose and fix three unfamiliar defects, documenting the reasoning.
-3. **Architecture:** explain a design and defend relevant trade-offs.
-4. **Testing:** independently write and run tests for expected and edge behavior.
-5. **Commercial validation:** collect real customer feedback and test willingness to pay; keep this separate from coding mastery.
-6. **Technical fundamentals:** explain and safely modify an existing codebase.
-
-Each competency needs observable criteria, acceptable evidence examples, assessor guidance, and a clear “insufficient evidence” state before implementation.
-
-## Open modeling questions
-
-- Whether reviewers are users with explicit grants or external invited identities
-- Attachment storage provider and retention/deletion semantics
-- Whether tasks can be shared across tracks
-- Assessment rubric versioning and immutable history
-- Whether a user can maintain multiple learning profiles
-- Time-zone and recurrence representation for daily/weekly/monthly tasks
-- Consent and retention requirements for any future analytics
-
-Do not implement this draft directly without resolving these questions and reviewing authorization and cascade behavior.
+## Open questions
+Import merge/replace policy; attachment blobs; rubric migration; reviewer identity; browser data deletion limitations.
