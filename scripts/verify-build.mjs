@@ -5,7 +5,7 @@ const html = await readFile("dist/index.html", "utf8");
 const required = [
   /<title>Growvidence — Evidence-Based Skill Tracker<\/title>/,
   /<meta name="description" content="Turn learning activity into demonstrable capability\./,
-  /<link rel="canonical" href="https:\/\/manayab\.github\.io\/Growvidence\/"\s*\/>/,
+  /<link\\b(?=[^>]*\\brel="canonical")(?=[^>]*\\bhref="https:\\/\\/manayab\\.github\\.io\\/Growvidence\\/")[^>]*>/,
   /"@type":"Organization"/,
   /"@type":"WebSite"/,
 ];
