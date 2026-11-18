@@ -51,9 +51,13 @@ jobs:
       - name: Inspect generated SEO HTML
         run: node scripts/verify-build.mjs
 
-      - name: Dependency audit (informational)
+      - name: Production dependency audit (informational)
         continue-on-error: true
-        run: npm audit --audit-level=high
+        run: npm audit --omit=dev
+
+      - name: Development dependency audit (informational)
+        continue-on-error: true
+        run: npm audit --omit=prod
 
       - name: Installed dependency license metadata (informational)
         continue-on-error: true
