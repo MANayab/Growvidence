@@ -23,7 +23,7 @@ const jsonLdScripts = html
   .slice(1)
   .map((script) => script.split("</script>")[0]);
 assert.ok(jsonLdScripts.length >= 2, "Expected Organization and WebSite JSON-LD scripts.");
-const structuredData = jsonLdScripts.map(([, json]) => JSON.parse(json));
+const structuredData = jsonLdScripts.map((json) => JSON.parse(json));
 const structuredDataUrls = structuredData.map((item) => item.url);
 assert.ok(
   structuredDataUrls.length >= 2 &&
