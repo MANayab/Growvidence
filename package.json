@@ -12,8 +12,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "lint": "eslint .",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "format": "prettier --write \"src/**/*.{astro,ts}\" \"*.{json,js,mjs}\" \".github/workflows/*.yml\" \"scripts/**/*.mjs\"",
+    "format:check": "prettier --check \"src/**/*.{astro,ts}\" \"*.{json,js,mjs}\" \".github/workflows/*.yml\" \"scripts/**/*.mjs\"",
     "check": "astro check",
     "test": "vitest run"
   },
