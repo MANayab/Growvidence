@@ -28,8 +28,42 @@ Daily/weekly/monthly tasks; learning log and AI-use disclosure; evidence links a
 - [Quality gates](docs/QUALITY_GATES.md)
 - [ADRs](docs/DECISIONS/)
 
-## Quick start
-No application code or runnable setup exists yet.
+## Local development (Windows PowerShell)
+
+Requirements: Node.js 26.7.0 and npm 11.19.0 or newer. Use the version in .nvmrc.
+
+```powershell
+cd "$HOME\Documents\Growvidence"
+git fetch
+git checkout feat/phase-1-astro-foundation
+git pull
+node --version
+npm --version
+npm install
+npm run check
+npm run lint
+npm run format:check
+npm test
+npm run build
+npm run dev
+```
+
+Open the local URL printed by Astro. Stop the dev server with Ctrl+C.
+
+npm install creates/updates package-lock.json. Commit that file to this feature branch; CI intentionally fails with an explicit message until the lockfile is present. Once committed, use npm ci for clean reproducible installs.
+
+## Available commands
+
+| Command | Purpose |
+|---|---|
+| npm run dev | Start Astro's local development server |
+| npm run build | Generate the static site in dist/ |
+| npm run preview | Preview the built site locally |
+| npm run lint | Run ESLint |
+| npm run format | Format application/config source files |
+| npm run format:check | Check formatting without modifying files |
+| npm run check | Run Astro diagnostics and TypeScript checks |
+| npm test | Run Vitest unit tests |
 
 ## Contributing
 See CONTRIBUTING.md and AGENTS.md. Use focused branches and PRs; never push directly to main.
