@@ -20,7 +20,8 @@ const metadata = buildPageMetadata({
   siteUrl,
   indexable,
 });
-const structuredData = buildStructuredData(siteUrl);
+const projectUrl = new URL(basePath, siteUrl).toString();
+const structuredData = buildStructuredData(projectUrl);
 const jsonLd = [structuredData.organization, structuredData.website];
 ---
 
