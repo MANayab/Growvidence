@@ -40,6 +40,7 @@ git pull
 node --version
 npm --version
 npm install
+npm run format
 npm run check
 npm run lint
 npm run format:check
