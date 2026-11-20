@@ -42,7 +42,7 @@ describe("app bundle asset discovery", () => {
 
     await writeFile(
       path.join(assetsDirectory, "WorkspaceIsland.DAv8BmM3.js"),
-      'import React from "./react.CvnImTBr.js"; export default React;',
+      'import React from "./react.CvnImTBr.js"; import("./lazy-chunk.js"); export default React;',
     );
     await writeFile(
       path.join(assetsDirectory, "client.Cd-EeyjT.js"),
@@ -51,6 +51,10 @@ describe("app bundle asset discovery", () => {
     await writeFile(
       path.join(assetsDirectory, "react.CvnImTBr.js"),
       "export default {};",
+    );
+    await writeFile(
+      path.join(assetsDirectory, "lazy-chunk.js"),
+      "export const loaded = true;",
     );
 
     const references = htmlJavaScriptReferences(html);
@@ -64,6 +68,7 @@ describe("app bundle asset discovery", () => {
     expect([...assets].map((file) => path.basename(file)).sort()).toEqual([
       "WorkspaceIsland.DAv8BmM3.js",
       "client.Cd-EeyjT.js",
+      "lazy-chunk.js",
       "react.CvnImTBr.js",
     ]);
     expect(() => assertHasJavaScriptAssets(assets)).not.toThrow();
@@ -72,7 +77,7 @@ describe("app bundle asset discovery", () => {
   it("recognizes script src, modulepreload, and other .js-valued attributes", () => {
     const references = htmlJavaScriptReferences(`<script src="/Growvidence/a.js"></script>
 <link rel="modulepreload" href="/Growvidence/b.js">
-<div data-worker="/Growvidence/c.js"></div>`);
+<div data-worker=/Growvidence/c.js></div>`);
 
     expect([...references].sort()).toEqual([
       "/Growvidence/a.js",
