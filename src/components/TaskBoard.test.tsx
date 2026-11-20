@@ -18,7 +18,6 @@ describe("TaskBoard keyboard-accessible status controls", () => {
     for (const label of ["Backlog", "Today", "In progress", "Review", "Done"]) expect(html).toContain(label);
     expect(html).toContain("<select");
   });
-});
 
   it("routes a native status-select change through the keyboard-operable control", () => {
     const onMove = vi.fn();
@@ -32,3 +31,4 @@ describe("TaskBoard keyboard-accessible status controls", () => {
     select.props.onChange({ target: { value: "today" } });
     expect(onMove).toHaveBeenCalledWith(task.id, "today");
   });
+});
