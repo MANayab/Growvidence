@@ -1,6 +1,6 @@
 # ADR-0006: Browser-local persistence with IndexedDB
 
-- **Status:** Proposed — maintainer approval required before implementation
+- **Status:** Accepted — maintainer approved on 2026-11-21
 - **Date:** 2026-11-21
 - **Scope:** Local-only MVP persistence; no database package or schema is implemented by this ADR
 
@@ -20,7 +20,7 @@ Persistence must be hidden behind typed repositories so UI components do not iss
 
 ## Proposed decision
 
-Use **`idb` behind a typed repository/storage adapter**. UI and domain services must not import `idb` or access `indexedDB` directly. Keep schema definitions and migrations in one persistence module. This is a proposal only; do not add the package until a separate implementation PR is approved.
+Use **`idb` behind a typed repository/storage adapter**. UI and domain services must not import `idb` or access `indexedDB` directly. Keep schema definitions and migrations in one persistence module. Accepted on 2026-11-21 for implementation planning. Do not add the package until a separate implementation PR is approved.
 
 Choose Dexie instead if implementation demonstrates that required multi-index queries, live queries or migration complexity materially exceed the small adapter's needs. Do not add both libraries. Raw IndexedDB is reserved for the adapter internals only if a narrowly scoped browser feature is unsupported by the wrapper.
 
@@ -64,11 +64,12 @@ All mutable user-owned records have stable IDs, `schemaVersion`, `createdAt`, `u
 ## Backup, restore and browser cleanup
 
 - JSON is the full-fidelity backup; CSV is a convenience export and must never be presented as a restorable backup.
-- Show last successful export date (or “No backup yet”) and a dismissible reminder when the user has meaningful unsaved local history. Proposed default reminder threshold: 30 days after last successful export; maintainer approval required.
-- Offer export before destructive reset. Provide a clear “Delete all local data” action with explicit confirmation and a post-delete verification result.
+- Show last successful export date (or “No backup yet”) and a dismissible reminder 30 days after the last successful export, plus a first-export prompt after meaningful local history accumulates.
+- Offer export before destructive reset. Provide per-record “Permanently delete” and “Delete all local data” actions with explicit confirmation and post-delete verification. Soft-deleted records remain in JSON backups until permanently deleted.
 - Explain during onboarding and in settings that clearing browser site data, uninstalling the browser, private browsing cleanup or device loss can remove records. Growvidence cannot recover them.
-- Import must validate the complete package and relationships before writing. Apply all records in one transaction where feasible; failure must leave existing data unchanged.
-- The MVP's default import mode is **preview then merge by stable ID**: new IDs are added; matching IDs require a field-level conflict preview and explicit user choice. No silent last-write-wins. Full replace is a separate explicit destructive action.
+- Reject import files larger than 10 MiB before parsing, then validate the complete package and relationships.
+- Show a preview, then offer exactly two modes: “Replace everything” and “Merge (newer updatedAt wins)”. Merge adds new IDs and replaces matching IDs only when imported updatedAt is newer; equal timestamps retain local records.
+- Per-record conflict choices are deferred beyond MVP. Apply the selected mode atomically; any validation/write failure aborts and preserves the prior dataset. Replace everything requires explicit confirmation and a pre-import export prompt.
 - Browser deletion is best-effort at the origin boundary; it cannot delete exported files, browser backups, screenshots or copies stored elsewhere.
 
 ## Security and privacy boundaries
@@ -88,3 +89,26 @@ IndexedDB is not encryption and does not protect data from malicious same-origin
 - [MDN Storage quotas and eviction criteria](https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria)
 - [idb documentation](https://github.com/jakearchibald/idb)
 - [Dexie documentation](https://dexie.org/docs)
+
+## Decisions log — 2026-11-21
+
+| # | Decision | Outcome |
+|---|---|---|
+| 1 | Workspace UI | Accepted: Astro static site with React islands; Preact only if measured bundle constraints justify it. |
+| 2 | IndexedDB | Accepted: idb behind a typed repository adapter. |
+| 3 | Competency levels | NEEDS APPROVAL: Demonstrated and Consistent definitions remain proposed. |
+| 4 | Import limit | Accepted: 10 MiB; reject larger files before parsing/writing. |
+| 5 | Import modes | Accepted: preview, then “Replace everything” or “Merge (newer updatedAt wins)”; atomic application. Per-record choices deferred. |
+| 6 | Backup reminders | Accepted: dismissible reminder 30 days after last successful export, plus first-export prompt after meaningful data accumulates. |
+| 7 | Evidence URLs | Accepted: HTTP/HTTPS only; reject other schemes; external links use rel="noopener noreferrer"; never fetch, preview or embed. |
+| 8 | Reviews | Accepted: reviewerType is self or external; clearly distinguish in UI. Proposed Consistent corroboration weight: external 2, self 1. |
+| 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
+| 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
+| 11 | Bundle/charts | Accepted: 200 KiB gzip initial workspace JS excluding Astro-shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
+| 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
+
+### Competency levels — NEEDS APPROVAL
+
+- **Demonstrated (NEEDS APPROVAL):** every mandatory criterion has at least one independent artifact.
+- **Consistent (NEEDS APPROVAL):** the demonstration is repeated in a different task or context.
+- Proposed Consistent corroboration: external review weight 2, self review weight 1. Reviews cannot replace the required independent artifact or repeated demonstration.
