@@ -1,10 +1,10 @@
 # Growvidence project memory
 
-**Last updated:** 2026-11-21 — PR #7 merged; Phase 2 workspace design documentation proposed in PR #8  
-**Current phase:** Phase 2 design review — docs-only package; no learner app implementation  
-**Latest main at Phase 2 branch start:** 400ad98cf2c746f34817e8f0c2fb94afe3d31fca  
-**Current documentation branch:** docs/phase-2-workspace-design  
-**Current PR:** https://github.com/MANayab/Growvidence/pull/8 (awaiting maintainer review and CI)
+**Last updated:** 2026-11-21 — PR #8 merged; approved Phase 2 decisions documented in follow-up PR  
+**Current phase:** Phase 2 approved design baseline — docs-only; no learner app implementation  
+**Main at follow-up branch start:** 11dee6e216da49bdee3a6a27a3d885707d90d4dd  
+**Current documentation branch:** docs/phase-2-approved-decisions  
+**Current PR:** Follow-up documentation PR for approved decisions
 
 ## Repository and product
 
@@ -13,7 +13,7 @@
 - Product promise: “Don't just learn. Prove your progress.”
 - Differentiator: evidence-based competency tracking, not task completion or streaks.
 - Product flow: learn → practice → create → independently demonstrate → review.
-- Six competency areas: independent coding, debugging, architecture, testing, commercial validation and technical fundamentals. Proposed measurable criteria are in mind.md and all require maintainer approval.
+- Six competency areas: independent coding, debugging, architecture, testing, commercial validation and technical fundamentals. Criteria and both competency-level definitions remain subject to explicit rubric approval.
 
 ## Delivery status
 
@@ -48,16 +48,16 @@
 - Deployment workflow builds dist/ and publishes with GitHub Pages Actions.
 - No runtime SSR, API routes or server database in the MVP.
 
-## Phase 2 design package in PR #8
+## Phase 2 design and approved decisions
 
-Docs-only changes on `docs/phase-2-workspace-design`, based on main SHA `400ad98cf2c746f34817e8f0c2fb94afe3d31fca`:
+PR #8 merged. This follow-up branch starts from main SHA `11dee6e216da49bdee3a6a27a3d885707d90d4dd`.
 - ADR-0005 proposes Astro + React islands, a physical `/app/` entry with hash navigation, build-time noindex and sitemap exclusion; Preact and separate SPA are compared.
 - ADR-0006 proposes IndexedDB behind a typed adapter using `idb`; Dexie/raw IndexedDB are compared; migration, quota, backup and browser cleanup behaviors are specified.
 - DATA_CONTRACTS.md proposes Zod schemas, stable UUIDs, timestamps, soft deletion, cross-record validation and versioned JSON export/import.
 - mind.md proposes measurable criteria for six competencies; all criteria and mastery threshold are **NEEDS APPROVAL**.
 - UX_SPEC.md defines dashboard, daily/weekly/monthly views, tracks, task list/Kanban, journal, competency/evidence, settings, accessibility and Mermaid flows.
 - TESTING_PLAN.md defines unit, persistence, E2E, accessibility, security and performance plans plus seven build slices and optional PWA; every slice has acceptance criteria and a learning exercise.
-- No source code, dependencies, license policy, workflows, site config or deployed behavior changed.
+- This follow-up is docs-only; no source code, dependencies, license policy, workflows, site config or deployed behavior changes.
 
 ## SEO / structured data
 
@@ -91,3 +91,26 @@ Docs-only changes on `docs/phase-2-workspace-design`, based on main SHA `400ad98
 ## Current handoff
 
 PR #8 is the Phase 2 workspace design documentation package. Wait for maintainer review, responses to Open decisions and merge. Do not begin Slice 1 or any other PR until the maintainer says **“next”** after merging.
+
+## Decisions log — 2026-11-21
+
+| # | Decision | Outcome |
+|---|---|---|
+| 1 | Workspace UI | Accepted: Astro static site with React islands; Preact only if measured bundle constraints justify it. |
+| 2 | IndexedDB | Accepted: idb behind a typed repository adapter. |
+| 3 | Competency levels | NEEDS APPROVAL: Demonstrated and Consistent definitions remain proposed. |
+| 4 | Import limit | Accepted: 10 MiB; reject larger files before parsing/writing. |
+| 5 | Import modes | Accepted: preview, then “Replace everything” or “Merge (newer updatedAt wins)”; atomic application. Per-record choices deferred. |
+| 6 | Backup reminders | Accepted: dismissible reminder 30 days after last successful export, plus first-export prompt after meaningful data accumulates. |
+| 7 | Evidence URLs | Accepted: HTTP/HTTPS only; reject other schemes; external links use rel="noopener noreferrer"; never fetch, preview or embed. |
+| 8 | Reviews | Accepted: reviewerType is self or external; clearly distinguish in UI. Proposed Consistent corroboration weight: external 2, self 1. |
+| 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
+| 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
+| 11 | Bundle/charts | Accepted: 200 KiB gzip initial workspace JS excluding Astro-shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
+| 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
+
+### Competency levels — NEEDS APPROVAL
+
+- **Demonstrated (NEEDS APPROVAL):** every mandatory criterion has at least one independent artifact.
+- **Consistent (NEEDS APPROVAL):** the demonstration is repeated in a different task or context.
+- Proposed Consistent corroboration: external review weight 2, self review weight 1. Reviews cannot replace the required independent artifact or repeated demonstration.
