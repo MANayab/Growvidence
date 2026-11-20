@@ -4,7 +4,7 @@
 **Current phase:** Slice 2 — tracks and tasks, implementation under review preparation  
 **Latest verified main:** ef58a84c86710cb79ca889d3c442e27a89e70bea  
 **Current branch:** feat/slice-2-tracks-tasks  
-**Current PR:** To be opened after implementation and documentation review
+**Current PR:** [PR #12 — Slice 2 tracks and tasks](https://github.com/MANayab/Growvidence/pull/12) (Draft; pending verification)
 
 ## Repository and product
 
@@ -46,7 +46,7 @@
 - Track and Task Zod schemas and typed IndexedDB repositories. Track soft-delete cascades task soft-delete; permanent track deletion permanently removes dependent tasks.
 - Task statuses: backlog, today, in_progress, review, done. Task fields include track, title, description, priority, local due date, estimated/actual minutes and tags.
 - Calendar due dates are local date-only `YYYY-MM-DD`; metadata timestamps remain UTC ISO strings. Monday is the week start. Date math uses local noon and clamps month ends; timezone changes do not rewrite due dates.
-- Slice 2 source/tests/docs are not merged or deployed. Local test/build/format and final all-assets bundle size remain unverified. Previous Slice 1 bundle baseline: 95.51 KiB gzip / 200 KiB.
+- Slice 2 source/tests/docs are on PR #12 (Draft), not merged or deployed. The current PR head is `d53d0ec563c1b2e6a4549188350b7acde22aa737`; CI run 44818478645 is in progress. Local test/build/format and final all-assets bundle size remain unverified. Previous Slice 1 bundle baseline: 95.51 KiB gzip / 200 KiB. The All dates view includes undated tasks; daily/weekly/monthly views filter by local due date.
 
 ## Technical baseline
 
@@ -104,7 +104,7 @@ PR #8 established the Phase 2 design package and has been merged. Its open-decis
 
 ## Current handoff
 
-PR #11 is merged at `ef58a84c86710cb79ca889d3c442e27a89e70bea`. Slice 2 is being implemented on `feat/slice-2-tracks-tasks`. Do not merge or push to `main`; open one review PR and stop for maintainer review and **“next”**.
+PR #11 is merged at `ef58a84c86710cb79ca889d3c442e27a89e70bea`. Slice 2 is on Draft PR #12 from `feat/slice-2-tracks-tasks`. Do not merge or push to `main`; stop for maintainer review and **“next”**.
 
 ## Decisions log — 2026-11-21
 
