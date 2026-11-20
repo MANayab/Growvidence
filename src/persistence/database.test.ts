@@ -68,7 +68,6 @@ describe("database migrations", () => {
         db.createObjectStore("settings", { keyPath: "id" });
         const tracks = db.createObjectStore("tracks", { keyPath: "id" });
         tracks.createIndex("by_updatedAt", "updatedAt");
-        db.createObjectStore("tasks", { keyPath: "id" });
       },
     });
     previous.close();
