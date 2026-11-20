@@ -272,16 +272,16 @@ Open **http://localhost:4321/Growvidence/**.
 
 ### GitHub Codespaces / Gitpod
 
-Create a Codespace or Gitpod workspace from the repository, open its integrated terminal, confirm the Node.js and npm versions above, then run:
+Create a Codespace or Gitpod workspace from this repository and open its integrated terminal at the checked-out repository root. Confirm the Node.js and npm versions above, then run:
 
 ```bash
-git clone https://github.com/MANayab/Growvidence.git
-cd Growvidence
+node --version
+npm --version
 npm ci
 npm run dev
 ```
 
-Use the forwarded port **4321** and the preview URL provided by the platform. Codespaces/Gitpod provisioning and port forwarding have not been independently tested as part of this documentation change.
+Use the forwarded port **4321** and the preview URL provided by the platform. If you start with an empty workspace instead, clone the repository first. Codespaces/Gitpod provisioning and port forwarding have not been independently tested as part of this documentation change.
 
 ## Development scripts
 
@@ -320,6 +320,18 @@ npm run preview
 ```
 
 Open the local URL printed by Astro. The preview command serves the built site; it is not a deployment.
+
+## Troubleshooting
+
+| Symptom | Likely cause | What to do |
+|---|---|---|
+| Node.js version is below 26.7.0 | The active Node installation does not match `.nvmrc` and `package.json` engines. | Install and select Node.js 26.7.0 (for example, with nvm-windows: `nvm install 26.7.0` then `nvm use 26.7.0`). Recheck with `node --version`. |
+| npm is below 11.19.0 | npm does not meet the repository engine requirement. | Update npm to 11.19.0 or newer, then confirm with `npm --version`. |
+| Port 4321 is already in use | Another development server is using the default port. | Stop the other process or run `npm run dev -- --port 4322`, then open `http://localhost:4322/Growvidence/`. |
+| A local route returns 404 | The project uses the `/Growvidence/` base path. | Open `http://localhost:4321/Growvidence/`, not the server root. Keep the configured base path when testing local routes. |
+| Git reports CRLF/LF warnings | An editor or Git configuration changed line endings. | The repository's `.gitattributes` specifies LF. Set the editor's line ending to LF, save the affected file, and inspect `git diff` before staging. |
+| PowerShell says the folder is not a Git repository | The terminal is in a system folder such as `C:\\Windows\\System32`, not the project checkout. | Run `Set-Location "$HOME\\Documents\\Growvidence"` (or the actual folder where you cloned the repo), then run Git/npm commands from there. |
+| `npm ci` reports vulnerability warnings | npm found advisories in the installed dependency tree; development tooling findings are distinct from production dependencies. | Run `npm audit --omit=dev` and `npm audit` separately, review package paths and available compatible fixes, and share the output before remediation. Do not use `npm audit fix --force` or make major upgrades without approval. |
 
 ## Project structure
 
