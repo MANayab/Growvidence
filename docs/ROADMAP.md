@@ -1,7 +1,7 @@
 # Growvidence roadmap
 
 **Last updated:** 2026-11-21  
-**Current state:** Phase 1 static foundation and Slice 1 app shell/persistence are merged. PR #7 dependency remediation and PR #8 Phase 2 design are merged. The public landing page is live; deployment of the merged Slice 1 app shell has not been independently verified in this update. Remaining learner workflows are planned in later slices.
+**Current state:** Phase 1 and Slice 1 are merged. PR #11 import-contract documentation alignment is merged. Slice 2 track/task workflows are implemented on `feat/slice-2-tracks-tasks` and awaiting maintainer review; they are not yet on `main` or verified on the published site.
 
 ## Completed
 
@@ -24,12 +24,12 @@
 
 ## Current product status
 
-The public landing page and publishing pipeline exist. Slice 1 is merged and provides the first `/app/` shell, settings preference and IndexedDB adapter. The merged app-shell deployment has not been independently verified in this update. Track CRUD, task management, journal, competency assessment, evidence manager, JSON backup/restore, CSV export and dashboard remain future slices.
+The public landing page and publishing pipeline exist. Slice 1 provides the `/app/` shell, settings preference and IndexedDB v2 adapter. Slice 2 implements track/task workflows and a v3 task store on its review branch; it is not merged or deployed. Journal, competency assessment, evidence manager, JSON backup/restore, CSV export and dashboard remain future slices.
 
 MVP platform constraints:
 - GitHub Pages static files only; no server, runtime SSR, API routes or database server.
 - No account system or cloud sync in the MVP.
-- Learner records are intended to remain in browser storage; the Slice 1 PR proposes IndexedDB v2 through a typed `idb` adapter, with settings and minimal tracks repositories.
+- Learner records remain in browser storage; Slice 1 introduced IndexedDB v2 through a typed `idb` adapter. Slice 2 adds a version-3 tasks store and typed track/task repositories on its review branch.
 - Public content is indexable. Future `/app/` HTML must carry build-time noindex and remain out of the sitemap. Do not disallow it in robots.txt because crawlers must be able to read the noindex directive.
 - PWA/offline is optional future scope and must be explicitly confirmed before implementation.
 - No analytics or third-party scripts by default.
