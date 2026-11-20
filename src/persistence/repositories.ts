@@ -126,6 +126,7 @@ export class IndexedDbTasksRepository implements TasksRepository {
     try {
       const task = TaskSchema.parse(input);
       const tx = this.database.transaction(["tracks", "tasks"], "readwrite");
+      void tx.done.catch(() => undefined);
       const track = await tx.objectStore("tracks").get(task.trackId);
       const existing = await tx.objectStore("tasks").get(task.id);
       if (!track || track.deletedAt || (track.archivedAt && (!existing || existing.trackId !== task.trackId))) {
