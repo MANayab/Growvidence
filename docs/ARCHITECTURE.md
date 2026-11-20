@@ -1,6 +1,6 @@
 # Architecture proposal — static, local-first
 
-**Status:** Phase 1 public-site foundation is complete and merged (PR #3); Astro-native GitHub Pages deployment is merged (PR #4); Google Search Console verification metadata is merged (PR #5). The public landing page is live at https://manayab.github.io/Growvidence/. The learner workspace, domain services, persistence and import/export are not implemented. This remains a proposal for the learner application; its detailed architecture choices require Phase 2 review.
+**Status:** The public-site foundation and GitHub Pages publishing pipeline are merged, and the public landing page is live at https://manayab.github.io/Growvidence/. Slice 1 is also merged: the static noindex learner app shell, React island and initial IndexedDB persistence foundation exist. Track/task workflows, journal, competency assessment, evidence management and import/export are not yet implemented. This document remains the architecture proposal for those future learner-application slices.
 
 ## Constraints
 

@@ -1,7 +1,7 @@
 # Growvidence roadmap
 
 **Last updated:** 2026-11-21  
-**Current state:** Phase 1 static foundation is complete, merged and deployed. PR #7 dependency remediation and PR #8 Phase 2 design are merged. This follow-up records maintainer-approved Phase 2 decisions; the learner application has not been implemented.
+**Current state:** Phase 1 static foundation and Slice 1 app shell/persistence are merged. PR #7 dependency remediation and PR #8 Phase 2 design are merged. The public landing page is live; deployment of the merged Slice 1 app shell has not been independently verified in this update. Remaining learner workflows are planned in later slices.
 
 ## Completed
 
@@ -24,7 +24,7 @@
 
 ## Current product status
 
-The public landing page and publishing pipeline exist. The Slice 1 branch proposes the first `/app/` shell, settings preference and IndexedDB adapter; these changes are not yet merged or deployed. There is no track creation, task manager, journal, competency assessment, evidence manager, JSON backup/restore, CSV export or dashboard.
+The public landing page and publishing pipeline exist. Slice 1 is merged and provides the first `/app/` shell, settings preference and IndexedDB adapter. The merged app-shell deployment has not been independently verified in this update. Track CRUD, task management, journal, competency assessment, evidence manager, JSON backup/restore, CSV export and dashboard remain future slices.
 
 MVP platform constraints:
 - GitHub Pages static files only; no server, runtime SSR, API routes or database server.

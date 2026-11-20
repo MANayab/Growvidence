@@ -1,10 +1,10 @@
 # Growvidence project memory
 
-**Last updated:** 2026-11-21 — PR #9 merged; Slice 1 implementation in progress  
-**Current phase:** Slice 1 — app shell and persistence layer (open implementation PR)  
-**Latest verified main:** b928bb7017b40ce98c0da343753a6ee710cbb649  
-**Current branch:** feat/slice-1-app-shell  
-**Current PR:** Slice 1 app shell and persistence (not merged)
+**Last updated:** 2026-11-21 — Slice 1 PR #10 merged; documentation alignment PR in progress  
+**Current phase:** Slice 1 merged; next implementation slice awaits maintainer instruction  
+**Latest verified main:** 8e61768fc0db709c7b6db047d0f0dc8035200dee  
+**Current branch:** docs/fix-import-contract  
+**Current PR:** Import contract documentation alignment (open)
 
 ## Repository and product
 
@@ -32,7 +32,8 @@
 
 ### Current product reality
 - The public landing page is live.
-- The current Slice 1 branch proposes the `/app/` shell, React island, hash navigation, theme preference, IndexedDB v2 adapter, settings/minimal tracks repositories and initial persistence tests; this is not yet merged or deployed.
+- Slice 1 is merged in PR #10 at commit `c93c5e89b67194fcf6c08bca00e0d01c73347660`; merge commit on main: `8e61768fc0db709c7b6db047d0f0dc8035200dee`. It adds the `/app/` shell, React island, hash navigation, theme preference, IndexedDB v2 adapter, settings/minimal tracks repositories and initial persistence tests. Deployment of this merged app shell has not been independently verified in this update.
+- The measured JavaScript loaded by `/app/` is **95.51 KiB gzip of the 200 KiB budget**, including the workspace island, Astro renderer and React runtime. CI bundle-size check passed on the PR #10 head.
 - Track CRUD, task manager, journal, competency assessment, evidence manager, exports and dashboard are not implemented.
 - No authentication, backend, cloud sync, analytics or payments.
 - PWA/offline remains optional future scope and requires explicit confirmation.
@@ -94,7 +95,7 @@ PR #8 established the Phase 2 design package and has been merged. Its open-decis
 
 ## Current handoff
 
-PR #9 is merged at main `b928bb7017b40ce98c0da343753a6ee710cbb649`. Slice 1 is being implemented on `feat/slice-1-app-shell`. Do not merge or begin another PR; wait for maintainer review and **“next”** after this PR.
+PR #9 and Slice 1 PR #10 are merged. Latest main is `8e61768fc0db709c7b6db047d0f0dc8035200dee`. Current documentation-only follow-up is on `docs/fix-import-contract`; do not merge it. Stop after opening its PR and wait for maintainer review and **“next”**.
 
 ## Decisions log — 2026-11-21
 
@@ -110,7 +111,7 @@ PR #9 is merged at main `b928bb7017b40ce98c0da343753a6ee710cbb649`. Slice 1 is b
 | 8 | Reviews | Accepted: reviewerType is self or external; clearly distinguish in UI. Proposed Consistent corroboration weight: external 2, self 1. |
 | 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
 | 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
-| 11 | Bundle/charts | Accepted: 200 KiB gzip initial workspace JS excluding Astro-shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
+| 11 | Bundle/charts | Accepted: 200 KiB gzip for all JavaScript loaded by `/app/`, including Astro renderer, React runtime, island and shared/imported chunks; measured Slice 1 total is 95.51 KiB gzip. Hand-built SVG or lazy-loaded charts; bundle-size check required. |
 | 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
 
 ### Competency levels — NEEDS APPROVAL

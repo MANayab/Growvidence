@@ -209,15 +209,15 @@ Export must be UTF-8 JSON with a clear filename, e.g. `growvidence-backup-YYYY-M
 
 ### Import process
 
-1. Enforce a 10 MiB file-size ceiling before parsing; reject larger files without writing.
+1. Enforce a 10 MiB file-size ceiling before parsing; reject larger files without parsing or writing.
 2. Parse JSON as untrusted input; reject malformed JSON, unsupported `format` or `formatVersion`, invalid schemas, duplicate IDs, invalid timestamps and broken references.
-3. Preview record counts, conflicts, soft-deleted records and any records that will be skipped; do not write during preview.
-4. Default mode: merge by stable ID. New IDs are additions. Matching IDs require a conflict resolution preview; user chooses keep existing, replace with imported, or skip that record. Dependent records must be handled consistently.
-5. Provide a separate full-replace flow with explicit destructive confirmation and a pre-import export prompt.
-6. Apply the validated operation transactionally. If any write fails, abort and preserve the prior dataset.
+3. Preview record counts and the effects of each available mode, including additions, matching IDs, newer imported records, equal timestamps, and soft-deleted records. Do not write during preview.
+4. Offer exactly two modes:
+   - **Replace everything:** replace the complete local dataset with the validated imported dataset. Require explicit destructive confirmation and offer a pre-import export.
+   - **Merge (newer `updatedAt` wins):** add IDs that do not exist locally; replace a matching local record only when the imported record's `updatedAt` is newer; retain the local record when timestamps are equal or the imported timestamp is older.
+5. Do not offer per-record keep, replace or skip choices in the MVP; per-record conflict resolution is deferred.
+6. Apply the selected, fully validated mode atomically. If any write fails, abort and preserve the prior dataset.
 7. Show a completion summary and retain no imported file contents beyond the user-selected workflow.
-
-Do not silently apply last-write-wins, silently overwrite, or partially import a package.
 
 ## CSV export
 
@@ -233,7 +233,7 @@ CSV is a convenience export, not a backup. Initial proposal: one row per task, w
 
 ## Open contract decisions
 
-See the consolidated Open decisions section in `docs/TESTING_PLAN.md` and PR description. The 10 MiB import ceiling, conflict UX, CSV column set and whether journal/evidence disclosures should share one reusable object are recommendations pending maintainer approval.
+See the consolidated Open decisions section in `docs/TESTING_PLAN.md` and PR description. The CSV column set and whether journal/evidence disclosures should share one reusable object remain recommendations pending maintainer approval. The 10 MiB import ceiling and the two import modes are accepted decisions.
 
 ## Decisions log — 2026-11-21
 
@@ -249,7 +249,7 @@ See the consolidated Open decisions section in `docs/TESTING_PLAN.md` and PR des
 | 8 | Reviews | Accepted: reviewerType is self or external; clearly distinguish in UI. Proposed Consistent corroboration weight: external 2, self 1. |
 | 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
 | 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
-| 11 | Bundle/charts | Accepted: 200 KiB gzip initial workspace JS excluding Astro-shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
+| 11 | Bundle/charts | Accepted: 200 KiB gzip for all JavaScript loaded by `/app/`, including the Astro renderer, React runtime, island and shared/imported chunks; hand-built SVG or lazy-loaded charts; bundle-size check required. |
 | 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
 
 ### Competency levels — NEEDS APPROVAL
