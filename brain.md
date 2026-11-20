@@ -1,10 +1,10 @@
 # Growvidence project memory
 
-**Last updated:** 2026-11-21 — Slice 1 PR #10 merged; documentation alignment PR in progress  
-**Current phase:** Slice 1 merged; next implementation slice awaits maintainer instruction  
-**Latest verified main:** 8e61768fc0db709c7b6db047d0f0dc8035200dee  
-**Current branch:** docs/fix-import-contract  
-**Current PR:** Import contract documentation alignment (open)
+**Last updated:** 2026-11-21 — PR #11 merged; Slice 2 implementation branch created  
+**Current phase:** Slice 2 — tracks and tasks, implementation under review preparation  
+**Latest verified main:** ef58a84c86710cb79ca889d3c442e27a89e70bea  
+**Current branch:** feat/slice-2-tracks-tasks  
+**Current PR:** To be opened after implementation and documentation review
 
 ## Repository and product
 
@@ -34,7 +34,7 @@
 - The public landing page is live.
 - Slice 1 is merged in PR #10 at commit `c93c5e89b67194fcf6c08bca00e0d01c73347660`; merge commit on main: `8e61768fc0db709c7b6db047d0f0dc8035200dee`. It adds the `/app/` shell, React island, hash navigation, theme preference, IndexedDB v2 adapter, settings/minimal tracks repositories and initial persistence tests. Deployment of this merged app shell has not been independently verified in this update.
 - The measured JavaScript loaded by `/app/` is **95.51 KiB gzip of the 200 KiB budget**, including the workspace island, Astro renderer and React runtime. CI bundle-size check passed on the PR #10 head.
-- Track CRUD, task manager, journal, competency assessment, evidence manager, exports and dashboard are not implemented.
+- Track CRUD and task management are implemented on `feat/slice-2-tracks-tasks` but are not yet merged or deployed. Journal, competency assessment, evidence manager, exports and dashboard are not implemented.
 - No authentication, backend, cloud sync, analytics or payments.
 - PWA/offline remains optional future scope and requires explicit confirmation.
 - The current sitemap contains only the public homepage. Future app routes must be noindex and excluded from sitemap; robots.txt must not disallow them.
@@ -95,7 +95,7 @@ PR #8 established the Phase 2 design package and has been merged. Its open-decis
 
 ## Current handoff
 
-PR #9 and Slice 1 PR #10 are merged. Latest main is `8e61768fc0db709c7b6db047d0f0dc8035200dee`. Current documentation-only follow-up is on `docs/fix-import-contract`; do not merge it. Stop after opening its PR and wait for maintainer review and **“next”**.
+PR #11 is merged at `ef58a84c86710cb79ca889d3c442e27a89e70bea`. Slice 2 is being implemented on `feat/slice-2-tracks-tasks`. Do not merge or push to `main`; open one review PR and stop for maintainer review and **“next”**.
 
 ## Decisions log — 2026-11-21
 
