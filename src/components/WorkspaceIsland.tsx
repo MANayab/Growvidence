@@ -156,7 +156,7 @@ export default function WorkspaceIsland() {
     setTaskId(null); setTaskTitle(""); setTaskDescription(""); setTaskStatus("backlog"); setTaskPriority("normal");
     setTaskDueDate(""); setTaskEstimate(""); setTaskActual(""); setTaskTags("");
   }
-  async function saveTask(event: React.FormEvent<HTMLFormElement>): Promise<void> {
+  async function saveTask(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     const existing = tasks.find((item) => item.id === taskId);
     const base = makeRecordBase(existing);
@@ -244,7 +244,7 @@ export default function WorkspaceIsland() {
               </div>
               <div className="calendar-toolbar">
                 <label>Calendar range<select value={calendarView} onChange={(event) => setCalendarView(event.target.value as CalendarView)}><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></label>
-                <label>Anchor date<input type="date" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} /></label>
+                <label>Anchor date<input type="date" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value || localDateKey(new Date()))} /></label>
                 <button type="button" className="secondary" onClick={() => setSelectedDate(calendarView === "monthly" ? addLocalMonths(selectedDate, -1) : addLocalDays(selectedDate, calendarView === "daily" ? -1 : -7))}>Previous</button>
                 <button type="button" className="secondary" onClick={() => setSelectedDate(calendarView === "monthly" ? addLocalMonths(selectedDate, 1) : addLocalDays(selectedDate, calendarView === "daily" ? 1 : 7))}>Next</button>
                 <span className="range-label">{range.start} – {range.end}</span>
