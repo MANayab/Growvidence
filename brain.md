@@ -1,10 +1,10 @@
 # Growvidence project memory
 
-**Last updated:** 2026-11-20 — Phase 1 merged and published; README and project-state synchronization in PR A  
-**Current phase:** Phase 2 preparation — README/docs synchronization first; learner workspace design follows in a separate docs-only PR  
-**Latest main:** 70224f6611dc955fa21b8822e5ef43a824a9a22f  
-**Current documentation branch:** docs/readme-and-sync  
-**Current PR:** https://github.com/MANayab/Growvidence/pull/6 (draft; latest head pending CI)
+**Last updated:** 2026-11-21 — PR #7 merged; Phase 2 workspace design documentation proposed in PR #8  
+**Current phase:** Phase 2 design review — docs-only package; no learner app implementation  
+**Latest main at Phase 2 branch start:** 400ad98cf2c746f34817e8f0c2fb94afe3d31fca  
+**Current documentation branch:** docs/phase-2-workspace-design  
+**Current PR:** https://github.com/MANayab/Growvidence/pull/8 (awaiting maintainer review and CI)
 
 ## Repository and product
 
@@ -13,7 +13,7 @@
 - Product promise: “Don't just learn. Prove your progress.”
 - Differentiator: evidence-based competency tracking, not task completion or streaks.
 - Product flow: learn → practice → create → independently demonstrate → review.
-- Six initial competency areas in mind.md: independent coding, debugging, architecture, testing, commercial validation and technical fundamentals. Measurable criteria require maintainer review.
+- Six competency areas: independent coding, debugging, architecture, testing, commercial validation and technical fundamentals. Proposed measurable criteria are in mind.md and all require maintainer approval.
 
 ## Delivery status
 
@@ -22,11 +22,12 @@
 
 ### Phase 1 — complete and merged
 - PR #3 merged; Astro static output, strict TypeScript, shared layout, public homepage and generated 404.
-- SEO metadata helper and tests, canonical metadata, Organization and WebSite JSON-LD, robots.txt, homepage sitemap, llms.txt and favicon.
+- SEO metadata helper/tests, canonical metadata, Organization and WebSite JSON-LD, robots.txt, homepage sitemap, llms.txt and favicon.
 - GitHub Actions CI, lint/format/type diagnostics/tests/build and generated HTML verification.
 - Committed package-lock.json and reproducible npm ci.
 - PR #4 merged; Astro static build deployed to GitHub Pages through .github/workflows/deploy.yml.
-- PR #5 merged; Google Search Console verification meta tag added to shared page head.
+- PR #5 merged; Google Search Console verification meta tag added to shared head.
+- PR #7 merged; `typescript-eslint` updated to 8.73.0 with maintainer-generated lockfile. The maintainer reported `npm audit --omit=dev` and `npm audit` both found zero vulnerabilities; CI passed on the latest PR head.
 - Live site: https://manayab.github.io/Growvidence/
 
 ### Current product reality
@@ -34,8 +35,8 @@
 - The interactive learner application is not built.
 - No app dashboard, task manager, journal, competency assessment, evidence manager or IndexedDB data layer exists.
 - No authentication, backend, cloud sync, analytics or payments.
-- PWA/offline remains optional future scope and requires confirmation.
-- The current sitemap contains only the public homepage. App routes, when implemented, must be noindex and excluded from the sitemap.
+- PWA/offline remains optional future scope and requires explicit confirmation.
+- The current sitemap contains only the public homepage. Future app routes must be noindex and excluded from sitemap; robots.txt must not disallow them.
 
 ## Technical baseline
 
@@ -47,41 +48,46 @@
 - Deployment workflow builds dist/ and publishes with GitHub Pages Actions.
 - No runtime SSR, API routes or server database in the MVP.
 
+## Phase 2 design package in PR #8
+
+Docs-only changes on `docs/phase-2-workspace-design`, based on main SHA `400ad98cf2c746f34817e8f0c2fb94afe3d31fca`:
+- ADR-0005 proposes Astro + React islands, a physical `/app/` entry with hash navigation, build-time noindex and sitemap exclusion; Preact and separate SPA are compared.
+- ADR-0006 proposes IndexedDB behind a typed adapter using `idb`; Dexie/raw IndexedDB are compared; migration, quota, backup and browser cleanup behaviors are specified.
+- DATA_CONTRACTS.md proposes Zod schemas, stable UUIDs, timestamps, soft deletion, cross-record validation and versioned JSON export/import.
+- mind.md proposes measurable criteria for six competencies; all criteria and mastery threshold are **NEEDS APPROVAL**.
+- UX_SPEC.md defines dashboard, daily/weekly/monthly views, tracks, task list/Kanban, journal, competency/evidence, settings, accessibility and Mermaid flows.
+- TESTING_PLAN.md defines unit, persistence, E2E, accessibility, security and performance plans plus seven build slices and optional PWA; every slice has acceptance criteria and a learning exercise.
+- No source code, dependencies, license policy, workflows, site config or deployed behavior changed.
+
 ## SEO / structured data
 
 - BaseLayout builds the project URL from Astro base path /Growvidence/.
-- Organization and WebSite JSON-LD are expected to use https://manayab.github.io/Growvidence/, not the origin alone.
-- src/lib/seo.test.ts checks both structured-data URLs.
-- scripts/verify-build.mjs parses built JSON-LD and asserts both URLs equal the project URL.
-- Google Search Console verification meta tag is present in the shared head.
-- The sitemap is homepage-only until additional indexable public routes are implemented.
-
-## Dependency audit status
-
-The repository CI has informational npm audit steps: npm audit --omit=dev and npm audit. They use continue-on-error, so workflow success does not mean zero vulnerabilities. I cannot execute npm audit in this GitHub-only change session. Current severity counts are therefore **not verified**; maintainer should run both audit commands locally on the latest main checkout and share the output before dependency remediation decisions. Do not use npm audit fix --force or major upgrades without approval.
+- Organization and WebSite JSON-LD use https://manayab.github.io/Growvidence/.
+- Google Search Console verification meta tag is present in shared head.
+- Sitemap is homepage-only until additional indexable public routes are implemented.
 
 ## Product invariants
 
 - Task status is distinct from competency status.
 - Checkboxes and streaks never establish mastery.
-- Competency claims require measurable criteria and reviewable evidence.
+- Competency claims require approved measurable criteria and reviewable evidence.
 - Learning records must disclose AI use, including unknown/not recorded where applicable.
-- Browser-local data must have explicit export/import/deletion behavior; browser storage is not cloud backup.
-- Never put learner evidence in URLs, localStorage/sessionStorage or default public caches.
+- Browser-local data must have explicit export/import/deletion behavior; browser storage is not encrypted storage or cloud backup.
+- Never put learner evidence in URLs, localStorage/sessionStorage, Cache Storage, telemetry or logs.
 - No analytics or third-party scripts by default.
 
 ## Workflow and safety
 
 - Work only in MANayab/Growvidence.
-- Start each phase from the latest main.
+- Start each phase from latest main.
 - Never push directly to main, merge PRs, force-push or rewrite shared history.
 - One PR at a time; maintainer reviews and merges.
 - Stop after each PR and wait for “next”.
 - No secrets or real credentials.
 - No LICENSE file, package.json license field, license badge, SPDX header, or edit to ADR-0002. The maintainer decides later.
 - Never claim tests, formatting, deployment or live behavior passed without evidence.
-- The assistant cannot run Prettier or tests in this workflow; maintainer runs local commands before final push.
+- Assistant does not run Prettier or tests in this workflow; maintainer runs local commands before final push.
 
 ## Current handoff
 
-PR A is PR #6, a documentation-only README and state synchronization change on docs/readme-and-sync. It does not implement learner application code or change dependencies. Latest branch head at initial PR creation: 8477c969ddad780645a80f546e31763218a553e3; README troubleshooting follow-up commit: 2ede6ace6aff473055c32bb1f33674255e8f5689. Recheck latest branch head before declaring CI status. After PR A is reviewed and merged, wait for the maintainer to say “next” before starting PR B (Phase 2 design). PR B is docs-only and must define architecture, IndexedDB decision, data contracts, competency criteria requiring approval, UX, testing and build-slice breakdown before any feature slice starts.
+PR #8 is the Phase 2 workspace design documentation package. Wait for maintainer review, responses to Open decisions and merge. Do not begin Slice 1 or any other PR until the maintainer says **“next”** after merging.
