@@ -1,7 +1,7 @@
 # Growvidence testing plan and implementation slices
 
 - **Status:** Proposed acceptance plan; app workflows and Playwright tests are not implemented.
-- **Release posture:** No learner feature slice starts until the Phase 2 design PR is reviewed and merged.
+- **Release posture:** Phase 2 design decisions were accepted on 2026-11-21. No learner feature slice starts until the maintainer says “next” and authorizes that slice.
 
 ## Test strategy
 
@@ -15,8 +15,8 @@ Test pure domain rules and Zod schemas:
 - Competency assessment invariants: task completion and streaks never create mastery; unapproved criteria cannot support “Demonstrated”; missing evidence yields “Needs more evidence”.
 - Cross-record referential integrity, duplicate IDs and timestamp consistency.
 - Export serialization, stable IDs, format version and round-trip.
-- CSV escaping and formula-injection neutralization.
-- Import preview/conflict decisions and unsupported version handling.
+- CSV escaping and formula-injection neutralization; unit-test cells beginning with =, +, - and @.
+- Import preview, the two approved modes (Replace everything; Merge using newer updatedAt), atomic rollback and unsupported version handling; confirm per-record choices are absent from MVP.
 
 Aim for at least 80% statement coverage in core domain modules as a diagnostic target; prioritize meaningful assertions and boundary cases over a percentage.
 
@@ -31,7 +31,7 @@ Use a real IndexedDB implementation in a controlled browser/test environment or 
 - Aborted migration leaves previous database intact.
 - Transaction rollback on a failed multi-record import.
 - Quota/unavailable-storage errors produce recoverable UI states and do not silently discard data.
-- Explicit deletion clears all user-owned records and metadata.
+- Per-record permanent deletion removes the record from future backups; soft-deleted records remain in backups; delete-all clears all user-owned records and metadata.
 - Reload persistence works for records saved successfully.
 
 ### 3. Component and accessibility tests
@@ -51,16 +51,16 @@ Playwright is not currently installed. Add it only in the dedicated E2E slice wi
 2. Task lifecycle: create, edit, filter, move through statuses and reload; task completion does not alter competency status.
 3. Journal and AI disclosure: save unassisted, assisted, partially assisted, unknown and not-recorded examples; verify missing disclosure is never interpreted as unassisted.
 4. Evidence and competency: attach evidence, link criteria, add review, verify unapproved criteria and insufficient evidence block demonstrated status.
-5. Export/import: export valid JSON, import preview, merge new records, resolve conflicts, reject malformed/oversized/unsupported files and preserve prior data on failure.
-6. CSV: verify headers, quoting, line breaks and formula-leading values are neutralized.
-7. Delete: export prompt, explicit confirmation, full local-data deletion and empty-state reload.
+5. Export/import: preview, then Replace everything and Merge (newer updatedAt wins); verify atomic rollback, 10 MiB rejection, malformed/unsupported files and no per-record choices in MVP.
+6. CSV: verify headers, quoting, line breaks and unit-test neutralization of cells beginning with =, +, - and @.
+7. Delete: soft delete and backup retention, per-record Permanently delete, delete-all confirmation and empty-state reload.
 8. Accessibility: keyboard-only critical journey, focus behavior, axe scan and responsive viewports.
 9. SEO/static: public pages indexable, app HTML has noindex, app absent from sitemap, robots.txt does not disallow app, app direct refresh works on Pages.
 
 ### 5. Security and privacy tests
 
 - Imported JSON is untrusted: enforce byte limit, parse errors, schema validation, referential integrity and safe text rendering.
-- Reject javascript/data URLs and unsafe protocols for external artifact links; only allow explicitly supported http/https URLs.
+- Accept only HTTP/HTTPS evidence URLs; reject javascript:, data: and other schemes; verify rel="noopener noreferrer" and no fetch/preview/embed.
 - Ensure no learner records are written to URLs, localStorage, sessionStorage, Cache Storage, service-worker caches or logs.
 - Verify no analytics, third-party scripts or remote network calls are introduced by the app.
 - Verify generated static output contains no sample/private learner data, secrets or imported content.
@@ -70,7 +70,7 @@ Playwright is not currently installed. Add it only in the dedicated E2E slice wi
 
 - Record route, commit, device/emulation, network profile, browser, build and tool version for Lighthouse/measurement results.
 - Inspect initial public-page JS to ensure the workspace runtime is not shipped on unrelated pages.
-- Measure app initial JS and deferred feature chunks; proposed budget for maintainer approval: 200 KiB gzip initial workspace JS excluding Astro-shared assets.
+- Enforce 200 KiB gzip initial workspace JS excluding Astro-shared assets; add bundle-size CI check and verify charts are lightweight SVG or lazy-loaded.
 - Target Lighthouse 90+ as a diagnostic goal, not a guarantee; inspect Core Web Vitals and low-end mobile behavior.
 - Test actual GitHub Pages base path and direct refresh. No server fallback assumptions.
 - Test latest PR head CI; earlier-head results do not qualify.
@@ -101,17 +101,35 @@ A slice is not ready for review until:
 - No unrelated dependencies or files are included.
 - No license policy changes occur.
 
-## Consolidated open decisions (recommendations, not approvals)
+## Decisions log
 
-1. **Workspace UI framework — NEEDS APPROVAL.** Recommend React islands inside Astro (ADR-0005); keep public pages HTML-first. Use Preact only if bundle measurements justify it.
-2. **IndexedDB wrapper — NEEDS APPROVAL.** Recommend `idb` behind a repository adapter (ADR-0006); reconsider Dexie if query/migration needs grow.
-3. **Rubric approval threshold — NEEDS APPROVAL.** Recommend “Demonstrated” requires every mandatory approved criterion to have at least one recent independent artifact plus a repeat demonstration in a distinct task/context; reviewer feedback is supporting context, not mandatory for every learner. Keep status “Needs more evidence” when a criterion is unapproved or evidence is missing.
-4. **Import file-size limit — NEEDS APPROVAL.** Recommend 10 MiB initially, with a clear error and no partial writes; raise only with browser/device testing.
-5. **Import conflict UX — NEEDS APPROVAL.** Recommend preview then merge by stable ID, with per-record keep-existing/replace/skip choices and one atomic transaction; keep full replace as a separate destructive path.
-6. **Backup reminder cadence — NEEDS APPROVAL.** Recommend a dismissible reminder after 30 days since last successful export, plus a first-export prompt after meaningful data has accumulated.
-7. **Evidence URL policy — NEEDS APPROVAL.** Recommend allow only http/https external references; do not fetch, preview or embed them automatically. No file uploads or binary attachments in MVP.
-8. **Reviewer identity — NEEDS APPROVAL.** Recommend free-text reviewer label and relationship only; no reviewer accounts, email collection or signatures.
-9. **CSV scope — NEEDS APPROVAL.** Recommend task-centric CSV first (one row per task with track, status, due date and linked journal/evidence counts); JSON remains the only full-fidelity backup.
-10. **PWA/offline — NEEDS APPROVAL.** Recommend defer until after Slice 7 and require explicit approval; do not add service worker/cache behavior during the initial workspace slices.
-11. **Initial workspace JS budget — NEEDS APPROVAL.** Recommend 200 KiB gzip initial app JS as a measurement gate, then revise only with recorded low-end-device evidence.
-12. **Soft delete retention — NEEDS APPROVAL.** Recommend retain soft-deleted records in JSON backups and provide explicit hard delete for all local data; no timed automatic purge in MVP.
+## Decisions log — 2026-11-21
+
+| # | Decision | Outcome |
+|---|---|---|
+| 1 | Workspace UI | Accepted: Astro static site with React islands; Preact only if measured bundle constraints justify it. |
+| 2 | IndexedDB | Accepted: idb behind a typed repository adapter. |
+| 3 | Competency levels | NEEDS APPROVAL: Demonstrated and Consistent definitions remain proposed. |
+| 4 | Import limit | Accepted: 10 MiB; reject larger files before parsing/writing. |
+| 5 | Import modes | Accepted: preview, then “Replace everything” or “Merge (newer updatedAt wins)”; atomic application. Per-record choices deferred. |
+| 6 | Backup reminders | Accepted: dismissible reminder 30 days after last successful export, plus first-export prompt after meaningful data accumulates. |
+| 7 | Evidence URLs | Accepted: HTTP/HTTPS only; reject other schemes; external links use rel="noopener noreferrer"; never fetch, preview or embed. |
+| 8 | Reviews | Accepted: reviewerType is self or external; clearly distinguish in UI. Proposed Consistent corroboration weight: external 2, self 1. |
+| 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
+| 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
+| 11 | Bundle/charts | Accepted: 200 KiB gzip initial workspace JS excluding Astro-shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
+| 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
+
+### Competency levels — NEEDS APPROVAL
+
+- **Demonstrated (NEEDS APPROVAL):** every mandatory criterion has at least one independent artifact.
+- **Consistent (NEEDS APPROVAL):** the demonstration is repeated in a different task or context.
+- Proposed Consistent corroboration: external review weight 2, self review weight 1. Reviews cannot replace the required independent artifact or repeated demonstration.
+
+### Additional required tests
+
+- Every /app/ page has build-time noindex meta; no app URL in sitemap.xml; robots.txt does not disallow /app/.
+- reviewerType self/external is clearly and accessibly distinguished.
+- Verify 10 MiB ceiling, both import modes, newer-updatedAt merge semantics and atomic rollback.
+- Verify per-record permanent deletion, soft-delete backup retention and delete-all.
+- Bundle-size check reports gzip size and fails above 200 KiB.
