@@ -134,6 +134,72 @@ flowchart TD
 
 Task completion and competency status remain separate throughout this flow.
 
+## Core data relationships (proposed)
+
+This ERD is a conceptual model for the future local-first application. It is not a deployed database schema.
+
+```mermaid
+erDiagram
+  TRACK ||--o{ TASK : contains
+  TASK ||--o{ JOURNAL_ENTRY : contextualizes
+  JOURNAL_ENTRY ||--o{ EVIDENCE : records
+  COMPETENCY ||--|{ CRITERION : defines
+  CRITERION ||--o{ EVIDENCE_LINK : supported_by
+  EVIDENCE ||--o{ EVIDENCE_LINK : linked_through
+  EVIDENCE ||--o{ REVIEW : receives
+
+  TRACK {
+    string id PK
+    string title
+    datetime createdAt
+    datetime updatedAt
+  }
+  TASK {
+    string id PK
+    string trackId FK
+    string title
+    string status
+    datetime dueAt
+  }
+  JOURNAL_ENTRY {
+    string id PK
+    string taskId FK
+    string aiUseMode
+    string reflection
+    datetime createdAt
+  }
+  COMPETENCY {
+    string id PK
+    string slug
+    string title
+    int rubricVersion
+  }
+  CRITERION {
+    string id PK
+    string competencyId FK
+    string statement
+  }
+  EVIDENCE {
+    string id PK
+    string journalEntryId FK
+    string kind
+    string uri
+  }
+  EVIDENCE_LINK {
+    string id PK
+    string criterionId FK
+    string evidenceId FK
+  }
+  REVIEW {
+    string id PK
+    string evidenceId FK
+    string feedback
+    datetime createdAt
+  }
+```
+
+The final entities, cardinalities and field constraints are subject to the Phase 2 data-contract design and maintainer approval.
+
 ## Roadmap
 
 ```mermaid
