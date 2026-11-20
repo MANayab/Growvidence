@@ -25,7 +25,8 @@ function getRoute(): WorkspaceRoute {
 }
 
 function applyTheme(theme: ThemePreference): void {
-  if (theme === "system") document.documentElement.removeAttribute("data-theme");
+  if (theme === "system")
+    document.documentElement.removeAttribute("data-theme");
   else document.documentElement.dataset.theme = theme;
 }
 
@@ -55,7 +56,9 @@ export default function WorkspaceIsland() {
   const [ready, setReady] = useState(false);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [theme, setTheme] = useState<ThemePreference>("system");
-  const [persistence, setPersistence] = useState<PersistenceHandle | null>(null);
+  const [persistence, setPersistence] = useState<PersistenceHandle | null>(
+    null,
+  );
   const [savingTheme, setSavingTheme] = useState(false);
 
   useEffect(() => {
@@ -95,11 +98,15 @@ export default function WorkspaceIsland() {
       })
       .catch((error: unknown) => {
         if (!active) return;
-        const message = error instanceof PersistenceError
-          ? error.message
-          : "Growvidence could not open browser storage. No existing database was deleted.";
+        const message =
+          error instanceof PersistenceError
+            ? error.message
+            : "Growvidence could not open browser storage. No existing database was deleted.";
         setNotice({
-          code: error instanceof PersistenceError ? error.code : "storage-unavailable",
+          code:
+            error instanceof PersistenceError
+              ? error.code
+              : "storage-unavailable",
           message,
         });
       });
@@ -116,14 +123,19 @@ export default function WorkspaceIsland() {
       await persistence.settings.save(nextTheme);
       setTheme(nextTheme);
       applyTheme(nextTheme);
-      setNotice({ code: "ready", message: "Theme preference saved on this device." });
+      setNotice({
+        code: "ready",
+        message: "Theme preference saved on this device.",
+      });
     } catch (error) {
-      const nextNotice: StorageNotice = error instanceof PersistenceError
-        ? { code: error.code, message: error.message }
-        : {
-            code: "storage-unavailable",
-            message: "The theme preference could not be saved. Your previous setting remains unchanged.",
-          };
+      const nextNotice: StorageNotice =
+        error instanceof PersistenceError
+          ? { code: error.code, message: error.message }
+          : {
+              code: "storage-unavailable",
+              message:
+                "The theme preference could not be saved. Your previous setting remains unchanged.",
+            };
       setNotice(nextNotice);
     } finally {
       setSavingTheme(false);
@@ -137,7 +149,9 @@ export default function WorkspaceIsland() {
       <div className="workspace-frame">
         <aside className="workspace-sidebar" aria-label="Workspace navigation">
           <a className="workspace-brand" href={import.meta.env.BASE_URL}>
-            <span className="workspace-mark" aria-hidden="true">G</span>
+            <span className="workspace-mark" aria-hidden="true">
+              G
+            </span>
             <span>Growvidence</span>
           </a>
           <nav className="workspace-nav" aria-label="Workspace sections">
@@ -155,7 +169,9 @@ export default function WorkspaceIsland() {
               </a>
             ))}
           </nav>
-          <p className="sidebar-note">Your learning data stays in this browser profile.</p>
+          <p className="sidebar-note">
+            Your learning data stays in this browser profile.
+          </p>
         </aside>
         <div className="workspace-content">
           <header className="workspace-topbar">
@@ -163,30 +179,59 @@ export default function WorkspaceIsland() {
               <p className="workspace-eyebrow">Learner workspace</p>
               <h1>{activeItem?.label ?? "Workspace"}</h1>
             </div>
-            <a className="public-site-link" href={import.meta.env.BASE_URL}>Public site</a>
+            <a className="public-site-link" href={import.meta.env.BASE_URL}>
+              Public site
+            </a>
           </header>
           <div className="storage-status" role="status" aria-live="polite">
-            <span className={notice.code === "ready" ? "status-dot ready" : "status-dot"} aria-hidden="true" />
-            <span>{notice.code === "ready" ? notice.message : describeError(notice)}</span>
+            <span
+              className={
+                notice.code === "ready" ? "status-dot ready" : "status-dot"
+              }
+              aria-hidden="true"
+            />
+            <span>
+              {notice.code === "ready" ? notice.message : describeError(notice)}
+            </span>
           </div>
-          <section className="workspace-main" id="workspace-main" aria-label="Current workspace section" tabIndex={-1}>
+          <section
+            className="workspace-main"
+            id="workspace-main"
+            aria-label="Current workspace section"
+            tabIndex={-1}
+          >
             {!ready ? (
-              <section className="workspace-card" aria-labelledby="storage-heading">
+              <section
+                className="workspace-card"
+                aria-labelledby="storage-heading"
+              >
                 <h2 id="storage-heading">Checking this browser's storage</h2>
-                <p>Growvidence is opening its local database. Learner records are not uploaded.</p>
-                {notice.code !== "ready" && notice.message !== "Opening local storage…" ? (
+                <p>
+                  Growvidence is opening its local database. Learner records are
+                  not uploaded.
+                </p>
+                {notice.code !== "ready" &&
+                notice.message !== "Opening local storage…" ? (
                   <p className="error-detail">{describeError(notice)}</p>
                 ) : null}
               </section>
             ) : route === "tracks" ? (
-              <section className="workspace-card" aria-labelledby="tracks-heading">
+              <section
+                className="workspace-card"
+                aria-labelledby="tracks-heading"
+              >
                 <p className="workspace-eyebrow">Your learning paths</p>
                 <h2 id="tracks-heading">Learning tracks</h2>
                 {tracks.length === 0 ? (
                   <div className="empty-state">
-                    <span className="empty-icon" aria-hidden="true">↗</span>
+                    <span className="empty-icon" aria-hidden="true">
+                      ↗
+                    </span>
                     <h3>No learning tracks yet</h3>
-                    <p>Your workspace is ready, but you have not created a track. Track creation and editing are part of Slice 2.</p>
+                    <p>
+                      Your workspace is ready, but you have not created a track.
+                      Track creation and editing are part of Slice 2.
+                    </p>
                   </div>
                 ) : (
                   <ul className="track-list">
@@ -201,11 +246,21 @@ export default function WorkspaceIsland() {
                 )}
               </section>
             ) : route === "settings" ? (
-              <section className="workspace-card" aria-labelledby="settings-heading">
+              <section
+                className="workspace-card"
+                aria-labelledby="settings-heading"
+              >
                 <p className="workspace-eyebrow">Local preferences</p>
                 <h2 id="settings-heading">Appearance</h2>
-                <p>Choose how this workspace is displayed. The preference is stored in this browser's IndexedDB.</p>
-                <div className="theme-control" role="group" aria-label="Color theme">
+                <p>
+                  Choose how this workspace is displayed. The preference is
+                  stored in this browser's IndexedDB.
+                </p>
+                <div
+                  className="theme-control"
+                  role="group"
+                  aria-label="Color theme"
+                >
                   {(["system", "light", "dark"] as const).map((option) => (
                     <button
                       aria-pressed={theme === option}
@@ -220,10 +275,17 @@ export default function WorkspaceIsland() {
                 </div>
               </section>
             ) : (
-              <section className="workspace-card" aria-labelledby="planned-heading">
+              <section
+                className="workspace-card"
+                aria-labelledby="planned-heading"
+              >
                 <p className="workspace-eyebrow">Not in this slice</p>
                 <h2 id="planned-heading">{activeItem?.label}</h2>
-                <p>This section is not available yet. Slice 1 provides the app shell, settings storage and minimal tracks repository. No {activeItem?.label.toLowerCase()} data is being collected.</p>
+                <p>
+                  This section is not available yet. Slice 1 provides the app
+                  shell, settings storage and minimal tracks repository. No{" "}
+                  {activeItem?.label.toLowerCase()} data is being collected.
+                </p>
               </section>
             )}
           </section>

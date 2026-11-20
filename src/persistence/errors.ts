@@ -14,7 +14,11 @@ export interface StorageNotice {
 export class PersistenceError extends Error {
   readonly code: PersistenceErrorCode;
 
-  constructor(code: PersistenceErrorCode, message: string, options?: ErrorOptions) {
+  constructor(
+    code: PersistenceErrorCode,
+    message: string,
+    options?: ErrorOptions,
+  ) {
     super(message, options);
     this.name = "PersistenceError";
     this.code = code;
@@ -46,7 +50,14 @@ export function toPersistenceError(error: unknown): PersistenceError {
       { cause: error },
     );
   }
-  if (["SecurityError", "InvalidStateError", "NotAllowedError", "ReferenceError"].includes(name)) {
+  if (
+    [
+      "SecurityError",
+      "InvalidStateError",
+      "NotAllowedError",
+      "ReferenceError",
+    ].includes(name)
+  ) {
     return new PersistenceError(
       "storage-unavailable",
       "Browser storage is unavailable or blocked in this browsing context. The save did not complete.",

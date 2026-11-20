@@ -1,9 +1,20 @@
 import type { IDBPDatabase } from "idb";
 
-import { openDatabase, type GrowvidenceDB, type DatabaseOpenOptions } from "./database";
+import {
+  openDatabase,
+  type GrowvidenceDB,
+  type DatabaseOpenOptions,
+} from "./database";
 import { MigrationError } from "./database";
-import { PersistenceError, toPersistenceError, type StorageNotice } from "./errors";
-import { IndexedDbSettingsRepository, IndexedDbTracksRepository } from "./repositories";
+import {
+  PersistenceError,
+  toPersistenceError,
+  type StorageNotice,
+} from "./errors";
+import {
+  IndexedDbSettingsRepository,
+  IndexedDbTracksRepository,
+} from "./repositories";
 
 export { PersistenceError } from "./errors";
 export type { StorageNotice } from "./errors";
@@ -28,18 +39,22 @@ export async function openPersistence(
   try {
     const database = await openDatabase({
       databaseName: options.databaseName,
-      onBlocked: () => options.onNotice?.({
-        code: "upgrade-blocked",
-        message: "Database upgrade is waiting for another open tab.",
-      }),
-      onBlocking: () => options.onNotice?.({
-        code: "upgrade-blocked",
-        message: "This tab closed its older connection so another tab can upgrade the database. Reload this tab.",
-      }),
-      onUnexpectedClose: () => options.onNotice?.({
-        code: "storage-cleared",
-        message: "The local database connection closed unexpectedly.",
-      }),
+      onBlocked: () =>
+        options.onNotice?.({
+          code: "upgrade-blocked",
+          message: "Database upgrade is waiting for another open tab.",
+        }),
+      onBlocking: () =>
+        options.onNotice?.({
+          code: "upgrade-blocked",
+          message:
+            "This tab closed its older connection so another tab can upgrade the database. Reload this tab.",
+        }),
+      onUnexpectedClose: () =>
+        options.onNotice?.({
+          code: "storage-cleared",
+          message: "The local database connection closed unexpectedly.",
+        }),
     });
     return {
       database,
@@ -49,7 +64,9 @@ export async function openPersistence(
     };
   } catch (error) {
     if (error instanceof MigrationError) {
-      throw new PersistenceError("migration-failed", error.message, { cause: error });
+      throw new PersistenceError("migration-failed", error.message, {
+        cause: error,
+      });
     }
     throw toPersistenceError(error);
   }

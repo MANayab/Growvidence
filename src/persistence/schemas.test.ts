@@ -15,15 +15,25 @@ const validTrack = {
 
 describe("TrackSchema", () => {
   it("accepts the agreed track contract and applies defaults", () => {
-    const result = TrackSchema.parse({ ...validTrack, description: undefined, archivedAt: undefined });
+    const result = TrackSchema.parse({
+      ...validTrack,
+      description: undefined,
+      archivedAt: undefined,
+    });
     expect(result.description).toBe("");
     expect(result.archivedAt).toBeNull();
   });
 
   it("rejects invalid IDs, blank titles and malformed colors", () => {
-    expect(TrackSchema.safeParse({ ...validTrack, id: "not-a-uuid" }).success).toBe(false);
-    expect(TrackSchema.safeParse({ ...validTrack, title: "  " }).success).toBe(false);
-    expect(TrackSchema.safeParse({ ...validTrack, color: "red" }).success).toBe(false);
+    expect(
+      TrackSchema.safeParse({ ...validTrack, id: "not-a-uuid" }).success,
+    ).toBe(false);
+    expect(TrackSchema.safeParse({ ...validTrack, title: "  " }).success).toBe(
+      false,
+    );
+    expect(TrackSchema.safeParse({ ...validTrack, color: "red" }).success).toBe(
+      false,
+    );
   });
 });
 
@@ -42,6 +52,8 @@ describe("SettingsSchema", () => {
   });
 
   it("rejects unknown theme values", () => {
-    expect(SettingsSchema.safeParse({ ...settings, theme: "auto-magical" }).success).toBe(false);
+    expect(
+      SettingsSchema.safeParse({ ...settings, theme: "auto-magical" }).success,
+    ).toBe(false);
   });
 });

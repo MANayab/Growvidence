@@ -1,4 +1,9 @@
-import { openDB, type DBSchema, type IDBPDatabase, type IDBPTransaction } from "idb";
+import {
+  openDB,
+  type DBSchema,
+  type IDBPDatabase,
+  type IDBPTransaction,
+} from "idb";
 
 export const DATABASE_NAME = "growvidence-local";
 export const DATABASE_VERSION = 2;
@@ -38,9 +43,12 @@ export function applyMigrations(
 ): void {
   try {
     if (oldVersion < 1) {
-      if (!db.objectStoreNames.contains("meta")) db.createObjectStore("meta", { keyPath: "key" });
-      if (!db.objectStoreNames.contains("settings")) db.createObjectStore("settings", { keyPath: "id" });
-      if (!db.objectStoreNames.contains("tracks")) db.createObjectStore("tracks", { keyPath: "id" });
+      if (!db.objectStoreNames.contains("meta"))
+        db.createObjectStore("meta", { keyPath: "key" });
+      if (!db.objectStoreNames.contains("settings"))
+        db.createObjectStore("settings", { keyPath: "id" });
+      if (!db.objectStoreNames.contains("tracks"))
+        db.createObjectStore("tracks", { keyPath: "id" });
       transaction.objectStore("meta").put({ key: "schemaVersion", value: 1 });
     }
     if (oldVersion < 2) {
@@ -70,7 +78,10 @@ export async function openDatabase(
 ): Promise<IDBPDatabase<GrowvidenceDB>> {
   let migrationFailed = false;
   if (typeof indexedDB === "undefined") {
-    throw new DOMException("IndexedDB is unavailable in this browsing context.", "SecurityError");
+    throw new DOMException(
+      "IndexedDB is unavailable in this browsing context.",
+      "SecurityError",
+    );
   }
 
   try {

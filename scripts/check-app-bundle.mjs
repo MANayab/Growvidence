@@ -34,7 +34,9 @@ function referencesFromHtml(html) {
 }
 
 function resolveAsset(reference) {
-  const pathname = decodeURIComponent(new URL(reference, "https://growvidence.invalid").pathname);
+  const pathname = decodeURIComponent(
+    new URL(reference, "https://growvidence.invalid").pathname,
+  );
   const relative = pathname.replace(/^\/Growvidence\//, "").replace(/^\/+/, "");
   return path.resolve(outputDirectory, relative);
 }
@@ -43,7 +45,11 @@ async function collectJavaScript(references) {
   const collected = new Set();
   for (const reference of references) {
     const filePath = resolveAsset(reference);
-    if (!filePath.startsWith(assetDirectory + path.sep) || !filePath.endsWith(".js")) continue;
+    if (
+      !filePath.startsWith(assetDirectory + path.sep) ||
+      !filePath.endsWith(".js")
+    )
+      continue;
     try {
       if ((await stat(filePath)).isFile()) collected.add(filePath);
     } catch {
@@ -61,8 +67,13 @@ const [appAssets, publicAssets] = await Promise.all([
   collectJavaScript(referencesFromHtml(appHtml)),
   collectJavaScript(referencesFromHtml(publicHtml)),
 ]);
-const appOnlyAssets = [...appAssets].filter((asset) => !publicAssets.has(asset));
-assert.ok(appOnlyAssets.length > 0, "No app-specific JavaScript assets were found.");
+const appOnlyAssets = [...appAssets].filter(
+  (asset) => !publicAssets.has(asset),
+);
+assert.ok(
+  appOnlyAssets.length > 0,
+  "No app-specific JavaScript assets were found.",
+);
 
 let totalGzipBytes = 0;
 for (const asset of appOnlyAssets) {

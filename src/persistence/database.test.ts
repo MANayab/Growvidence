@@ -42,11 +42,18 @@ describe("database migrations", () => {
     const upgraded = await openDatabase({ databaseName: name });
     opened.push(upgraded);
     expect(upgraded.version).toBe(DATABASE_VERSION);
-    expect(upgraded.transaction("tracks").store.indexNames.contains("by_updatedAt")).toBe(true);
-    expect(await upgraded.get("tracks", "4b6b3c1e-43a7-4c31-9e6e-b2d62d9e4c4f")).toMatchObject({
+    expect(
+      upgraded.transaction("tracks").store.indexNames.contains("by_updatedAt"),
+    ).toBe(true);
+    expect(
+      await upgraded.get("tracks", "4b6b3c1e-43a7-4c31-9e6e-b2d62d9e4c4f"),
+    ).toMatchObject({
       title: "Preserved track",
     });
-    expect(await upgraded.get("meta", "schemaVersion")).toEqual({ key: "schemaVersion", value: 2 });
+    expect(await upgraded.get("meta", "schemaVersion")).toEqual({
+      key: "schemaVersion",
+      value: 2,
+    });
   });
 
   it("aborts a broken upgrade and leaves the previous version intact", async () => {
@@ -58,7 +65,9 @@ describe("database migrations", () => {
     });
     previous.close();
 
-    await expect(openDatabase({ databaseName: name })).rejects.toThrow("could not safely upgrade");
+    await expect(openDatabase({ databaseName: name })).rejects.toThrow(
+      "could not safely upgrade",
+    );
 
     const stillVersionOne = await openDB<GrowvidenceDB>(name, 1);
     opened.push(stillVersionOne);

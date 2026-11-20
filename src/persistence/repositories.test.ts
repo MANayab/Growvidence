@@ -46,9 +46,14 @@ describe("tracks repository", () => {
   it("persists tracks and excludes soft-deleted records from normal lists", async () => {
     const persistence = await createPersistence();
     await persistence.tracks.save(track);
-    expect(await persistence.tracks.get(track.id)).toMatchObject({ title: track.title });
+    expect(await persistence.tracks.get(track.id)).toMatchObject({
+      title: track.title,
+    });
     expect(await persistence.tracks.list()).toHaveLength(1);
-    await persistence.tracks.save({ ...track, deletedAt: "2026-11-21T01:00:00.000Z" });
+    await persistence.tracks.save({
+      ...track,
+      deletedAt: "2026-11-21T01:00:00.000Z",
+    });
     expect(await persistence.tracks.list()).toHaveLength(0);
   });
 });

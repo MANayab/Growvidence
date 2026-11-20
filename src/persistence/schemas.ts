@@ -13,7 +13,10 @@ const BaseRecordSchema = z.object({
 export const TrackSchema = BaseRecordSchema.extend({
   title: z.string().trim().min(1).max(120),
   description: z.string().max(2000).default(""),
-  color: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
+  color: z
+    .string()
+    .regex(/^#[0-9a-fA-F]{6}$/)
+    .optional(),
   archivedAt: IsoDateTimeSchema.nullable().default(null),
 });
 
