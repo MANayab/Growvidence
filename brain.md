@@ -1,10 +1,10 @@
 # Growvidence project memory
 
-**Last updated:** 2026-11-21 — PR #8 merged; approved Phase 2 decisions documented in follow-up PR  
-**Current phase:** Phase 2 approved design baseline — docs-only; no learner app implementation  
-**Main at follow-up branch start:** 11dee6e216da49bdee3a6a27a3d885707d90d4dd  
-**Current documentation branch:** docs/phase-2-approved-decisions  
-**Current PR:** Follow-up documentation PR for approved decisions
+**Last updated:** 2026-11-21 — PR #9 merged; Slice 1 implementation in progress  
+**Current phase:** Slice 1 — app shell and persistence layer (open implementation PR)  
+**Latest verified main:** b928bb7017b40ce98c0da343753a6ee710cbb649  
+**Current branch:** feat/slice-1-app-shell  
+**Current PR:** Slice 1 app shell and persistence (not merged)
 
 ## Repository and product
 
@@ -32,8 +32,8 @@
 
 ### Current product reality
 - The public landing page is live.
-- The interactive learner application is not built.
-- No app dashboard, task manager, journal, competency assessment, evidence manager or IndexedDB data layer exists.
+- The current Slice 1 branch proposes the `/app/` shell, React island, hash navigation, theme preference, IndexedDB v2 adapter, settings/minimal tracks repositories and initial persistence tests; this is not yet merged or deployed.
+- Track CRUD, task manager, journal, competency assessment, evidence manager, exports and dashboard are not implemented.
 - No authentication, backend, cloud sync, analytics or payments.
 - PWA/offline remains optional future scope and requires explicit confirmation.
 - The current sitemap contains only the public homepage. Future app routes must be noindex and excluded from sitemap; robots.txt must not disallow them.
@@ -94,7 +94,7 @@ PR #8 established the Phase 2 design package and has been merged. Its open-decis
 
 ## Current handoff
 
-PR #9 is the docs-only follow-up recording the approved decisions. Do not begin Slice 1 or another PR until the maintainer merges PR #9 and says **“next”**.
+PR #9 is merged at main `b928bb7017b40ce98c0da343753a6ee710cbb649`. Slice 1 is being implemented on `feat/slice-1-app-shell`. Do not merge or begin another PR; wait for maintainer review and **“next”** after this PR.
 
 ## Decisions log — 2026-11-21
 

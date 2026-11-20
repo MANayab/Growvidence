@@ -21,7 +21,7 @@
 <p align="center"><em>Learning becomes more meaningful when practice produces evidence that can be independently reviewed.</em></p>
 
 > [!IMPORTANT]
-> **Current status (20 November 2026):** The public Astro landing page is live. The interactive learner application has **not** been built yet. The workspace, task manager, journal, competency engine and local data storage are planned—not available features.
+> **Current status (21 November 2026):** The public Astro landing page is live. The Slice 1 PR adds a noindex `/app/` shell, hash navigation, a persisted theme preference and a minimal IndexedDB tracks repository. Until that PR is merged and deployed, the published site remains the landing page. Track creation, task management, journal, competencies, evidence, exports and dashboard are not available.
 
 **Live site:** [https://manayab.github.io/Growvidence/](https://manayab.github.io/Growvidence/)
 
@@ -64,13 +64,17 @@ No single artifact automatically proves a broad competency. Criteria, context, i
 - `robots.txt`, homepage sitemap, `llms.txt` and SVG favicon.
 - GitHub Actions CI and Astro static deployment workflow.
 
+### Proposed in the open Slice 1 PR — not yet deployed
+
+- Static `/app/` entry with React island, accessible section navigation, honest empty state and local theme preference.
+- IndexedDB v2 adapter with settings and minimal tracks repositories, Zod validation and migrations.
+
 ### Planned — not implemented
 
-- Learner workspace and dashboard.
+- Track creation/editing and learner dashboard.
 - Learning tracks, task board and daily/weekly/monthly views.
 - Learning journal and explicit AI-use disclosure.
 - Competency criteria, evidence records and reviewer feedback.
-- IndexedDB local persistence and schema migrations.
 - Versioned JSON backup/restore, CSV export and data deletion UX.
 - Optional PWA/offline support, subject to scope confirmation.
 - Optional account/sync service only after a separate product, privacy and security decision.
@@ -250,7 +254,7 @@ npm ci
 npm run dev
 ```
 
-Open **http://localhost:4321/Growvidence/**. Leave the terminal running while developing; press `Ctrl+C` to stop the server.
+Open **http://localhost:4321/Growvidence/**. The proposed workspace route is **http://localhost:4321/Growvidence/app/** after the Slice 1 branch is built. Leave the terminal running while developing; press `Ctrl+C` to stop the server.
 
 ### macOS / Linux
 
@@ -297,7 +301,8 @@ Run these from the repository root.
 | `npm run format:check` | Check formatting without changing files |
 | `npm test` | Run the Vitest unit tests |
 | `npm run build` | Generate the static website in `dist/` |
-| `node scripts/verify-build.mjs` | Check required SEO metadata in built HTML |
+| `npm run verify-build` | Check homepage SEO and `/app/` noindex/sitemap/robots requirements |
+| `npm run bundle-size` | Report app-only JavaScript gzip size and enforce the 200 KiB limit |
 | `npm run preview` | Preview the generated production build |
 
 ### Run all quality checks
@@ -309,7 +314,8 @@ npm run lint
 npm run format:check
 npm test
 npm run build
-node scripts/verify-build.mjs
+npm run verify-build
+npm run bundle-size
 ```
 
 ### Preview the production build
@@ -342,6 +348,7 @@ Growvidence/
 │       ├── ci.yml              # Pull request and main quality gates
 │       └── deploy.yml          # Astro build and GitHub Pages deployment
 ├── docs/
+│   ├── EXERCISES/              # Maintainer-authored slice learning exercises
 │   ├── assets/                 # Hand-written README SVG illustrations
 │   ├── DECISIONS/              # Architecture decision records
 │   ├── ARCHITECTURE.md         # Static/local-first architecture
@@ -350,11 +357,14 @@ Growvidence/
 │   └── ROADMAP.md              # Milestones and delivery slices
 ├── public/                     # Static public assets and crawler files
 ├── scripts/
-│   └── verify-build.mjs        # Built HTML / SEO smoke check
+│   ├── verify-build.mjs        # Built HTML / SEO and app indexing checks
+│   └── check-app-bundle.mjs    # App-only JavaScript gzip budget
 ├── src/
+│   ├── components/             # React workspace island and styles
 │   ├── layouts/                # Shared Astro document layout
 │   ├── lib/                    # SEO helpers and tests
-│   └── pages/                  # Public pages and generated 404
+│   ├── pages/                  # Public pages, /app/ and generated 404
+│   └── persistence/            # Typed IndexedDB adapter, schemas and tests
 ├── AGENTS.md                   # Contributor and automation rules
 ├── brain.md                    # Maintained project state / handoff
 ├── mind.md                     # Product principles and competency areas

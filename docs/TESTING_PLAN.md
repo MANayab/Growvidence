@@ -1,7 +1,7 @@
 # Growvidence testing plan and implementation slices
 
-- **Status:** Proposed acceptance plan; app workflows and Playwright tests are not implemented.
-- **Release posture:** Phase 2 design decisions were accepted on 2026-11-21. No learner feature slice starts until the maintainer says “next” and authorizes that slice.
+- **Status:** Slice 1 implementation is proposed in `feat/slice-1-app-shell`; later app workflows and Playwright tests are not implemented.
+- **Release posture:** Phase 2 design decisions were accepted on 2026-11-21. One slice PR is active at a time; stop after this PR for maintainer review.
 
 ## Test strategy
 
@@ -22,7 +22,7 @@ Aim for at least 80% statement coverage in core domain modules as a diagnostic t
 
 ### 2. Persistence integration tests
 
-Use a real IndexedDB implementation in a controlled browser/test environment or a purpose-built IndexedDB test adapter; do not rely only on mocked happy paths.
+Use `fake-indexeddb` for deterministic repository and migration integration tests in Vitest. Follow with real-browser IndexedDB checks during the dedicated E2E slice; fake-indexeddb does not replace browser quota/private-mode testing.
 
 - Fresh database creation and expected stores/indexes.
 - Upgrade fixtures from every supported prior schema version.
@@ -81,7 +81,7 @@ Each slice is one focused PR, based on freshly verified main, and must stop for 
 
 | Slice | Scope | Acceptance criteria | “Write this yourself” exercise |
 |---|---|---|---|
-| 1. App shell + persistence | Astro `/app/` entry, React island per approved ADR, hash navigation, noindex, typed storage adapter, IndexedDB schema and migrations. | App direct-load/refresh works at Pages base path; app noindex and sitemap exclusion verified; public pages do not hydrate React; migration/rollback tests pass; storage failures are recoverable; no learner data in forbidden storage locations. | Write a typed repository interface for tracks and explain why UI components must not call IndexedDB directly. |
+| 1. App shell + persistence | Astro `/app/` entry, one React island, hash navigation, noindex, typed `idb` adapter, Zod settings/track schemas, versioned migrations and settings/minimal tracks repositories. | App direct-load/refresh works at Pages base path; app noindex and sitemap exclusion verified; public pages do not hydrate React; fake-indexeddb repository/schema/upgrade/failure tests pass; storage failures are recoverable; app-only JS is at most 200 KiB gzip. | Write a typed repository interface for tracks and explain why UI components must not call IndexedDB directly. |
 | 2. Tracks + tasks | Track CRUD/archive; task list and Kanban; daily/weekly/monthly task views and filters. | Task lifecycle persists across reload; keyboard alternative to drag; responsive layout; track/task reference integrity; completion does not change competency state. | Implement a pure task transition function and write tests for every allowed and rejected transition. |
 | 3. Journal + AI disclosure | Journal CRUD, task linking, reflection and disclosure form. | Every entry stores one of the five disclosure modes; assisted/partial fields capture tool and contribution; unknown/not-recorded are visibly incomplete; validation and persistence tests pass. | Write a Zod schema for AI-use disclosure and test the difference between unknown and unassisted. |
 | 4. Competency + evidence | Six rubric definitions, criteria, evidence, links, reviews and assessment engine. | Criteria carry approval status; unapproved criteria cannot produce demonstrated; evidence links are referentially valid; assessment is independent of task completion; unit and integration tests pass. | Write one criterion evidence evaluator that returns explicit reasons rather than a numeric mastery score. |
@@ -131,3 +131,5 @@ A slice is not ready for review until:
 - Verify 10 MiB ceiling, both import modes, newer-updatedAt merge semantics and atomic rollback.
 - Verify per-record permanent deletion, soft-delete backup retention and delete-all.
 - Bundle-size check reports gzip size and fails above 200 KiB.
+- Slice 1 smoke test renders workspace navigation and an honest initial storage state.
+- Storage error mapping covers quota exhaustion, unavailable storage and unexpected database closure; blocked-upgrade and migration-failure messages must not imply data was deleted.
