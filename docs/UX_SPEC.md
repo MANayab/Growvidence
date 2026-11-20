@@ -1,6 +1,6 @@
 # Learner workspace UX specification
 
-- **Status:** Proposed design; no workspace UI is implemented.
+- **Status:** Slice 1 shell is merged. Tracks and tasks in this specification are implemented on `feat/slice-2-tracks-tasks` pending review; journal, competencies, evidence, data backup/import and dashboard remain proposed.
 - **Audience:** IT beginners, students, self-taught learners and reviewers.
 - **Product promise:** “Don't just learn. Prove your progress.”
 - **Core rule:** task completion records activity; competency status requires criteria and evidence.
@@ -37,25 +37,26 @@ Avoid gamified scores that imply mastery. Streaks, if later included, are option
 - Daily view: tasks due today, planned focus, recently recorded attempts and a simple “what did I learn?” prompt.
 - Weekly view: tasks planned/in progress/blocked/done, journal activity and review follow-ups.
 - Monthly view: completed learning activities and evidence created, plus reflection prompts.
-- Date ranges use the learner's local calendar for display and ISO UTC timestamps for storage.
+- Due dates are date-only `YYYY-MM-DD` values selected and interpreted in the browser's local calendar; they are not converted to UTC. Week starts Monday. Record metadata timestamps remain ISO UTC. Date arithmetic uses local noon and calendar operations to avoid DST hour-length assumptions; changing timezone does not shift a stored date-only value.
 - Empty states distinguish “no tasks planned” from “no learning evidence recorded”.
 - Do not imply that more activity means higher competency.
 
 ### Tracks
 
-- A track has a title, optional description, optional color and archive action.
+- Implemented on the Slice 2 review branch: title, description, create, rename, archive, soft-delete and permanent delete. Optional suggested starter tracks are user-added with one action; no tracks are seeded automatically.
 - Show task counts by status as navigation aids only.
 - Empty state: “Create a learning track” with a short example and explanation.
-- Archiving a track does not delete its tasks, journal entries or evidence.
-- Prevent deletion of a track with dependent tasks unless the user chooses a clearly explained cascade/reassignment action.
+- Archiving a track does not delete its tasks. Existing tasks remain viewable and editable; new tasks cannot be created in an archived track.
+- Soft-deleting a track soft-deletes its tasks. Permanent deletion of a track permanently deletes its tasks after explicit confirmation. Soft-deleted records remain in JSON backups until permanently deleted.
+- The Slice 2 implementation uses an explicitly confirmed cascade for soft-delete and permanent delete of dependent tasks.
 
 ### Tasks: list and Kanban
 
 - Support list and Kanban representations of the same task records.
-- Statuses: Backlog, Planned, In progress, Blocked, Done and Cancelled.
-- Each task can have title, description, priority, optional due date and optional estimate.
-- Keyboard users can move between cards and change status using labeled controls; drag-and-drop is never the only interaction.
-- Provide filters by track, status, priority and due date, plus a useful no-results state.
+- Implemented statuses: Backlog, Today, In progress, Review and Done.
+- Implemented task fields: title, description, track, priority, optional local-calendar due date, status, estimated minutes, actual minutes and tags.
+- The status board uses native, explicitly labeled “Move to…” select controls. These are keyboard and screen-reader operable; drag-and-drop is not included.
+- Slice 2 provides list/board switching, track filtering and daily/weekly/monthly due-date views with no-results states. Status/priority filters remain future refinement.
 - Completing a task records task status only. UI must not display “skill mastered” as a result.
 
 ### Journal
