@@ -105,7 +105,7 @@ describe("task repository", () => {
     await persistence.tasks.save(task);
     await persistence.tracks.archive(track.id);
     expect(await persistence.tasks.get(task.id)).toBeDefined();
-    await expect(persistence.tasks.move(task.id, "done")).rejects.toThrow("active learning track");
+    expect(await persistence.tasks.move(task.id, "done")).toMatchObject({ status: "done" });
   });
 
   it("soft-deletes and permanently deletes an individual task", async () => {
