@@ -29,11 +29,11 @@ describe("IsoDateTimeSchema", () => {
   });
 
   it("rejects timestamps without an offset and basic offset forms", () => {
-    const missingOffset = IsoDateTimeSchema.safeParse("2026-11-21T00:00:00");
-    const basicOffset = IsoDateTimeSchema.safeParse("2026-11-21T05:30:00+0530");
+    const missing = IsoDateTimeSchema.safeParse("2026-11-21T00:00:00");
+    const basic = IsoDateTimeSchema.safeParse("2026-11-21T05:30:00+0530");
 
-    expect(missingOffset.success).toBe(false);
-    expect(basicOffset.success).toBe(false);
+    expect(missing.success).toBe(false);
+    expect(basic.success).toBe(false);
   });
 });
 
@@ -53,12 +53,12 @@ describe("TrackSchema", () => {
       ...validTrack,
       id: "not-a-uuid",
     });
-    const blankTitle = TrackSchema.safeParse({ ...validTrack, title: "  " });
-    const invalidColor = TrackSchema.safeParse({ ...validTrack, color: "red" });
+    const blank = TrackSchema.safeParse({ ...validTrack, title: "  " });
+    const badColor = TrackSchema.safeParse({ ...validTrack, color: "red" });
 
     expect(invalidId.success).toBe(false);
-    expect(blankTitle.success).toBe(false);
-    expect(invalidColor.success).toBe(false);
+    expect(blank.success).toBe(false);
+    expect(badColor.success).toBe(false);
   });
 });
 
