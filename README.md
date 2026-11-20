@@ -21,7 +21,7 @@
 <p align="center"><em>Learning becomes more meaningful when practice produces evidence that can be independently reviewed.</em></p>
 
 > [!IMPORTANT]
-> **Current status (21 November 2026):** The public Astro landing page is live. Slice 1 has been merged: the noindex `/app/` shell, hash navigation, persisted theme preference and minimal IndexedDB persistence foundation are now on `main`. The deployment of this merged change has not been independently verified here. Track CRUD, task management, journal, competencies, evidence, exports and dashboard remain future slices.
+> **Current status (21 November 2026):** The public Astro landing page is live. Slice 1 is merged on `main`; its app-shell deployment has not been independently verified. This branch contains the Slice 2 track/task implementation for review; it is not merged into `main` or confirmed on the published site. Journal, competencies, evidence, exports and dashboard remain future slices.
 
 **Live site:** [https://manayab.github.io/Growvidence/](https://manayab.github.io/Growvidence/)
 
@@ -64,15 +64,20 @@ No single artifact automatically proves a broad competency. Criteria, context, i
 - `robots.txt`, homepage sitemap, `llms.txt` and SVG favicon.
 - GitHub Actions CI and Astro static deployment workflow.
 
-### Proposed in the open Slice 1 PR — not yet deployed
+### Merged in Slice 1 (deployment not independently verified)
 
-- Static `/app/` entry with React island, accessible section navigation, honest empty state and local theme preference.
-- IndexedDB v2 adapter with settings and minimal tracks repositories, Zod validation and migrations.
+- Static `/app/` entry with React island, hash navigation, noindex metadata, local theme preference and IndexedDB v2 persistence foundation.
+
+### Implemented on this Slice 2 review branch — not merged or deployed
+
+- Track create, rename, archive, soft-delete and permanent-delete flows; optional six suggested starter tracks, never auto-seeded.
+- Task create/edit, list and status board; keyboard-operable native “Move to…” controls; soft and permanent deletion.
+- Daily, Monday-start weekly and monthly due-date views using local calendar dates.
+- IndexedDB v3 task store, Zod validation, repositories and migration tests.
 
 ### Planned — not implemented
 
-- Track creation/editing and learner dashboard.
-- Learning tracks, task board and daily/weekly/monthly views.
+- Learner dashboard.
 - Learning journal and explicit AI-use disclosure.
 - Competency criteria, evidence records and reviewer feedback.
 - Versioned JSON backup/restore, CSV export and data deletion UX.
