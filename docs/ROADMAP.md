@@ -38,10 +38,10 @@ MVP platform constraints:
 ## Phase 2 — Workspace design (documentation only)
 
 The Phase 2 design package proposes:
-1. **ADR-0005:** Astro static site with React islands for the interactive workspace; compare Preact and a separate SPA; physical `/app/` entry, hash navigation, noindex and sitemap exclusion.
-2. **ADR-0006:** IndexedDB through a typed adapter using `idb`; compare Dexie and raw IndexedDB; define schema migrations, quota/error handling, backup reminders and browser cleanup behavior.
+1. **ADR-0005 (Accepted):** Astro static site with React islands for the interactive workspace; physical `/app/` entry, hash navigation, noindex on every app page, sitemap exclusion and no `/app/` disallow in robots.txt.
+2. **ADR-0006 (Accepted):** IndexedDB through a typed adapter using `idb`; schema migrations, quota/error handling, 30-day backup reminders and browser cleanup behavior.
 3. **DATA_CONTRACTS.md:** Zod schema proposals for tracks, tasks, journal entries, AI-use disclosure, competencies, criteria, assessments, evidence, evidence links and reviews; shared IDs/timestamps/soft deletion; versioned JSON backup/import.
-4. **mind.md:** measurable evidence criteria proposed for all six competency areas. Every proposed criterion and the “Demonstrated” threshold is marked **NEEDS APPROVAL**.
+4. **mind.md:** measurable evidence criteria for all six competency areas remain **NEEDS APPROVAL**; both Demonstrated and Consistent level definitions are also **NEEDS APPROVAL**.
 5. **UX_SPEC.md:** overview, daily/weekly/monthly views, tracks, task list/Kanban, journal, competencies/evidence, data settings, accessibility, responsive behavior and Mermaid flows.
 6. **TESTING_PLAN.md:** unit, persistence, E2E, accessibility, privacy/security and performance test plan; seven implementation slices plus optional PWA; each slice includes acceptance criteria and a learning exercise.
 7. Decisions log recording twelve accepted recommendations and two competency definitions that remain NEEDS APPROVAL.
