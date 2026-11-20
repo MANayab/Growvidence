@@ -37,3 +37,26 @@ assert.ok(
 );
 
 console.log("Built homepage SEO smoke check passed.");
+
+const appHtml = await readFile("dist/app/index.html", "utf8");
+assert.match(
+  appHtml,
+  /<meta name="robots" content="noindex, nofollow">/,
+  "Built /app/ HTML must contain a noindex, nofollow robots directive.",
+);
+
+const sitemap = await readFile("dist/sitemap.xml", "utf8");
+assert.doesNotMatch(
+  sitemap,
+  /https:\/\/manayab\.github\.io\/Growvidence\/app(?:\/|<)/i,
+  "The /app/ route must not appear in sitemap.xml.",
+);
+
+const robots = await readFile("dist/robots.txt", "utf8");
+assert.doesNotMatch(
+  robots,
+  /^\s*Disallow:\s*\/app\/?\s*$/im,
+  "robots.txt must not disallow /app/; crawlers need to read its noindex directive.",
+);
+
+console.log("App noindex, sitemap exclusion and robots.txt checks passed.");
