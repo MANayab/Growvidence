@@ -14,7 +14,10 @@ describe("local calendar date helpers", () => {
     expect(startOfWeekMonday("2026-11-22")).toBe("2026-11-16");
     expect(dateRangeFor("2026-11-22", "weekly")).toEqual({ start: "2026-11-16", end: "2026-11-22" });
   });
-  it("handles month boundaries and leap years", () => {\n    expect(addLocalMonths("2026-01-31", 1)).toBe("2026-02-28");\n    expect(addLocalMonths("2028-01-31", 1)).toBe("2028-02-29");\n    expect(addLocalMonths("2026-03-31", -1)).toBe("2026-02-28");
+  it("handles month boundaries and leap years", () => {
+    expect(addLocalMonths("2026-01-31", 1)).toBe("2026-02-28");
+    expect(addLocalMonths("2028-01-31", 1)).toBe("2028-02-29");
+    expect(addLocalMonths("2026-03-31", -1)).toBe("2026-02-28");
     expect(endOfMonth("2026-11-01")).toBe("2026-11-30");
     expect(endOfMonth("2028-02-01")).toBe("2028-02-29");
     expect(dateRangeFor("2026-12-31", "monthly")).toEqual({ start: "2026-12-01", end: "2026-12-31" });
