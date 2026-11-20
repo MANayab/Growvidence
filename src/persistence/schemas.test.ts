@@ -15,9 +15,9 @@ const validTrack = {
 
 describe("IsoDateTimeSchema", () => {
   it("accepts UTC and colon-form timezone offsets", () => {
-    expect(IsoDateTimeSchema.safeParse("2026-11-21T00:00:00.000Z").success).toBe(
-      true,
-    );
+    expect(
+      IsoDateTimeSchema.safeParse("2026-11-21T00:00:00.000Z").success,
+    ).toBe(true);
     expect(
       IsoDateTimeSchema.safeParse("2026-11-21T05:30:00+05:30").success,
     ).toBe(true);
@@ -51,12 +51,12 @@ describe("TrackSchema", () => {
     expect(
       TrackSchema.safeParse({ ...validTrack, id: "not-a-uuid" }).success,
     ).toBe(false);
-    expect(TrackSchema.safeParse({ ...validTrack, title: "  " }).success).toBe(
-      false,
-    );
-    expect(TrackSchema.safeParse({ ...validTrack, color: "red" }).success).toBe(
-      false,
-    );
+    expect(
+      TrackSchema.safeParse({ ...validTrack, title: "  " }).success,
+    ).toBe(false);
+    expect(
+      TrackSchema.safeParse({ ...validTrack, color: "red" }).success,
+    ).toBe(false);
   });
 });
 
