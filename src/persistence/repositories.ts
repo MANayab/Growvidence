@@ -10,7 +10,7 @@ import {
 export interface SettingsRepository { get(): Promise<Settings | undefined>; save(theme: ThemePreference): Promise<Settings> }
 export interface TracksRepository {
   get(id: string): Promise<Track | undefined>;
-  list(includeArchived?: boolean): Promise<Track[]>;
+  list(includeArchived?: boolean, includeDeleted?: boolean): Promise<Track[]>;
   save(track: Track): Promise<Track>;
   archive(id: string): Promise<Track>;
   softDelete(id: string): Promise<void>;
@@ -48,11 +48,11 @@ export class IndexedDbTracksRepository implements TracksRepository {
     try { const record = await this.database.get("tracks", id); return record ? TrackSchema.parse(record) : undefined; }
     catch (error) { throw toPersistenceError(error); }
   }
-  async list(includeArchived = false): Promise<Track[]> {
+  async list(includeArchived = false, includeDeleted = false): Promise<Track[]> {
     try {
       const records = await this.database.getAll("tracks");
       return records.map((record) => TrackSchema.parse(record))
-        .filter((record) => record.deletedAt === null && (includeArchived || record.archivedAt === null))
+        .filter((record) => (includeDeleted || record.deletedAt === null) && (includeArchived || record.archivedAt === null))
         .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
     } catch (error) { throw toPersistenceError(error); }
   }
