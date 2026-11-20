@@ -19,12 +19,19 @@ describe("local calendar date helpers", () => {
     expect(endOfMonth("2028-02-01")).toBe("2028-02-29");
     expect(dateRangeFor("2026-12-31", "monthly")).toEqual({ start: "2026-12-01", end: "2026-12-31" });
   });
-  it("does not shift date-only values over DST transitions", () => {
-    const spring = addLocalDays("2026-03-07", 1);
-    const autumn = addLocalDays("2026-10-31", 1);
-    expect(spring).toBe("2026-03-08");
-    expect(autumn).toBe("2026-11-01");
-    expect(isDateInRange(spring, { start: spring, end: spring })).toBe(true);
+  it("keeps date-only values stable across real DST transitions", () => {
+    const previousZone = process.env.TZ;
+    process.env.TZ = "America/New_York";
+    try {
+      const springStart = new Date(2026, 2, 8, 0, 30);
+      const autumnEnd = new Date(2026, 10, 1, 0, 30);
+      expect(addLocalDays(localDateKey(springStart), 1)).toBe("2026-03-09");
+      expect(addLocalDays(localDateKey(autumnEnd), 1)).toBe("2026-11-02");
+      expect(isDateInRange("2026-03-08", { start: "2026-03-08", end: "2026-03-08" })).toBe(true);
+    } finally {
+      if (previousZone === undefined) delete process.env.TZ;
+      else process.env.TZ = previousZone;
+    }
   });
   it("rejects impossible dates", () => {
     expect(() => parseLocalDate("2026-02-30")).toThrow("Invalid calendar date");
