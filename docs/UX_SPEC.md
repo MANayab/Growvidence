@@ -81,7 +81,7 @@ Avoid gamified scores that imply mastery. Streaks, if later included, are option
 
 - Show storage status, last successful backup date and a reminder; clearly state browser storage is not cloud backup.
 - JSON export is the full backup. CSV is a convenience report only.
-- Import flow: choose file → validate → preview → resolve conflicts → confirm → transaction → result.
+- Import flow: choose file → validate → preview both modes → select one mode → confirm → atomic transaction → result.
 - “Delete all local data” is separated from ordinary settings, requires explicit confirmation, offers export first and reports the result.
 - Explain that browser cleanup/device loss may permanently remove local records.
 
@@ -119,7 +119,7 @@ Every screen must distinguish:
 - Save pending or failed.
 - Storage unavailable/quota exceeded.
 - Import invalid or unsupported.
-- Import conflicts awaiting choice.
+- Import preview showing the effects of both modes; no per-record choices are offered.
 - No backup yet / backup overdue.
 - No evidence linked / evidence insufficient.
 - Criteria awaiting approval.
@@ -154,13 +154,14 @@ flowchart TD
   A[Choose JSON backup] --> B[Check file size and parse]
   B --> C{Schema and references valid?}
   C -->|No| D[Explain errors; make no changes]
-  C -->|Yes| E[Preview records and conflicts]
-  E --> F{User confirms?}
-  F -->|No| G[Cancel without writes]
-  F -->|Yes| H[Apply one transaction]
-  H --> I{Transaction committed?}
-  I -->|No| J[Abort and preserve prior data]
-  I -->|Yes| K[Show import summary]
+  C -->|Yes| E[Preview counts and both mode outcomes]
+  E --> F{Choose Replace everything or Merge newer updatedAt wins?}
+  F -->|Cancel| G[Cancel without writes]
+  F -->|Choose mode| H[Confirm selected mode]
+  H --> I[Apply atomically]
+  I --> J{Transaction committed?}
+  J -->|No| K[Abort and preserve prior data]
+  J -->|Yes| L[Show import summary]
 ```
 
 ## Content and tone
@@ -171,7 +172,7 @@ Use plain, supportive language. Prefer “You have evidence for…” over “Yo
 
 - Every primary workflow is possible by keyboard.
 - Every form has labels, inline errors and a recovery path.
-- Empty, loading, success, conflict and failure states are designed.
+- Empty, loading, success, import-preview and failure states are designed.
 - Task completion and competency status are visually and semantically distinct.
 - AI-use disclosure never defaults to unassisted.
 - Evidence links show the criterion and rationale.
@@ -207,7 +208,7 @@ Use plain, supportive language. Prefer “You have evidence for…” over “Yo
 
 - Show Demonstrated and Consistent separately; both definitions remain NEEDS APPROVAL.
 - Visually and accessibly distinguish self and external reviews without relying on color alone. Explain proposed weights (external 2, self 1); reviews never replace artifacts or repeated demonstrations.
-- Import preview offers exactly “Replace everything” and “Merge (newer updatedAt wins)”. Merge adds new IDs and replaces matching records only when imported updatedAt is newer. Per-record choices are deferred. Reject files above 10 MiB. Apply atomically.
+- Reject import files above 10 MiB before parsing. Preview the effects of exactly two modes: “Replace everything” and “Merge (newer updatedAt wins)”. Merge adds new IDs, replaces matching records only when imported `updatedAt` is newer, and retains local records on equal or older imported timestamps. Per-record choices are deferred. Apply the selected mode atomically.
 - Evidence URLs accept HTTP/HTTPS only. Reject javascript:, data: and other schemes. External links use rel="noopener noreferrer"; never fetch, preview or embed.
 - Provide soft delete, per-record “Permanently delete” and “Delete all local data”. State clearly: **Soft-deleted items remain in JSON backups until permanently deleted.**
 - Initial workspace JS budget is 200 KiB gzip excluding Astro-shared assets. Charts are hand-built lightweight SVG or lazy-loaded; provide text/table alternatives and a bundle-size check.
