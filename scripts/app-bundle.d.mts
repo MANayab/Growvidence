@@ -10,7 +10,9 @@ export function htmlJavaScriptReferences(html: string): Set<string>;
 export function resolveAssetPath(
   reference: string,
   parentFile: string | null,
-  options: Required<Pick<BundleResolverOptions, "outputDirectory" | "basePath" | "siteOrigin">>,
+  options: Required<
+    Pick<BundleResolverOptions, "outputDirectory" | "basePath" | "siteOrigin">
+  >,
 ): string | null;
 
 export function collectLoadedJavaScript(
