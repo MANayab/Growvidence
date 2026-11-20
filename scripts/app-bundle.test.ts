@@ -42,11 +42,11 @@ describe("app bundle asset discovery", () => {
 
     await writeFile(
       path.join(assetsDirectory, "WorkspaceIsland.DAv8BmM3.js"),
-      'import React from "./react.CvnImTBr.js"; import("./lazy-chunk.js"); export default React;',
+      'import{React}from"./react.CvnImTBr.js";import("./lazy-chunk.js");export{React as default};',
     );
     await writeFile(
       path.join(assetsDirectory, "client.Cd-EeyjT.js"),
-      'export { default } from "./react.CvnImTBr.js";',
+      'export{default}from"./react.CvnImTBr.js";',
     );
     await writeFile(
       path.join(assetsDirectory, "react.CvnImTBr.js"),
