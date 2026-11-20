@@ -88,9 +88,13 @@ PR #8 merged. This follow-up branch starts from main SHA `11dee6e216da49bdee3a6a
 - Never claim tests, formatting, deployment or live behavior passed without evidence.
 - Assistant does not run Prettier or tests in this workflow; maintainer runs local commands before final push.
 
+## Previous handoff (superseded)
+
+PR #8 established the Phase 2 design package and has been merged. Its open-decision review is superseded by the accepted decisions recorded below and in follow-up PR #9.
+
 ## Current handoff
 
-PR #8 is the Phase 2 workspace design documentation package. Wait for maintainer review, responses to Open decisions and merge. Do not begin Slice 1 or any other PR until the maintainer says **“next”** after merging.
+PR #9 is the docs-only follow-up recording the approved decisions. Do not begin Slice 1 or another PR until the maintainer merges PR #9 and says **“next”**.
 
 ## Decisions log — 2026-11-21
 
