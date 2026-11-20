@@ -55,6 +55,7 @@ export default function WorkspaceIsland() {
   const [ready, setReady] = useState(false);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [deletedTasks, setDeletedTasks] = useState<Task[]>([]);
   const [theme, setTheme] = useState<ThemePreference>("system");
   const [persistence, setPersistence] = useState<PersistenceHandle | null>(null);
   const [saving, setSaving] = useState(false);
@@ -84,9 +85,10 @@ export default function WorkspaceIsland() {
   }, []);
 
   async function refresh(handle: PersistenceHandle): Promise<void> {
-    const [savedSettings, savedTracks, savedTasks] = await Promise.all([handle.settings.get(), handle.tracks.list(true), handle.tasks.list()]);
+    const [savedSettings, savedTracks, allTasks] = await Promise.all([handle.settings.get(), handle.tracks.list(true, true), handle.tasks.list({ includeDeleted: true })]);
     setTracks(savedTracks);
-    setTasks(savedTasks);
+    setTasks(allTasks.filter((task) => task.deletedAt === null));
+    setDeletedTasks(allTasks.filter((task) => task.deletedAt !== null));
     if (savedSettings) { setTheme(savedSettings.theme); applyTheme(savedSettings.theme); }
   }
   useEffect(() => {
@@ -121,8 +123,11 @@ export default function WorkspaceIsland() {
     } finally { setSaving(false); }
   }
   async function changeTheme(next: ThemePreference): Promise<void> {
-    await perform(() => persistence!.settings.save(next), "Theme preference saved on this device.");
-    setTheme(next); applyTheme(next);
+    if (!persistence || saving) return;
+    setSaving(true);
+    try { await persistence.settings.save(next); setTheme(next); applyTheme(next); setNotice({ code: "ready", message: "Theme preference saved on this device." }); }
+    catch (error) { setNotice({ code: error instanceof PersistenceError ? error.code : "unknown", message: error instanceof Error ? error.message : "Theme could not be saved." }); }
+    finally { setSaving(false); }
   }
   async function saveTrack(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
@@ -200,7 +205,7 @@ export default function WorkspaceIsland() {
               </form>
               {tracks.length === 0 ? <button type="button" className="secondary" disabled={saving} onClick={() => void addStarterTracks()}>Add six suggested starter tracks</button> : null}
               <ul className="track-list">{tracks.map((track) => <li className="track-card" key={track.id}>
-                <div className="card-heading"><div><h3>{track.title}</h3>{track.description ? <p>{track.description}</p> : null}<span>{track.archivedAt ? "Archived" : "Active"}</span></div></div>
+                <div className="card-heading"><div><h3>{track.title}</h3>{track.description ? <p>{track.description}</p> : null}<span>{track.deletedAt ? "Deleted" : track.archivedAt ? "Archived" : "Active"}</span></div></div>
                 <div className="form-actions">
                   <button type="button" className="secondary" onClick={() => { setEditingTrackId(track.id); setTrackTitle(track.title); setTrackDescription(track.description); }}>Edit</button>
                   {!track.archivedAt && !track.deletedAt ? <button type="button" className="secondary" disabled={saving} onClick={() => void perform(() => persistence!.tracks.archive(track.id), "Track archived.")}>Archive</button> : null}
@@ -244,6 +249,7 @@ export default function WorkspaceIsland() {
                 <div className="form-actions"><button type="button" className="secondary" onClick={() => editTask(task)}>Edit</button><label className="move-control">Move to…<select aria-label={`Move ${task.title} to status`} value={task.status} onChange={(event) => void moveTask(task.id, event.target.value as TaskStatus)}>{statuses.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label><button type="button" className="danger" onClick={() => { if (window.confirm("Soft-delete this task? It remains in JSON backups until permanently deleted.")) void perform(() => persistence!.tasks.softDelete(task.id), "Task moved to deleted records."); }}>Delete</button></div>
               </li>)}</ul> :
               <div className="task-board" aria-label="Task status board">{statuses.map((status) => <section className="board-column" key={status.value} aria-labelledby={`column-${status.value}`}><h3 id={`column-${status.value}`}>{status.label}</h3>{visibleTasks.filter((task) => task.status === status.value).map((task) => <article className="task-card board-card" key={task.id}><h4>{task.title}</h4><p>{tracks.find((track) => track.id === task.trackId)?.title ?? "Unknown track"}</p><label className="move-control">Move to…<select aria-label={`Move ${task.title} to status`} value={task.status} onChange={(event) => void moveTask(task.id, event.target.value as TaskStatus)}>{statuses.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label><button type="button" className="secondary" onClick={() => editTask(task)}>Edit task</button></article>)}</section>)}</div>}
+              {deletedTasks.length > 0 ? <section className="deleted-records" aria-labelledby="deleted-tasks-heading"><h3 id="deleted-tasks-heading">Deleted tasks</h3><p>Soft-deleted tasks remain in JSON backups until permanently deleted.</p><ul className="task-list">{deletedTasks.map((task) => <li className="task-card" key={task.id}><span>{task.title}</span><button type="button" className="danger" disabled={saving} onClick={() => { if (window.confirm("Permanently delete this task? This cannot be undone. It will no longer appear in future backups.")) void perform(() => persistence!.tasks.permanentlyDelete(task.id), "Task permanently deleted."); }}>Permanently delete</button></li>)}</ul></section> : null}
             </section> :
             route === "settings" ? <section className="workspace-card" aria-labelledby="settings-heading"><p className="workspace-eyebrow">Local preferences</p><h2 id="settings-heading">Appearance</h2><p>Theme preference is stored in this browser's IndexedDB.</p><div className="theme-control" role="group" aria-label="Color theme">{(["system", "light", "dark"] as const).map((option) => <button aria-pressed={theme === option} disabled={saving || !persistence} key={option} onClick={() => void changeTheme(option)} type="button">{option[0].toUpperCase() + option.slice(1)}</button>)}</div></section> :
             <section className="workspace-card" aria-labelledby="planned-heading"><p className="workspace-eyebrow">Not in this slice</p><h2 id="planned-heading">{activeItem?.label}</h2><p>This section is not available yet. No {activeItem?.label.toLowerCase()} data is being collected.</p></section>}
