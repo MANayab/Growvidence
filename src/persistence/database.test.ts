@@ -56,11 +56,13 @@ describe("database migrations", () => {
     });
   });
 
-  it("aborts a broken upgrade and leaves the previous version intact", async () => {
+  it("aborts a broken upgrade, preserves prior data/version and handles transaction rejection", async () => {
     const name = nextName();
     const previous = await openDB<GrowvidenceDB>(name, 1, {
       upgrade(db) {
-        db.createObjectStore("meta", { keyPath: "key" });
+        const meta = db.createObjectStore("meta", { keyPath: "key" });
+        meta.put({ key: "schemaVersion", value: 1 });
+        meta.put({ key: "sentinel", value: 41 });
       },
     });
     previous.close();
@@ -69,8 +71,20 @@ describe("database migrations", () => {
       "could not safely upgrade",
     );
 
+    // Allow the IndexedDB abort and Node's unhandled-rejection checkpoint to
+    // run. Vitest treats any leaked transaction.done rejection as a test error.
+    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+
     const stillVersionOne = await openDB<GrowvidenceDB>(name, 1);
     opened.push(stillVersionOne);
     expect(stillVersionOne.version).toBe(1);
+    expect(await stillVersionOne.get("meta", "schemaVersion")).toEqual({
+      key: "schemaVersion",
+      value: 1,
+    });
+    expect(await stillVersionOne.get("meta", "sentinel")).toEqual({
+      key: "sentinel",
+      value: 41,
+    });
   });
 });

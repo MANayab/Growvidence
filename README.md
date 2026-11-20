@@ -302,7 +302,7 @@ Run these from the repository root.
 | `npm test` | Run the Vitest unit tests |
 | `npm run build` | Generate the static website in `dist/` |
 | `npm run verify-build` | Check homepage SEO and `/app/` noindex/sitemap/robots requirements |
-| `npm run bundle-size` | Report app-only JavaScript gzip size and enforce the 200 KiB limit |
+| `npm run bundle-size` | Report all JavaScript loaded by `/app/` (React runtime, Astro renderer, island and imported chunks) per file and in total gzip; enforce 200 KiB |
 | `npm run preview` | Preview the generated production build |
 
 ### Run all quality checks
@@ -358,7 +358,7 @@ Growvidence/
 ├── public/                     # Static public assets and crawler files
 ├── scripts/
 │   ├── verify-build.mjs        # Built HTML / SEO and app indexing checks
-│   └── check-app-bundle.mjs    # App-only JavaScript gzip budget
+│   └── check-app-bundle.mjs    # All /app/ JavaScript gzip budget, per file and total
 ├── src/
 │   ├── components/             # React workspace island and styles
 │   ├── layouts/                # Shared Astro document layout

@@ -77,6 +77,8 @@ export async function openDatabase(
   options: DatabaseOpenOptions = {},
 ): Promise<IDBPDatabase<GrowvidenceDB>> {
   let migrationFailed = false;
+  let upgradeTransactionError: unknown;
+
   if (typeof indexedDB === "undefined") {
     throw new DOMException(
       "IndexedDB is unavailable in this browsing context.",
@@ -90,6 +92,15 @@ export async function openDatabase(
       DATABASE_VERSION,
       {
         upgrade(db, oldVersion, _newVersion, transaction) {
+          // idb creates transaction.done as soon as the upgrade transaction is
+          // wrapped. An aborted migration rejects it independently of openDB's
+          // request promise, so attach a handler before running migration work.
+          // The openDB rejection remains the caller-visible failure; this handler
+          // records the transaction failure for its diagnostic cause.
+          void transaction.done.catch((error: unknown) => {
+            upgradeTransactionError = error;
+          });
+
           try {
             applyMigrations(db, oldVersion, transaction);
           } catch (error) {
@@ -113,7 +124,7 @@ export async function openDatabase(
     if (migrationFailed) {
       throw new MigrationError(
         "Growvidence could not safely upgrade its local database. The previous database version was retained.",
-        { cause: error },
+        { cause: upgradeTransactionError ?? error },
       );
     }
     throw error;

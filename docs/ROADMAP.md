@@ -102,7 +102,7 @@ Update this roadmap only through focused pull requests. The maintainer reviews a
 | 8 | Reviews | Accepted: reviewerType is self or external; clearly distinguish in UI. Proposed Consistent corroboration weight: external 2, self 1. |
 | 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
 | 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
-| 11 | Bundle/charts | Accepted: 200 KiB gzip initial workspace JS excluding Astro-shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
+| 11 | Bundle/charts | Accepted: 200 KiB gzip for all JavaScript loaded by the initial workspace, including React runtime, Astro renderer, island and shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
 | 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
 
 ### Competency levels — NEEDS APPROVAL

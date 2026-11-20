@@ -70,7 +70,7 @@ Playwright is not currently installed. Add it only in the dedicated E2E slice wi
 
 - Record route, commit, device/emulation, network profile, browser, build and tool version for Lighthouse/measurement results.
 - Inspect initial public-page JS to ensure the workspace runtime is not shipped on unrelated pages.
-- Enforce 200 KiB gzip initial workspace JS excluding Astro-shared assets; add bundle-size CI check and verify charts are lightweight SVG or lazy-loaded.
+- Enforce 200 KiB gzip for every JavaScript file loaded by the initial workspace, including the React runtime, Astro renderer, island and shared assets; report each file and the total; add a bundle-size CI check and verify charts are lightweight SVG or lazy-loaded.
 - Target Lighthouse 90+ as a diagnostic goal, not a guarantee; inspect Core Web Vitals and low-end mobile behavior.
 - Test actual GitHub Pages base path and direct refresh. No server fallback assumptions.
 - Test latest PR head CI; earlier-head results do not qualify.
@@ -81,7 +81,7 @@ Each slice is one focused PR, based on freshly verified main, and must stop for 
 
 | Slice | Scope | Acceptance criteria | “Write this yourself” exercise |
 |---|---|---|---|
-| 1. App shell + persistence | Astro `/app/` entry, one React island, hash navigation, noindex, typed `idb` adapter, Zod settings/track schemas, versioned migrations and settings/minimal tracks repositories. | App direct-load/refresh works at Pages base path; app noindex and sitemap exclusion verified; public pages do not hydrate React; fake-indexeddb repository/schema/upgrade/failure tests pass; storage failures are recoverable; app-only JS is at most 200 KiB gzip. | Write a typed repository interface for tracks and explain why UI components must not call IndexedDB directly. |
+| 1. App shell + persistence | Astro `/app/` entry, one React island, hash navigation, noindex, typed `idb` adapter, Zod settings/track schemas, versioned migrations and settings/minimal tracks repositories. | App direct-load/refresh works at Pages base path; app noindex and sitemap exclusion verified; public pages do not hydrate React; fake-indexeddb repository/schema/upgrade/failure tests pass; storage failures are recoverable; all JavaScript loaded by `/app/`, including React runtime, Astro renderer, island and shared assets, is at most 200 KiB gzip. | Write a typed repository interface for tracks and explain why UI components must not call IndexedDB directly. |
 | 2. Tracks + tasks | Track CRUD/archive; task list and Kanban; daily/weekly/monthly task views and filters. | Task lifecycle persists across reload; keyboard alternative to drag; responsive layout; track/task reference integrity; completion does not change competency state. | Implement a pure task transition function and write tests for every allowed and rejected transition. |
 | 3. Journal + AI disclosure | Journal CRUD, task linking, reflection and disclosure form. | Every entry stores one of the five disclosure modes; assisted/partial fields capture tool and contribution; unknown/not-recorded are visibly incomplete; validation and persistence tests pass. | Write a Zod schema for AI-use disclosure and test the difference between unknown and unassisted. |
 | 4. Competency + evidence | Six rubric definitions, criteria, evidence, links, reviews and assessment engine. | Criteria carry approval status; unapproved criteria cannot produce demonstrated; evidence links are referentially valid; assessment is independent of task completion; unit and integration tests pass. | Write one criterion evidence evaluator that returns explicit reasons rather than a numeric mastery score. |
@@ -115,7 +115,7 @@ A slice is not ready for review until:
 | 8 | Reviews | Accepted: reviewerType is self or external; clearly distinguish in UI. Proposed Consistent corroboration weight: external 2, self 1. |
 | 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
 | 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
-| 11 | Bundle/charts | Accepted: 200 KiB gzip initial workspace JS excluding Astro-shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
+| 11 | Bundle/charts | Accepted: 200 KiB gzip for all JavaScript loaded by the initial workspace, including React runtime, Astro renderer, island and shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
 | 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
 
 ### Competency levels — NEEDS APPROVAL
