@@ -1,6 +1,6 @@
 # Architecture proposal — static, local-first
 
-**Status:** Proposed for the learner application. The Phase 1 public-site foundation (Astro static output, shared layout, homepage, 404 page and SEO tooling) is implemented on PR #3, which remains open for review. The learner workspace, domain services, persistence and import/export are not implemented. This proposal does not imply those application decisions have been fully accepted.
+**Status:** Phase 1 public-site foundation is complete and merged (PR #3); Astro-native GitHub Pages deployment is merged (PR #4); Google Search Console verification metadata is merged (PR #5). The public landing page is live at https://manayab.github.io/Growvidence/. The learner workspace, domain services, persistence and import/export are not implemented. This remains a proposal for the learner application; its detailed architecture choices require Phase 2 review.
 
 ## Constraints
 
@@ -22,7 +22,7 @@
 | Persistence | IndexedDB via repository abstraction (proposed; not implemented) | Async structured browser storage, not backup or cross-device sync. |
 | Export | Versioned JSON backup/restore and selected CSV (planned; not implemented) | User portability; CSV is not a lossless backup. |
 | Tests | Vitest (configured for foundation) + Playwright (planned; not implemented) | Domain tests and real browser journeys. |
-| Hosting | GitHub Pages static output (target; deployment not configured or verified) | Static only; no runtime backend. |
+| Hosting | GitHub Pages static output (Astro Actions deployment configured and previously published) | Static only; no runtime backend. |
 | Future sync | Optional Supabase or alternative, separate phase | Adds identity, privacy, security, cost and conflict responsibilities. |
 
 ## System context
