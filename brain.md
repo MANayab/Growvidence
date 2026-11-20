@@ -39,6 +39,15 @@
 - PWA/offline remains optional future scope and requires explicit confirmation.
 - The current sitemap contains only the public homepage. Future app routes must be noindex and excluded from sitemap; robots.txt must not disallow them.
 
+## Slice 2 implementation on review branch
+
+- Branch: `feat/slice-2-tracks-tasks`; base/main at creation: `ef58a84c86710cb79ca889d3c442e27a89e70bea`.
+- Database schema version 3 adds the tasks store and indexes `by_trackId`, `by_status`, `by_dueDate` and `by_updatedAt`; migration path v2→v3 is covered, as is a failed upgrade preserving the prior database.
+- Track and Task Zod schemas and typed IndexedDB repositories. Track soft-delete cascades task soft-delete; permanent track deletion permanently removes dependent tasks.
+- Task statuses: backlog, today, in_progress, review, done. Task fields include track, title, description, priority, local due date, estimated/actual minutes and tags.
+- Calendar due dates are local date-only `YYYY-MM-DD`; metadata timestamps remain UTC ISO strings. Monday is the week start. Date math uses local noon and clamps month ends; timezone changes do not rewrite due dates.
+- Slice 2 source/tests/docs are not merged or deployed. Local test/build/format and final all-assets bundle size remain unverified. Previous Slice 1 bundle baseline: 95.51 KiB gzip / 200 KiB.
+
 ## Technical baseline
 
 - Astro static output; site origin https://manayab.github.io; base /Growvidence/; trailingSlash always.
