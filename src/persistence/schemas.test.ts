@@ -15,24 +15,29 @@ const validTrack = {
 
 describe("IsoDateTimeSchema", () => {
   it("accepts UTC and colon-form timezone offsets", () => {
-    expect(
-      IsoDateTimeSchema.safeParse("2026-11-21T00:00:00.000Z").success,
-    ).toBe(true);
-    expect(
-      IsoDateTimeSchema.safeParse("2026-11-21T05:30:00+05:30").success,
-    ).toBe(true);
-    expect(
-      IsoDateTimeSchema.safeParse("2026-11-20T19:00:00-05:00").success,
-    ).toBe(true);
+    const utc = IsoDateTimeSchema.safeParse("2026-11-21T00:00:00.000Z");
+    const positiveOffset = IsoDateTimeSchema.safeParse(
+      "2026-11-21T05:30:00+05:30",
+    );
+    const negativeOffset = IsoDateTimeSchema.safeParse(
+      "2026-11-20T19:00:00-05:00",
+    );
+
+    expect(utc.success).toBe(true);
+    expect(positiveOffset.success).toBe(true);
+    expect(negativeOffset.success).toBe(true);
   });
 
   it("rejects timestamps without an offset and basic offset forms", () => {
-    expect(
-      IsoDateTimeSchema.safeParse("2026-11-21T00:00:00").success,
-    ).toBe(false);
-    expect(
-      IsoDateTimeSchema.safeParse("2026-11-21T05:30:00+0530").success,
-    ).toBe(false);
+    const missingOffset = IsoDateTimeSchema.safeParse(
+      "2026-11-21T00:00:00",
+    );
+    const basicOffset = IsoDateTimeSchema.safeParse(
+      "2026-11-21T05:30:00+0530",
+    );
+
+    expect(missingOffset.success).toBe(false);
+    expect(basicOffset.success).toBe(false);
   });
 });
 
@@ -48,15 +53,22 @@ describe("TrackSchema", () => {
   });
 
   it("rejects invalid IDs, blank titles and malformed colors", () => {
-    expect(
-      TrackSchema.safeParse({ ...validTrack, id: "not-a-uuid" }).success,
-    ).toBe(false);
-    expect(
-      TrackSchema.safeParse({ ...validTrack, title: "  " }).success,
-    ).toBe(false);
-    expect(
-      TrackSchema.safeParse({ ...validTrack, color: "red" }).success,
-    ).toBe(false);
+    const invalidId = TrackSchema.safeParse({
+      ...validTrack,
+      id: "not-a-uuid",
+    });
+    const blankTitle = TrackSchema.safeParse({
+      ...validTrack,
+      title: "  ",
+    });
+    const invalidColor = TrackSchema.safeParse({
+      ...validTrack,
+      color: "red",
+    });
+
+    expect(invalidId.success).toBe(false);
+    expect(blankTitle.success).toBe(false);
+    expect(invalidColor.success).toBe(false);
   });
 });
 
@@ -75,8 +87,11 @@ describe("SettingsSchema", () => {
   });
 
   it("rejects unknown theme values", () => {
-    expect(
-      SettingsSchema.safeParse({ ...settings, theme: "auto-magical" }).success,
-    ).toBe(false);
+    const unknownTheme = SettingsSchema.safeParse({
+      ...settings,
+      theme: "auto-magical",
+    });
+
+    expect(unknownTheme.success).toBe(false);
   });
 });
