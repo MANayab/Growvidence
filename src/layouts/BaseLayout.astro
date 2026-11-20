@@ -12,7 +12,7 @@ const siteUrl = Astro.site?.toString() ?? "https://manayab.github.io";
 const basePath = import.meta.env.BASE_URL;
 const pagePath = Astro.url.pathname.startsWith(basePath)
   ? Astro.url.pathname
-  : `${basePath}${Astro.url.pathname.replace(/^\\/+/, "")}`;
+  : `${basePath}${Astro.url.pathname.replace(/^\/+/, "")}`;
 const metadata = buildPageMetadata({
   title,
   description,
