@@ -125,10 +125,15 @@ export class IndexedDbTasksRepository implements TasksRepository {
   async save(input: Task): Promise<Task> {
     try {
       const task = TaskSchema.parse(input);
-      const track = await this.database.get("tracks", task.trackId);
-      const existing = await this.get(task.id);
-      if (!track || track.deletedAt || (track.archivedAt && (!existing || existing.trackId !== task.trackId))) throw new PersistenceError("unknown", "Choose an active learning track before creating a task. Existing tasks in archived tracks may still be updated.");
-      await this.database.put("tasks", task);
+      const tx = this.database.transaction(["tracks", "tasks"], "readwrite");
+      const track = await tx.objectStore("tracks").get(task.trackId);
+      const existing = await tx.objectStore("tasks").get(task.id);
+      if (!track || track.deletedAt || (track.archivedAt && (!existing || existing.trackId !== task.trackId))) {
+        tx.abort();
+        throw new PersistenceError("unknown", "Choose an active learning track before creating a task. Existing tasks in archived tracks may still be updated.");
+      }
+      await tx.objectStore("tasks").put(task);
+      await tx.done;
       return task;
     } catch (error) { if (error instanceof PersistenceError) throw error; throw toPersistenceError(error); }
   }
