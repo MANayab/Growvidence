@@ -130,6 +130,6 @@ A slice is not ready for review until:
 - reviewerType self/external is clearly and accessibly distinguished.
 - Verify 10 MiB ceiling, both import modes, newer-updatedAt merge semantics and atomic rollback.
 - Verify per-record permanent deletion, soft-delete backup retention and delete-all.
-- Bundle-size check reports gzip size and fails above 200 KiB.
+- Bundle-size check lists every JavaScript file loaded by `/app/`, reports each file's gzip size and the summed total, and fails when the total exceeds 200 KiB.
 - Slice 1 smoke test renders workspace navigation and an honest initial storage state.
 - Storage error mapping covers quota exhaustion, unavailable storage and unexpected database closure; blocked-upgrade and migration-failure messages must not imply data was deleted.
