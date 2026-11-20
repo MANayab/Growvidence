@@ -7,17 +7,29 @@ const outputDirectory = path.resolve("dist");
 const assetDirectory = path.join(outputDirectory, "_astro");
 const limitBytes = 200 * 1024;
 
+function attributeValue(tag, attribute) {
+  return tag.match(new RegExp(attribute + '="([^"]+)"', "i"))?.[1];
+}
+
 function referencesFromHtml(html) {
   const references = new Set();
-  for (const match of html.matchAll(/<(?:script|link)[^>]*>/gi)) {
+  const astroRenderers = new Set();
+
+  for (const match of html.matchAll(/<astro-island[^>]*>/gi)) {
     const tag = match[0];
-    const isScript = tag.startsWith("<script");
-    const isPreload = tag.includes('rel="modulepreload"');
-    if (!isScript && !isPreload) continue;
-    const attribute = isScript ? "src" : "href";
-    const reference = tag.match(new RegExp(attribute + '="([^"]+)"', "i"))?.[1];
-    if (reference) references.add(reference);
+    const componentUrl = attributeValue(tag, "component-url");
+    const rendererUrl = attributeValue(tag, "renderer-url");
+    if (componentUrl) references.add(componentUrl);
+    if (rendererUrl) astroRenderers.add(rendererUrl);
   }
+
+  for (const match of html.matchAll(/<link[^>]*>/gi)) {
+    const tag = match[0];
+    if (!/rel="modulepreload"/i.test(tag)) continue;
+    const href = attributeValue(tag, "href");
+    if (href && !astroRenderers.has(href)) references.add(href);
+  }
+
   return references;
 }
 
@@ -33,8 +45,7 @@ async function collectJavaScript(references) {
     const filePath = resolveAsset(reference);
     if (!filePath.startsWith(assetDirectory + path.sep) || !filePath.endsWith(".js")) continue;
     try {
-      if (!(await stat(filePath)).isFile()) continue;
-      collected.add(filePath);
+      if ((await stat(filePath)).isFile()) collected.add(filePath);
     } catch {
       continue;
     }
@@ -58,7 +69,7 @@ for (const asset of appOnlyAssets) {
   totalGzipBytes += gzipSync(await readFile(asset), { level: 9 }).byteLength;
 }
 console.log(
-  `App-only JavaScript: ${(totalGzipBytes / 1024).toFixed(2)} KiB gzip (${appOnlyAssets.length} assets; public-page shared assets excluded).`,
+  `App-only JavaScript: ${(totalGzipBytes / 1024).toFixed(2)} KiB gzip (${appOnlyAssets.length} assets; Astro renderer and public-shared assets excluded).`,
 );
 assert.ok(
   totalGzipBytes <= limitBytes,
