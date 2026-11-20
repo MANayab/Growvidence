@@ -101,8 +101,6 @@ A slice is not ready for review until:
 - No unrelated dependencies or files are included.
 - No license policy changes occur.
 
-## Decisions log
-
 ## Decisions log — 2026-11-21
 
 | # | Decision | Outcome |
