@@ -1,11 +1,11 @@
 # Growvidence learner data contracts
 
-- **Status:** Design proposal for Phase 2; schemas are not implemented.
-- **Runtime validation proposal:** Zod at UI/domain/import boundaries.
-- **Persistence proposal:** IndexedDB through the adapter in ADR-0006.
+- **Status:** Track and task contracts are implemented on `feat/slice-2-tracks-tasks`; journal, competency, evidence, review and backup/import contracts remain design proposals.
+- **Runtime validation:** Zod at persistence/domain boundaries for implemented track/task records.
+- **Persistence:** IndexedDB through the typed `idb` adapter in ADR-0006; database schema version 3 on the Slice 2 review branch.
 - **Contract version:** `1` (proposed export format)
 
-These contracts define the shape and invariants for local learner records. They are a design baseline, not a claim that the app or storage exists. The eventual implementation must keep TypeScript types inferred from runtime schemas rather than maintaining duplicate hand-written types.
+These contracts define the shape and invariants for local learner records. The Track and Task portions below are implemented on the Slice 2 review branch but are not merged or deployed. Remaining records are design baselines, not claims that their workflows or storage exist. Keep TypeScript types inferred from runtime schemas rather than maintaining duplicate hand-written types.
 
 ## Shared conventions
 
@@ -18,6 +18,23 @@ These contracts define the shape and invariants for local learner records. They 
 - Reject unknown enum values and malformed references. Unknown future contract versions must not be silently coerced.
 - Store text as plain text/Markdown only; render safely. Do not execute imported HTML or scripts.
 - No binary artifact attachments in v1. Evidence stores descriptive metadata and an optional external URL. Accept only HTTP/HTTPS; reject javascript:, data: and all other schemes. External links use rel="noopener noreferrer". Never fetch, preview or embed URLs.
+
+
+## Slice 2 implementation contract — tracks and tasks
+
+The implementation branch uses these task statuses exactly: `backlog` (Backlog), `today` (Today), `in_progress` (In progress), `review` (Review) and `done` (Done). A Task extends the shared mutable-record fields and contains:
+
+- `trackId`: UUID reference to an active track when creating a task; existing tasks may still be edited after their track is archived.
+- `title` (1–160 characters), `description` (up to 5,000 characters), `priority` (`low`, `normal`, `high`).
+- `dueDate`: nullable local calendar date in `YYYY-MM-DD` format, not an instant and never converted through UTC.
+- `estimatedMinutes` and `actualMinutes`: nullable integer minutes from 0 to 10,080.
+- `tags`: up to 20 trimmed labels, each 1–40 characters.
+
+Track/task records use Zod 4 schemas in `src/persistence/schemas.ts`. Database version 3 adds the `tasks` object store and indexes by `trackId`, `status`, `dueDate` and `updatedAt`; the v2-to-v3 migration preserves existing settings and tracks. Soft-deleting a track soft-deletes its tasks in one transaction. Permanently deleting a track permanently deletes its tasks in one transaction. Soft-deleted records remain in future JSON backups until permanently deleted; backup implementation is still Slice 5.
+
+Calendar views use the browser's local calendar date. Weeks start Monday. Record metadata remains ISO UTC timestamps. Date-only due dates are stable when the browser timezone changes; calendar arithmetic uses local noon and clamps month navigation to the target month's last day. DST changes do not convert or shift date-only values.
+
+The earlier proposed Task schema block below predates Slice 2; use this implementation addendum and the source Zod schemas as the current Track/Task contract. Other entity sketches remain proposals.
 
 ## Zod contract proposal
 
