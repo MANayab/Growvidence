@@ -1,6 +1,6 @@
 # Quality gates
 
-**Status:** Foundation checks (Astro diagnostics, ESLint, Prettier, Vitest, static build and built-HTML smoke verification) are configured and passed in the latest inspected PR #3 CI run. The product-level acceptance tests below remain targets; they are not yet implemented or run.
+**Status:** Phase 1 foundation checks (Astro diagnostics, ESLint, Prettier, Vitest, static build and built-HTML smoke verification) are configured in CI; Phase 1 is merged. GitHub Pages deployment is configured through the Astro workflow and the public landing page has been published. The product-level acceptance tests below remain targets; they are not yet implemented or run.
 
 ## Definition of done
 
