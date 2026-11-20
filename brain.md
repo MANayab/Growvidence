@@ -4,7 +4,7 @@
 **Current phase:** Phase 2 preparation — README/docs synchronization first; learner workspace design follows in a separate docs-only PR  
 **Latest main:** 70224f6611dc955fa21b8822e5ef43a824a9a22f  
 **Current documentation branch:** docs/readme-and-sync  
-**Current PR:** To be created after documentation changes are committed
+**Current PR:** https://github.com/MANayab/Growvidence/pull/6 (draft; latest head pending CI)
 
 ## Repository and product
 
@@ -84,4 +84,4 @@ The repository CI has informational npm audit steps: npm audit --omit=dev and np
 
 ## Current handoff
 
-PR A is a documentation-only README and state synchronization change. It must not implement learner application code or change dependencies. After PR A is reviewed and merged, wait for the maintainer to say “next” before starting PR B (Phase 2 design). PR B is docs-only and must define architecture, IndexedDB decision, data contracts, competency criteria requiring approval, UX, testing and build-slice breakdown before any feature slice starts.
+PR A is PR #6, a documentation-only README and state synchronization change on docs/readme-and-sync. It does not implement learner application code or change dependencies. Latest branch head at initial PR creation: 8477c969ddad780645a80f546e31763218a553e3; README troubleshooting follow-up commit: 2ede6ace6aff473055c32bb1f33674255e8f5689. Recheck latest branch head before declaring CI status. After PR A is reviewed and merged, wait for the maintainer to say “next” before starting PR B (Phase 2 design). PR B is docs-only and must define architecture, IndexedDB decision, data contracts, competency criteria requiring approval, UX, testing and build-slice breakdown before any feature slice starts.
