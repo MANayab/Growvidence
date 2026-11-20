@@ -5,7 +5,6 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const outputDirectory = path.resolve("dist");
-const assetDirectory = path.join(outputDirectory, "_astro");
 const limitBytes = 200 * 1024;
 const appHtmlPath = path.join(outputDirectory, "app", "index.html");
 const basePath = "/Growvidence/";
@@ -43,6 +42,7 @@ function resolveAsset(reference, parentFile) {
     ? new URL(reference, pathToFileURL(parentFile))
     : new URL(reference, "https://growvidence.invalid");
   if (resolved.protocol === "file:") return fileURLToPath(resolved);
+  if (resolved.origin !== "https://growvidence.invalid") return null;
 
   let pathname = decodeURIComponent(resolved.pathname);
   if (pathname.startsWith(basePath)) pathname = pathname.slice(basePath.length);
@@ -50,8 +50,8 @@ function resolveAsset(reference, parentFile) {
   return path.resolve(outputDirectory, pathname);
 }
 
-function isInsideAssetDirectory(filePath) {
-  return filePath.startsWith(assetDirectory + path.sep);
+function isInsideOutputDirectory(filePath) {
+  return filePath.startsWith(outputDirectory + path.sep);
 }
 
 async function collectLoadedJavaScript(initialReferences) {
@@ -65,8 +65,9 @@ async function collectLoadedJavaScript(initialReferences) {
     const { reference, parentFile } = pending.shift();
     const filePath = resolveAsset(reference, parentFile);
     if (
-      !isInsideAssetDirectory(filePath) ||
-      !filePath.endsWith(".js") ||
+      !filePath ||
+      !isInsideOutputDirectory(filePath) ||
+      !/\\.(?:js|mjs)$/i.test(filePath) ||
       collected.has(filePath)
     ) {
       continue;
