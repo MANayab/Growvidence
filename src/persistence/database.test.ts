@@ -45,6 +45,10 @@ describe("database migrations", () => {
     expect(
       upgraded.transaction("tracks").store.indexNames.contains("by_updatedAt"),
     ).toBe(true);
+    expect(upgraded.objectStoreNames.contains("tasks")).toBe(true);
+    expect(upgraded.transaction("tasks").store.indexNames.contains("by_trackId")).toBe(true);
+    expect(upgraded.transaction("tasks").store.indexNames.contains("by_status")).toBe(true);
+    expect(upgraded.transaction("tasks").store.indexNames.contains("by_dueDate")).toBe(true);
     expect(
       await upgraded.get("tracks", "4b6b3c1e-43a7-4c31-9e6e-b2d62d9e4c4f"),
     ).toMatchObject({
@@ -52,8 +56,31 @@ describe("database migrations", () => {
     });
     expect(await upgraded.get("meta", "schemaVersion")).toEqual({
       key: "schemaVersion",
-      value: 2,
+      value: 3,
     });
+  });
+
+  it("upgrades the current version 2 schema to version 3 and creates task indexes", async () => {
+    const name = nextName();
+    const previous = await openDB<GrowvidenceDB>(name, 2, {
+      upgrade(db) {
+        db.createObjectStore("meta", { keyPath: "key" });
+        db.createObjectStore("settings", { keyPath: "id" });
+        const tracks = db.createObjectStore("tracks", { keyPath: "id" });
+        tracks.createIndex("by_updatedAt", "updatedAt");
+      },
+    });
+    previous.close();
+
+    const upgraded = await openDatabase({ databaseName: name });
+    opened.push(upgraded);
+    expect(upgraded.version).toBe(3);
+    const taskStore = upgraded.transaction("tasks").store;
+    expect(taskStore.indexNames.contains("by_trackId")).toBe(true);
+    expect(taskStore.indexNames.contains("by_status")).toBe(true);
+    expect(taskStore.indexNames.contains("by_dueDate")).toBe(true);
+    expect(taskStore.indexNames.contains("by_updatedAt")).toBe(true);
+    expect(await upgraded.get("meta", "schemaVersion")).toEqual({ key: "schemaVersion", value: 3 });
   });
 
   it("aborts a broken upgrade, preserves prior data/version and handles transaction rejection", async () => {
