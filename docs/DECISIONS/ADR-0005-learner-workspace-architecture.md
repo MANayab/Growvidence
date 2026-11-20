@@ -1,6 +1,6 @@
 # ADR-0005: Learner workspace architecture on Astro static hosting
 
-- **Status:** Proposed — maintainer approval required before implementation
+- **Status:** Accepted — maintainer approved on 2026-11-21
 - **Date:** 2026-11-21
 - **Scope:** Phase 2 learner workspace MVP; no implementation or dependency changes in this ADR
 
@@ -23,7 +23,7 @@ The workspace needs interactive task, journal, evidence and competency screens, 
 
 Use **Astro static output for the whole site and React islands only for interactive learner-workspace features**. Keep public pages as ordinary Astro-generated HTML. A workspace entry page should be generated at `/app/` under the project base path. React should hydrate only the workspace root, not the public marketing pages.
 
-This is a recommendation, not an implementation decision until the maintainer approves this ADR. React, its renderer and any routing/state libraries must be added in a separate implementation PR with pinned versions and a maintainer-generated lockfile.
+Accepted on 2026-11-21 for implementation planning. React, its renderer and routing/state libraries must still be added in a separate implementation PR with pinned versions and a maintainer-generated lockfile.
 
 ### Routing and GitHub Pages behavior
 
@@ -35,15 +35,15 @@ This is a recommendation, not an implementation decision until the maintainer ap
 
 ### Indexing requirements
 
-- The generated `/app/` HTML must contain a build-time `<meta name="robots" content="noindex, nofollow">` (or a stricter equivalent) before any client JavaScript runs.
-- Do **not** add `Disallow: /app/` to `robots.txt`: crawlers need to fetch the page to see its noindex directive.
-- Keep `/app/` and every app-only URL out of `public/sitemap.xml`. The sitemap remains for public, indexable pages only.
+- Every generated `/app/` page must contain a build-time `<meta name="robots" content="noindex, nofollow">` in its initial HTML head, before client JavaScript runs.
+- Keep `/app/` and every app-only URL out of `public/sitemap.xml`.
+- `robots.txt` must NOT disallow `/app/` (no `Disallow: /app/` rule); crawlers must fetch the page and read its noindex directive.
 - Noindex is not access control. Static assets and all published files are public; never place private learner records or secrets in the build output.
 - Add build verification that inspects generated HTML for noindex and verifies app routes are absent from the sitemap.
 
 ## SEO, bundle and learning implications
 
-Astro keeps public content server-rendered at build time and hydrates only the app island. The app bundle will still include React and workspace code, so measure compressed JS size and route-level loading rather than assuming islands are free. Load large optional views only when needed. Avoid charts and UI libraries until a concrete use case justifies their cost.
+Astro keeps public content server-rendered at build time and hydrates only the app island. The app bundle will still include React and workspace code, so measure compressed JS size and route-level loading rather than assuming islands are free. Load large optional views only when needed. Charts must be lightweight: prefer hand-built SVG or lazy-load chart code only when its view opens.
 
 This choice keeps one toolchain and deployment model for a beginner contributor while teaching a useful combination of static content and selective client interactivity. Preact remains a possible measured optimization, not a parallel implementation target.
 
@@ -72,3 +72,26 @@ This choice keeps one toolchain and deployment model for a beginner contributor 
 - [Astro static output](https://docs.astro.build/en/guides/on-demand-rendering/)
 - [GitHub Pages overview](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages)
 - [Google robots meta tag guidance](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag)
+
+## Decisions log — 2026-11-21
+
+| # | Decision | Outcome |
+|---|---|---|
+| 1 | Workspace UI | Accepted: Astro static site with React islands; Preact only if measured bundle constraints justify it. |
+| 2 | IndexedDB | Accepted: idb behind a typed repository adapter. |
+| 3 | Competency levels | NEEDS APPROVAL: Demonstrated and Consistent definitions remain proposed. |
+| 4 | Import limit | Accepted: 10 MiB; reject larger files before parsing/writing. |
+| 5 | Import modes | Accepted: preview, then “Replace everything” or “Merge (newer updatedAt wins)”; atomic application. Per-record choices deferred. |
+| 6 | Backup reminders | Accepted: dismissible reminder 30 days after last successful export, plus first-export prompt after meaningful data accumulates. |
+| 7 | Evidence URLs | Accepted: HTTP/HTTPS only; reject other schemes; external links use rel="noopener noreferrer"; never fetch, preview or embed. |
+| 8 | Reviews | Accepted: reviewerType is self or external; clearly distinguish in UI. Proposed Consistent corroboration weight: external 2, self 1. |
+| 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
+| 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
+| 11 | Bundle/charts | Accepted: 200 KiB gzip initial workspace JS excluding Astro-shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
+| 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
+
+### Competency levels — NEEDS APPROVAL
+
+- **Demonstrated (NEEDS APPROVAL):** every mandatory criterion has at least one independent artifact.
+- **Consistent (NEEDS APPROVAL):** the demonstration is repeated in a different task or context.
+- Proposed Consistent corroboration: external review weight 2, self review weight 1. Reviews cannot replace the required independent artifact or repeated demonstration.

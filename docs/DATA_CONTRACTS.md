@@ -13,11 +13,11 @@ These contracts define the shape and invariants for local learner records. They 
 - Dates: ISO 8601 UTC strings. Validate parseability and normalize to UTC on write.
 - Every mutable user-owned record includes `id`, `schemaVersion`, `createdAt`, `updatedAt`, and `deletedAt` (nullable).
 - Timestamps are system metadata, not proof of when a learner performed work.
-- Soft deletion sets `deletedAt`; normal views exclude deleted records. Explicit “delete all data” performs hard deletion of all application stores and metadata.
+- Soft deletion sets `deletedAt`; normal views exclude deleted records. Soft-deleted records remain in JSON backups until permanently deleted. Provide per-record “Permanently delete” and “Delete all local data”; permanently deleted records are excluded from future backups.
 - No account/user identity field is defined for the local-only MVP.
 - Reject unknown enum values and malformed references. Unknown future contract versions must not be silently coerced.
 - Store text as plain text/Markdown only; render safely. Do not execute imported HTML or scripts.
-- No binary artifact attachments in v1. Evidence stores descriptive metadata and an optional external URL; never fetch that URL automatically.
+- No binary artifact attachments in v1. Evidence stores descriptive metadata and an optional external URL. Accept only HTTP/HTTPS; reject javascript:, data: and all other schemes. External links use rel="noopener noreferrer". Never fetch, preview or embed URLs.
 
 ## Zod contract proposal
 
@@ -109,7 +109,7 @@ export const EvidenceSchema = BaseRecord.extend({
   title: z.string().trim().min(1).max(160),
   kind: EvidenceKindSchema,
   description: z.string().max(4000).default(""),
-  externalUrl: z.string().url().max(2048).nullable().default(null),
+  externalUrl: z.string().url().max(2048).refine((value) => ["http:", "https:"].includes(new URL(value).protocol), "Only http and https URLs are allowed").nullable().default(null),
   artifactReference: z.string().max(500).nullable().default(null),
   independentDemonstration: z.boolean().default(false),
   aiUse: AiUseDisclosureSchema,
@@ -124,7 +124,7 @@ export const EvidenceLinkSchema = BaseRecord.extend({
 });
 
 export const AssessmentStatusSchema = z.enum([
-  "not_assessed", "emerging", "developing", "demonstrated", "needs_more_evidence"
+  "not_assessed", "emerging", "developing", "demonstrated", "consistent", "needs_more_evidence"
 ]);
 export const CompetencyAssessmentSchema = BaseRecord.extend({
   competencySlug: CompetencySlugSchema,
@@ -139,7 +139,8 @@ export type CompetencyAssessment = z.infer<typeof CompetencyAssessmentSchema>;
 export const ReviewSchema = BaseRecord.extend({
   evidenceId: Id,
   reviewerLabel: z.string().trim().min(1).max(120),
-  relationship: z.enum(["mentor", "peer", "instructor", "self", "other"]),
+  reviewerType: z.enum(["self", "external"]),
+  relationship: z.enum(["mentor", "peer", "instructor", "other"]).nullable().default(null),
   feedback: z.string().min(1).max(5000),
   outcome: z.enum(["positive", "mixed", "needs_revision", "informational"]),
   reviewedAt: IsoDateTime,
@@ -208,7 +209,7 @@ Export must be UTF-8 JSON with a clear filename, e.g. `growvidence-backup-YYYY-M
 
 ### Import process
 
-1. Enforce a configurable file-size ceiling before parsing (initial proposal: 10 MiB; **NEEDS APPROVAL**).
+1. Enforce a 10 MiB file-size ceiling before parsing; reject larger files without writing.
 2. Parse JSON as untrusted input; reject malformed JSON, unsupported `format` or `formatVersion`, invalid schemas, duplicate IDs, invalid timestamps and broken references.
 3. Preview record counts, conflicts, soft-deleted records and any records that will be skipped; do not write during preview.
 4. Default mode: merge by stable ID. New IDs are additions. Matching IDs require a conflict resolution preview; user chooses keep existing, replace with imported, or skip that record. Dependent records must be handled consistently.
@@ -220,7 +221,7 @@ Do not silently apply last-write-wins, silently overwrite, or partially import a
 
 ## CSV export
 
-CSV is a convenience export, not a backup. Initial proposal: one row per task, with track title, task title/status/due date, linked journal count, linked evidence count and competency links. A separate evidence CSV can be considered later. Escape commas, quotes and line breaks according to RFC 4180. Neutralize formula injection by prefixing an apostrophe to cells beginning (after leading whitespace/control characters) with `=`, `+`, `-` or `@`. Do not strip legitimate content without telling the user.
+CSV is a convenience export, not a backup. Initial proposal: one row per task, with track title, task title/status/due date, linked journal count, linked evidence count and competency links. A separate evidence CSV can be considered later. Escape commas, quotes and line breaks according to RFC 4180. Neutralize formula injection by prefixing an apostrophe or equivalent safe text encoding to every cell whose first meaningful character is `=`, `+`, `-` or `@`. Unit-test all four prefixes, ordinary values and leading whitespace. Do not strip legitimate content without telling the user.
 
 ## Deletion and retention
 
@@ -233,3 +234,26 @@ CSV is a convenience export, not a backup. Initial proposal: one row per task, w
 ## Open contract decisions
 
 See the consolidated Open decisions section in `docs/TESTING_PLAN.md` and PR description. The 10 MiB import ceiling, conflict UX, CSV column set and whether journal/evidence disclosures should share one reusable object are recommendations pending maintainer approval.
+
+## Decisions log — 2026-11-21
+
+| # | Decision | Outcome |
+|---|---|---|
+| 1 | Workspace UI | Accepted: Astro static site with React islands; Preact only if measured bundle constraints justify it. |
+| 2 | IndexedDB | Accepted: idb behind a typed repository adapter. |
+| 3 | Competency levels | NEEDS APPROVAL: Demonstrated and Consistent definitions remain proposed. |
+| 4 | Import limit | Accepted: 10 MiB; reject larger files before parsing/writing. |
+| 5 | Import modes | Accepted: preview, then “Replace everything” or “Merge (newer updatedAt wins)”; atomic application. Per-record choices deferred. |
+| 6 | Backup reminders | Accepted: dismissible reminder 30 days after last successful export, plus first-export prompt after meaningful data accumulates. |
+| 7 | Evidence URLs | Accepted: HTTP/HTTPS only; reject other schemes; external links use rel="noopener noreferrer"; never fetch, preview or embed. |
+| 8 | Reviews | Accepted: reviewerType is self or external; clearly distinguish in UI. Proposed Consistent corroboration weight: external 2, self 1. |
+| 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
+| 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
+| 11 | Bundle/charts | Accepted: 200 KiB gzip initial workspace JS excluding Astro-shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
+| 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
+
+### Competency levels — NEEDS APPROVAL
+
+- **Demonstrated (NEEDS APPROVAL):** every mandatory criterion has at least one independent artifact.
+- **Consistent (NEEDS APPROVAL):** the demonstration is repeated in a different task or context.
+- Proposed Consistent corroboration: external review weight 2, self review weight 1. Reviews cannot replace the required independent artifact or repeated demonstration.

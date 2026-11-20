@@ -177,3 +177,37 @@ Use plain, supportive language. Prefer “You have evidence for…” over “Yo
 - Evidence links show the criterion and rationale.
 - Noindex and data-backup messaging are present in the app shell.
 - Narrow mobile, 200% zoom and reduced-motion behavior are included in QA.
+
+## Approved decision requirements
+
+## Decisions log — 2026-11-21
+
+| # | Decision | Outcome |
+|---|---|---|
+| 1 | Workspace UI | Accepted: Astro static site with React islands; Preact only if measured bundle constraints justify it. |
+| 2 | IndexedDB | Accepted: idb behind a typed repository adapter. |
+| 3 | Competency levels | NEEDS APPROVAL: Demonstrated and Consistent definitions remain proposed. |
+| 4 | Import limit | Accepted: 10 MiB; reject larger files before parsing/writing. |
+| 5 | Import modes | Accepted: preview, then “Replace everything” or “Merge (newer updatedAt wins)”; atomic application. Per-record choices deferred. |
+| 6 | Backup reminders | Accepted: dismissible reminder 30 days after last successful export, plus first-export prompt after meaningful data accumulates. |
+| 7 | Evidence URLs | Accepted: HTTP/HTTPS only; reject other schemes; external links use rel="noopener noreferrer"; never fetch, preview or embed. |
+| 8 | Reviews | Accepted: reviewerType is self or external; clearly distinguish in UI. Proposed Consistent corroboration weight: external 2, self 1. |
+| 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
+| 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
+| 11 | Bundle/charts | Accepted: 200 KiB gzip initial workspace JS excluding Astro-shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
+| 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
+
+### Competency levels — NEEDS APPROVAL
+
+- **Demonstrated (NEEDS APPROVAL):** every mandatory criterion has at least one independent artifact.
+- **Consistent (NEEDS APPROVAL):** the demonstration is repeated in a different task or context.
+- Proposed Consistent corroboration: external review weight 2, self review weight 1. Reviews cannot replace the required independent artifact or repeated demonstration.
+
+### UX requirements
+
+- Show Demonstrated and Consistent separately; both definitions remain NEEDS APPROVAL.
+- Visually and accessibly distinguish self and external reviews without relying on color alone. Explain proposed weights (external 2, self 1); reviews never replace artifacts or repeated demonstrations.
+- Import preview offers exactly “Replace everything” and “Merge (newer updatedAt wins)”. Merge adds new IDs and replaces matching records only when imported updatedAt is newer. Per-record choices are deferred. Reject files above 10 MiB. Apply atomically.
+- Evidence URLs accept HTTP/HTTPS only. Reject javascript:, data: and other schemes. External links use rel="noopener noreferrer"; never fetch, preview or embed.
+- Provide soft delete, per-record “Permanently delete” and “Delete all local data”. State clearly: **Soft-deleted items remain in JSON backups until permanently deleted.**
+- Initial workspace JS budget is 200 KiB gzip excluding Astro-shared assets. Charts are hand-built lightweight SVG or lazy-loaded; provide text/table alternatives and a bundle-size check.

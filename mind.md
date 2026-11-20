@@ -23,7 +23,7 @@ Help learners turn practice into demonstrable capability with transparent eviden
 
 ## Six initial competency areas and proposed measurable criteria
 
-**Important:** Every criterion below is a proposal and is marked **NEEDS APPROVAL**. These are internal learning rubrics, not external certifications. Until the maintainer approves a criterion and its rubric version, it must not be used to set a competency to “Demonstrated”.
+**Important:** Every criterion below is a proposal and is marked **NEEDS APPROVAL**. These are internal learning rubrics, not external certifications. Until the maintainer approves a criterion and its rubric version, it must not be used to set a competency to “Demonstrated” or “Consistent”.
 
 ### 1. Independent coding
 - **IC-1 — Implement from a requirement (NEEDS APPROVAL):** From a written requirement and acceptance examples, produce a working implementation; explain key decisions and demonstrate it without relying on generated code during the demonstration.
@@ -69,9 +69,13 @@ Evidence: concise explanation, executable example, test/trace and a failure-case
 
 ## Proposed competency assessment rule
 
-**NEEDS APPROVAL:** “Demonstrated” should require all mandatory criteria in an approved rubric version to be met with current evidence, including at least one independently performed artifact and a repeat demonstration in a distinct task or context. Evidence must disclose AI assistance. AI-assisted work can be valid evidence of tool use and workflow, but cannot alone prove independent implementation. Reviewer feedback is useful corroboration, not a substitute for learner demonstration.
+**NEEDS APPROVAL — Demonstrated:** every mandatory criterion has at least one independent artifact.
 
-Use “Not assessed”, “Emerging”, “Developing”, “Demonstrated” and “Needs more evidence”. Keep rationale and missing criteria visible. Do not produce a single opaque score or infer mastery from task counts, streaks, time spent or AI confidence.
+**NEEDS APPROVAL — Consistent:** the demonstration is repeated in a different task or context.
+
+Proposed Consistent corroboration weights: external review = 2; self review = 1. Reviews cannot replace the independent artifact or repeat demonstration. Evidence must disclose AI assistance; AI-assisted work cannot alone prove independent implementation.
+
+Use “Not assessed”, “Emerging”, “Developing”, “Demonstrated”, “Consistent” and “Needs more evidence”. Demonstrated and Consistent remain NEEDS APPROVAL. Keep rationale and missing criteria visible. Do not produce a single opaque score or infer mastery from task counts, streaks, time spent or AI confidence.
 
 ## Evidence record
 Capture attempted work, understanding, AI-use disclosure, independent implementation, artifact/test/reviewer evidence, linked criteria and remaining uncertainty. Every journal/evidence record must disclose AI assistance as unassisted, assisted, partially assisted, unknown or not recorded.
@@ -89,3 +93,26 @@ Semantic HTML, unique accurate metadata, canonical URLs, answer-first explanatio
 
 ## Non-goals
 Guaranteed rankings, employment or accreditation; opaque AI mastery scores; mandatory cloud accounts in MVP; native app before PWA evidence; paid gates before license and market validation.
+
+## Decisions log — 2026-11-21
+
+| # | Decision | Outcome |
+|---|---|---|
+| 1 | Workspace UI | Accepted: Astro static site with React islands; Preact only if measured bundle constraints justify it. |
+| 2 | IndexedDB | Accepted: idb behind a typed repository adapter. |
+| 3 | Competency levels | NEEDS APPROVAL: Demonstrated and Consistent definitions remain proposed. |
+| 4 | Import limit | Accepted: 10 MiB; reject larger files before parsing/writing. |
+| 5 | Import modes | Accepted: preview, then “Replace everything” or “Merge (newer updatedAt wins)”; atomic application. Per-record choices deferred. |
+| 6 | Backup reminders | Accepted: dismissible reminder 30 days after last successful export, plus first-export prompt after meaningful data accumulates. |
+| 7 | Evidence URLs | Accepted: HTTP/HTTPS only; reject other schemes; external links use rel="noopener noreferrer"; never fetch, preview or embed. |
+| 8 | Reviews | Accepted: reviewerType is self or external; clearly distinguish in UI. Proposed Consistent corroboration weight: external 2, self 1. |
+| 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
+| 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
+| 11 | Bundle/charts | Accepted: 200 KiB gzip initial workspace JS excluding Astro-shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
+| 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
+
+### Competency levels — NEEDS APPROVAL
+
+- **Demonstrated (NEEDS APPROVAL):** every mandatory criterion has at least one independent artifact.
+- **Consistent (NEEDS APPROVAL):** the demonstration is repeated in a different task or context.
+- Proposed Consistent corroboration: external review weight 2, self review weight 1. Reviews cannot replace the required independent artifact or repeated demonstration.
