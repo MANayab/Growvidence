@@ -42,9 +42,12 @@ export function resolveAssetPath(
   let resolved;
 
   try {
-    resolved = parentFile
-      ? new URL(reference, pathToFileURL(parentFile))
-      : new URL(reference, siteOrigin);
+    resolved =
+      reference.startsWith("/")
+        ? new URL(reference, siteOrigin)
+        : parentFile
+          ? new URL(reference, pathToFileURL(parentFile))
+          : new URL(reference, siteOrigin);
   } catch {
     return null;
   }
@@ -75,7 +78,12 @@ export function resolveAssetPath(
 
 function isInsideDirectory(filePath, directory) {
   const relative = path.relative(directory, filePath);
-  return relative !== "" && !relative.startsWith("..") && !path.isAbsolute(relative);
+  return (
+    relative !== "" &&
+    relative !== ".." &&
+    !relative.startsWith(`..${path.sep}`) &&
+    !path.isAbsolute(relative)
+  );
 }
 
 export async function collectLoadedJavaScript(
