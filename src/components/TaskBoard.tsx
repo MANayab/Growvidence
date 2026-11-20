@@ -10,8 +10,9 @@ interface Props {
   tracks: Track[];
   onMove: (id: string, status: TaskStatus) => void;
   onEdit: (task: Task) => void;
+  onDelete: (task: Task) => void;
 }
-export default function TaskBoard({ tasks, tracks, onMove, onEdit }: Props) {
+export default function TaskBoard({ tasks, tracks, onMove, onEdit, onDelete }: Props) {
   return <div className="task-board" aria-label="Task status board">
     {columns.map((column) => <section className="board-column" key={column.value} aria-labelledby={`column-${column.value}`}>
       <h3 id={`column-${column.value}`}>{column.label}</h3>
@@ -23,7 +24,7 @@ export default function TaskBoard({ tasks, tracks, onMove, onEdit }: Props) {
             {columns.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
           </select>
         </label>
-        <button type="button" className="secondary" onClick={() => onEdit(task)}>Edit task</button>
+        <div className="form-actions"><button type="button" className="secondary" onClick={() => onEdit(task)}>Edit task</button><button type="button" className="danger" onClick={() => onDelete(task)}>Delete task</button></div>
       </article>)}
     </section>)}
   </div>;
