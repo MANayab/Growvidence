@@ -46,7 +46,7 @@
 - Track and Task Zod schemas and typed IndexedDB repositories. Track soft-delete cascades task soft-delete; permanent track deletion permanently removes dependent tasks.
 - Task statuses: backlog, today, in_progress, review, done. Task fields include track, title, description, priority, local due date, estimated/actual minutes and tags.
 - Calendar due dates are local date-only `YYYY-MM-DD`; metadata timestamps remain UTC ISO strings. Monday is the week start. Date math uses local noon and clamps month ends; timezone changes do not rewrite due dates.
-- Slice 2 source/tests/docs are on PR #12 (Draft), not merged or deployed. The current PR head is `d53d0ec563c1b2e6a4549188350b7acde22aa737`; CI run 44818478645 is in progress. Local test/build/format and final all-assets bundle size remain unverified. Previous Slice 1 bundle baseline: 95.51 KiB gzip / 200 KiB. The All dates view includes undated tasks; daily/weekly/monthly views filter by local due date.
+- Slice 2 source/tests/docs are on PR #12 (Draft), not merged or deployed. CI run 44818738328 on code head `8b5a4dd6614f0328479d79199188e3ff9568e168` passed Astro/TypeScript diagnostics (0 errors, 0 warnings, 0 hints) and ESLint, then failed Prettier on 13 changed source/test files. Tests, build, verify-build, audits and bundle-size were skipped. The maintainer must run the targeted Prettier command and push only intended formatting changes. The new all-assets bundle total remains unverified; Slice 1 baseline was 95.51 KiB gzip / 200 KiB. The All dates view includes undated tasks; daily/weekly/monthly views filter by local due date.
 
 ## Technical baseline
 
