@@ -64,8 +64,8 @@
 @media (prefers-color-scheme: dark) {
   .workspace { --workspace-bg: #171715; --workspace-panel: #22211e; --workspace-text: #f2eee3; --workspace-muted: #c5bfb3; --workspace-border: #4a4842; --workspace-accent: #ff987c; }
 }
-:global(html[data-theme="dark"]) .workspace { --workspace-bg: #171715; --workspace-panel: #22211e; --workspace-text: #f2eee3; --workspace-muted: #c5bfb3; --workspace-border: #4a4842; --workspace-accent: #ff987c; }
-:global(html[data-theme="light"]) .workspace { --workspace-bg: #f2eee3; --workspace-panel: #fffdf8; --workspace-text: #1c1b19; --workspace-muted: #5d584f; --workspace-border: #c8c1b4; --workspace-accent: #c8431f; }
+html[data-theme="dark"] .workspace { --workspace-bg: #171715; --workspace-panel: #22211e; --workspace-text: #f2eee3; --workspace-muted: #c5bfb3; --workspace-border: #4a4842; --workspace-accent: #ff987c; }
+html[data-theme="light"] .workspace { --workspace-bg: #f2eee3; --workspace-panel: #fffdf8; --workspace-text: #1c1b19; --workspace-muted: #5d584f; --workspace-border: #c8c1b4; --workspace-accent: #c8431f; }
 @media (max-width: 760px) {
   .workspace-frame { grid-template-columns: 1fr; }
   .workspace-sidebar { gap: 1rem; border-right: 0; border-bottom: 1px solid var(--workspace-border); }

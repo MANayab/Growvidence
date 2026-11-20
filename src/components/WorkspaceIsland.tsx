@@ -7,7 +7,6 @@ import {
   type StorageNotice,
 } from "../persistence";
 import type { ThemePreference, Track } from "../persistence/schemas";
-import "./WorkspaceIsland.css";
 
 const navigation = [
   { id: "tracks", label: "Tracks" },
@@ -170,7 +169,7 @@ export default function WorkspaceIsland() {
             <span className={notice.code === "ready" ? "status-dot ready" : "status-dot"} aria-hidden="true" />
             <span>{notice.code === "ready" ? notice.message : describeError(notice)}</span>
           </div>
-          <main className="workspace-main" id="workspace-main" tabIndex={-1}>
+          <section className="workspace-main" id="workspace-main" aria-label="Current workspace section" tabIndex={-1}>
             {!ready ? (
               <section className="workspace-card" aria-labelledby="storage-heading">
                 <h2 id="storage-heading">Checking this browser's storage</h2>
@@ -227,7 +226,7 @@ export default function WorkspaceIsland() {
                 <p>This section is not available yet. Slice 1 provides the app shell, settings storage and minimal tracks repository. No {activeItem?.label.toLowerCase()} data is being collected.</p>
               </section>
             )}
-          </main>
+          </section>
           <footer className="workspace-footer">
             <p>Task completion is activity, not proof of competency.</p>
             <p>Browser storage can be cleared and is not a backup.</p>

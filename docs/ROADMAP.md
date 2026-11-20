@@ -1,7 +1,7 @@
 # Growvidence roadmap
 
 **Last updated:** 2026-11-21  
-**Current state:** Phase 1 static foundation is complete, merged and deployed. PRs #7, #8 and #9 are merged. Slice 1 implementation is in progress on `feat/slice-1-app-shell`; it is not yet merged or deployed.
+**Current state:** Phase 1 static foundation is complete, merged and deployed. PR #7 dependency remediation and PR #8 Phase 2 design are merged. This follow-up records maintainer-approved Phase 2 decisions; the learner application has not been implemented.
 
 ## Completed
 
@@ -24,12 +24,12 @@
 
 ## Current product status
 
-The landing page and publishing pipeline exist. The learner-facing product does not yet exist. There is no dashboard, task manager, journal, competency assessment, evidence manager, IndexedDB persistence, JSON backup/restore or CSV export.
+The public landing page and publishing pipeline exist. The Slice 1 branch proposes the first `/app/` shell, settings preference and IndexedDB adapter; these changes are not yet merged or deployed. There is no track creation, task manager, journal, competency assessment, evidence manager, JSON backup/restore, CSV export or dashboard.
 
 MVP platform constraints:
 - GitHub Pages static files only; no server, runtime SSR, API routes or database server.
 - No account system or cloud sync in the MVP.
-- Learner records are intended to remain in browser storage; IndexedDB is proposed, not implemented.
+- Learner records are intended to remain in browser storage; the Slice 1 PR proposes IndexedDB v2 through a typed `idb` adapter, with settings and minimal tracks repositories.
 - Public content is indexable. Future `/app/` HTML must carry build-time noindex and remain out of the sitemap. Do not disallow it in robots.txt because crawlers must be able to read the noindex directive.
 - PWA/offline is optional future scope and must be explicitly confirmed before implementation.
 - No analytics or third-party scripts by default.
@@ -46,13 +46,13 @@ The Phase 2 design package proposes:
 6. **TESTING_PLAN.md:** unit, persistence, E2E, accessibility, privacy/security and performance test plan; seven implementation slices plus optional PWA; each slice includes acceptance criteria and a learning exercise.
 7. Decisions log recording twelve accepted recommendations and two competency definitions that remain NEEDS APPROVAL.
 
-The architecture, persistence approach and twelve product recommendations were accepted on 2026-11-21. The two competency-level definitions remain NEEDS APPROVAL. Slice 1 now proposes the first app shell and persistence implementation in a separate PR; no later feature slice may begin until the maintainer reviews this PR and says “next”.
+The architecture, persistence approach and twelve product recommendations were accepted on 2026-11-21. The two competency-level definitions remain NEEDS APPROVAL. No app code, new dependency or IndexedDB schema is implemented by these documentation decisions. Implementation requires a separate focused PR and explicit “next” from the maintainer.
 
 ## Build slices — each a separate PR after Phase 2 design is approved and merged
 
 | Slice | Scope | Key acceptance evidence |
 |---|---|---|
-| 1 | App shell, React island, hash navigation, settings and minimal tracks repositories, IndexedDB migrations | Static `/app/` direct-load/refresh; noindex and sitemap exclusion; fake-indexeddb repository/migration/schema tests; 200 KiB gzip CI budget |
+| 1 | App shell, routing, layout, local persistence, migrations | Static `/app/` direct-load/refresh; noindex and sitemap exclusion; repository/migration/rollback tests |
 | 2 | Learning tracks, task manager (list and Kanban), daily/weekly/monthly views | Task lifecycle, filtering, keyboard and responsive tests |
 | 3 | Learning journal and AI-use disclosure | All five disclosure states and validation; no blank interpreted as unassisted |
 | 4 | Competency and evidence engine | Approved criteria/evidence/review rules; competency status independent of task status |
