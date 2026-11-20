@@ -21,19 +21,68 @@ Help learners turn practice into demonstrable capability with transparent eviden
 7. Public content is accurate, attributable and citable.
 8. Be honest about uncertainty and product status.
 
-## Six initial competency areas
-Independent coding; debugging; architecture; testing; commercial validation; technical fundamentals. Each needs observable criteria and reviewable evidence. These are draft internal rubrics, not external certifications.
+## Six initial competency areas and proposed measurable criteria
+
+**Important:** Every criterion below is a proposal and is marked **NEEDS APPROVAL**. These are internal learning rubrics, not external certifications. Until the maintainer approves a criterion and its rubric version, it must not be used to set a competency to “Demonstrated”.
+
+### 1. Independent coding
+- **IC-1 — Implement from a requirement (NEEDS APPROVAL):** From a written requirement and acceptance examples, produce a working implementation; explain key decisions and demonstrate it without relying on generated code during the demonstration.
+- **IC-2 — Modify unfamiliar code (NEEDS APPROVAL):** Make a scoped change in an unfamiliar codebase, identify affected files, and show a passing regression test or equivalent verification.
+- **IC-3 — Explain and adapt (NEEDS APPROVAL):** Explain the implementation's inputs, outputs, edge cases and trade-offs, then make a small unprepared change and verify it.
+
+Evidence: versioned source diff/repository reference, runnable demo or test output, short explanation, and an independently performed follow-up task. A repository link alone is insufficient.
+
+### 2. Debugging
+- **DB-1 — Reproduce and isolate (NEEDS APPROVAL):** Reproduce a defect with a minimal case and record expected versus actual behavior.
+- **DB-2 — Form and test hypotheses (NEEDS APPROVAL):** Record at least two plausible causes, use logs/tests/debugger evidence to narrow them, and explain why the selected cause fits.
+- **DB-3 — Verify the fix (NEEDS APPROVAL):** Implement a fix, add a regression test, and show that the test fails before the fix and passes after it where practical.
+
+Evidence: issue/reproduction steps, failing/passing test output, focused diff and reasoning. A claim that “it works now” without a reproducible check is insufficient.
+
+### 3. Architecture
+- **AR-1 — Describe system boundaries (NEEDS APPROVAL):** Create a component/data-flow diagram identifying responsibilities, trust boundaries and external dependencies.
+- **AR-2 — Compare alternatives (NEEDS APPROVAL):** Write a decision record comparing at least two feasible options against explicit constraints and trade-offs.
+- **AR-3 — Evolve safely (NEEDS APPROVAL):** Demonstrate a backward-compatible change or documented migration, including failure/rollback considerations and tests.
+
+Evidence: versioned architecture/decision document, diagrams, migration or compatibility tests, and explanation of a trade-off. Diagram aesthetics alone are not evidence.
+
+### 4. Testing
+- **TE-1 — Test behavior and boundaries (NEEDS APPROVAL):** Write automated tests for normal, invalid and boundary inputs around a meaningful behavior.
+- **TE-2 — Diagnose a regression (NEEDS APPROVAL):** Demonstrate a test that fails for a known defect, then passes after a focused fix.
+- **TE-3 — Verify a user journey (NEEDS APPROVAL):** Automate a critical browser journey and record environment, command and result; identify what remains untested.
+
+Evidence: test source, repeatable command/output, test fixture or defect reference and explanation of coverage limitations. A green badge without test context is insufficient.
+
+### 5. Commercial validation
+- **CV-1 — Identify a specific problem (NEEDS APPROVAL):** Define a target user segment, problem statement and assumptions without presenting guesses as facts.
+- **CV-2 — Gather ethical user evidence (NEEDS APPROVAL):** Conduct and summarize a small set of consent-based interviews/usability sessions; separate direct observations from interpretation and protect personal data.
+- **CV-3 — Test a value proposition (NEEDS APPROVAL):** Run a low-cost, non-deceptive validation experiment with a predeclared success/stop criterion and report negative as well as positive results.
+
+Evidence: anonymized research plan/notes, consent-aware methodology, experiment artifacts and decision summary. Likes, views, waitlist counts or founder opinion alone do not establish demand or willingness to pay.
+
+### 6. Technical fundamentals
+- **TF-1 — Explain core concepts (NEEDS APPROVAL):** Explain a relevant language/runtime, browser/network or data concept accurately in the learner's own words and connect it to a working example.
+- **TF-2 — Apply the concept (NEEDS APPROVAL):** Implement a small example and demonstrate expected behavior with a test, trace or inspection.
+- **TF-3 — Reason about failure and safety (NEEDS APPROVAL):** Identify a realistic failure/security/performance boundary and demonstrate a mitigation or clearly bounded limitation.
+
+Evidence: concise explanation, executable example, test/trace and a failure-case analysis. Memorized definitions without application are insufficient.
+
+## Proposed competency assessment rule
+
+**NEEDS APPROVAL:** “Demonstrated” should require all mandatory criteria in an approved rubric version to be met with current evidence, including at least one independently performed artifact and a repeat demonstration in a distinct task or context. Evidence must disclose AI assistance. AI-assisted work can be valid evidence of tool use and workflow, but cannot alone prove independent implementation. Reviewer feedback is useful corroboration, not a substitute for learner demonstration.
+
+Use “Not assessed”, “Emerging”, “Developing”, “Demonstrated” and “Needs more evidence”. Keep rationale and missing criteria visible. Do not produce a single opaque score or infer mastery from task counts, streaks, time spent or AI confidence.
 
 ## Evidence record
-Capture attempted work, understanding, AI-use disclosure, independent implementation, artifact/test/reviewer evidence, linked criteria and remaining uncertainty.
+Capture attempted work, understanding, AI-use disclosure, independent implementation, artifact/test/reviewer evidence, linked criteria and remaining uncertainty. Every journal/evidence record must disclose AI assistance as unassisted, assisted, partially assisted, unknown or not recorded.
 
 ## Platform constraints
 - GitHub Pages static hosting only in MVP; no server, database, runtime SSR, API routes or account system.
-- IndexedDB local persistence; JSON export/import and CSV export.
-- Public pages indexable; app pages noindex.
-- PWA/offline planned; browser storage is not backup.
-- Optional future backend for opt-in sync/accounts requires separate decision.
-- Never silently upload learner data or place it in URLs.
+- IndexedDB local persistence is proposed; JSON export/import and CSV export are planned, not implemented.
+- Public pages indexable; app pages noindex and excluded from sitemap.
+- PWA/offline is optional future scope; requires explicit approval.
+- Optional future backend for opt-in sync/accounts requires a separate decision.
+- Never silently upload learner data or place it in URLs, localStorage/sessionStorage, Cache Storage or telemetry.
 
 ## Content principles
 Semantic HTML, unique accurate metadata, canonical URLs, answer-first explanations, visible relevant FAQs and structured data matching visible content. No ranking guarantees.

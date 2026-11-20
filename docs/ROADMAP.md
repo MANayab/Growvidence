@@ -1,14 +1,14 @@
 # Growvidence roadmap
 
-**Last updated:** 2026-11-20  
-**Current state:** Phase 1 static foundation is complete, merged and deployed. The public landing page is live. The interactive learner application has not been implemented. Future milestones are plans and require maintainer review.
+**Last updated:** 2026-11-21  
+**Current state:** Phase 1 static foundation is complete, merged and deployed. PR #7 dependency remediation is merged. The public landing page is live. The interactive learner application has not been implemented. Phase 2 design is being proposed in a docs-only PR; architecture and rubric recommendations require maintainer approval.
 
 ## Completed
 
 ### Phase 0 — Product and repository foundation
 - Product vision, principles, audience and initial competency areas.
-- Static-first / local-first architecture direction and draft data model.
-- ADRs, roadmap, quality gates and repository contribution rules.
+- Static-first / local-first architecture direction, draft data model and ADRs.
+- Roadmap, quality gates and repository contribution rules.
 - Main-branch protection configured for this repository.
 
 ### Phase 1 — Astro static foundation and publishing
@@ -19,49 +19,49 @@
 - Reproducible dependency installation with committed package-lock.json.
 - **PR #4 merged:** Astro-native GitHub Pages deployment workflow publishes dist/.
 - **PR #5 merged:** Google Search Console verification meta tag in shared layout.
+- **PR #7 merged:** exact `typescript-eslint` pin updated to 8.73.0 with matching committed lockfile; maintainer reported both local npm audits at zero vulnerabilities and latest-head CI passed.
 - Live site: https://manayab.github.io/Growvidence/
 
 ## Current product status
 
-The landing page and publishing pipeline exist. The learner-facing product does not yet exist. In particular, there is no dashboard, task manager, journal, competency assessment, evidence manager, IndexedDB persistence, JSON backup/restore or CSV export.
+The landing page and publishing pipeline exist. The learner-facing product does not yet exist. There is no dashboard, task manager, journal, competency assessment, evidence manager, IndexedDB persistence, JSON backup/restore or CSV export.
 
 MVP platform constraints:
 - GitHub Pages static files only; no server, runtime SSR, API routes or database server.
 - No account system or cloud sync in the MVP.
-- Learner records are intended to remain in browser storage; IndexedDB is planned, not implemented.
-- Public content is indexable. Future /app/ routes must carry noindex and stay out of the sitemap.
+- Learner records are intended to remain in browser storage; IndexedDB is proposed, not implemented.
+- Public content is indexable. Future `/app/` HTML must carry build-time noindex and remain out of the sitemap. Do not disallow it in robots.txt because crawlers must be able to read the noindex directive.
 - PWA/offline is optional future scope and must be explicitly confirmed before implementation.
 - No analytics or third-party scripts by default.
+- Browser storage is not encrypted storage or a backup; explain browser cleanup and device-loss risks.
 
-## Next — Phase 2 design (documentation only)
+## Phase 2 — Workspace design (documentation only)
 
-After the README/state-sync PR is merged, the next PR is a docs-only design package. It should resolve or present for maintainer approval:
+The Phase 2 design package proposes:
+1. **ADR-0005:** Astro static site with React islands for the interactive workspace; compare Preact and a separate SPA; physical `/app/` entry, hash navigation, noindex and sitemap exclusion.
+2. **ADR-0006:** IndexedDB through a typed adapter using `idb`; compare Dexie and raw IndexedDB; define schema migrations, quota/error handling, backup reminders and browser cleanup behavior.
+3. **DATA_CONTRACTS.md:** Zod schema proposals for tracks, tasks, journal entries, AI-use disclosure, competencies, criteria, assessments, evidence, evidence links and reviews; shared IDs/timestamps/soft deletion; versioned JSON backup/import.
+4. **mind.md:** measurable evidence criteria proposed for all six competency areas. Every proposed criterion and the “Demonstrated” threshold is marked **NEEDS APPROVAL**.
+5. **UX_SPEC.md:** overview, daily/weekly/monthly views, tracks, task list/Kanban, journal, competencies/evidence, data settings, accessibility, responsive behavior and Mermaid flows.
+6. **TESTING_PLAN.md:** unit, persistence, E2E, accessibility, privacy/security and performance test plan; seven implementation slices plus optional PWA; each slice includes acceptance criteria and a learning exercise.
+7. Consolidated open decisions with recommendations for maintainer response.
 
-1. Interactive app architecture inside Astro: Astro islands with React or Preact versus a separate SPA, bundle and SEO trade-offs, /app/ noindex routing and sitemap exclusion.
-2. IndexedDB library comparison (Dexie, idb and raw IndexedDB), versioning/migrations, quota/error handling and backup reminders.
-3. Typed data contracts for tracks, tasks, journal entries, AI-use disclosure, competencies, criteria, evidence and reviews.
-4. Versioned JSON export/import format and import validation/merge policy.
-5. Six competency rubrics with measurable evidence rules; any unapproved criteria remain clearly marked.
-6. UX specifications for dashboard, daily/weekly/monthly views, task board, journal and competency pages.
-7. Accessibility, empty states, keyboard flows, mobile layout and testing strategy.
-8. Small build-slice PR plan and explicit open decisions for the maintainer.
+These ADRs and recommendations are proposals, not approved architecture. No app code, new dependency, IndexedDB schema or rubric behavior is implemented by the design package. Do not start a feature slice until the maintainer reviews and merges the design PR and answers or explicitly defers the open decisions.
 
-No learner application implementation should begin until this design PR is reviewed and merged.
-
-## Build slices — each a separate PR after Phase 2 design is merged
+## Build slices — each a separate PR after Phase 2 design is approved and merged
 
 | Slice | Scope | Key acceptance evidence |
 |---|---|---|
-| 1 | App shell, routing, layout, local persistence, migrations | Strict types, storage/migration unit tests, /app/ noindex and sitemap exclusion |
+| 1 | App shell, routing, layout, local persistence, migrations | Static `/app/` direct-load/refresh; noindex and sitemap exclusion; repository/migration/rollback tests |
 | 2 | Learning tracks, task manager (list and Kanban), daily/weekly/monthly views | Task lifecycle, filtering, keyboard and responsive tests |
-| 3 | Learning journal and AI-use disclosure | Assisted/unassisted/partially assisted records and validation |
-| 4 | Competency and evidence engine | Criteria/evidence/review rules; competency status independent of task status |
-| 5 | JSON export/import, CSV export, deletion and backup UX | Version validation, round-trip, malformed import, deletion tests |
-| 6 | Dashboard, progress, streaks and accessible charts | Text/table alternatives; no chart or streak can imply mastery |
-| 7 | Playwright E2E, accessibility audit, performance and security review | Critical journey coverage, WCAG-oriented manual and automated review, measured performance and threat review |
-| 8 | PWA/offline | Only if the maintainer explicitly confirms this remains in scope |
+| 3 | Learning journal and AI-use disclosure | All five disclosure states and validation; no blank interpreted as unassisted |
+| 4 | Competency and evidence engine | Approved criteria/evidence/review rules; competency status independent of task status |
+| 5 | JSON export/import, CSV export, deletion and backup UX | Version validation, round-trip, conflict/rollback, malformed import, formula injection and deletion tests |
+| 6 | Dashboard, progress and accessible summaries | Text/table alternatives; no chart, streak or task count implies mastery |
+| 7 | Playwright E2E, accessibility audit, performance and security review | Critical journeys, keyboard/manual screen-reader review, measured performance and threat review |
+| 8 | PWA/offline | Only after explicit maintainer confirmation; private evidence must never be cached |
 
-Every slice is its own PR, based on latest main, with documentation updated and latest-head CI green before maintainer review.
+Every slice is its own PR, based on latest main, with documentation updated and latest-head CI green before maintainer review. Stop after each PR.
 
 ## Later / conditional
 
