@@ -1,0 +1,12 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import WorkspaceIsland from "../../components/WorkspaceIsland";
+---
+
+<BaseLayout
+  title="Learner workspace — Growvidence"
+  description="Your private, browser-local Growvidence learner workspace."
+  indexable={false}
+>
+  <WorkspaceIsland client:load />
+</BaseLayout>
