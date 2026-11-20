@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, "feat/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Static site quality gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Require committed npm lockfile
+        shell: bash
+        run: |
+          if [ ! -f package-lock.json ]; then
+            echo "::error::package-lock.json is missing. Run 'npm install' with Node $(cat .nvmrc) and commit package-lock.json to this branch before CI can install reproducibly."
+            exit 1
+          fi
+
+      - name: Install reproducibly
+        run: npm ci
+
+      - name: Type and Astro diagnostics
+        run: npm run check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Formatting
+        run: npm run format:check
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Static build
+        run: npm run build
+
+      - name: Inspect generated SEO HTML
+        run: node scripts/verify-build.mjs
+
+      - name: Production dependency audit (informational)
+        continue-on-error: true
+        run: npm audit --omit=dev
+
+      - name: Full dependency audit (informational)
+        continue-on-error: true
+        run: npm audit
+
+      - name: Installed dependency license metadata (informational)
+        continue-on-error: true
+        run: npm query '[license]'
