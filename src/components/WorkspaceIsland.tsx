@@ -75,7 +75,7 @@ export default function WorkspaceIsland() {
   const [taskActual, setTaskActual] = useState("");
   const [taskTags, setTaskTags] = useState("");
   const [view, setView] = useState<"list" | "board">("list");
-  const [calendarView, setCalendarView] = useState<CalendarView>("daily");
+  const [calendarView, setCalendarView] = useState<"all" | CalendarView>("all");
   const [selectedDate, setSelectedDate] = useState(localDateKey(new Date()));
   const [filterTrack, setFilterTrack] = useState("all");
 
@@ -177,12 +177,11 @@ export default function WorkspaceIsland() {
   const activeTracks = tracks.filter((track) => !track.archivedAt && !track.deletedAt);
   const taskTrackOptions = tracks.filter((track) => !track.deletedAt && (!track.archivedAt || track.id === taskTrackId));
   const canSaveTask = activeTracks.length > 0 || Boolean(taskId && taskTrackOptions.some((track) => track.id === taskTrackId));
-  const range = dateRangeFor(selectedDate, calendarView);
+  const range = calendarView === "all" ? null : dateRangeFor(selectedDate, calendarView);
   const visibleTasks = useMemo(() => tasks.filter((task) =>
     (filterTrack === "all" || task.trackId === filterTrack) &&
-    (calendarView === "daily" || calendarView === "weekly" || calendarView === "monthly"
-      ? isDateInRange(task.dueDate, range) : true)
-  ), [tasks, filterTrack, calendarView, range.start, range.end]);
+    (calendarView === "all" || (range !== null && isDateInRange(task.dueDate, range)))
+  ), [tasks, filterTrack, calendarView, range?.start, range?.end]);
   const activeItem = navigation.find((item) => item.id === route);
 
   return (
@@ -243,11 +242,11 @@ export default function WorkspaceIsland() {
                 <label>Track filter<select value={filterTrack} onChange={(event) => setFilterTrack(event.target.value)}><option value="all">All tracks</option>{activeTracks.map((track) => <option key={track.id} value={track.id}>{track.title}</option>)}</select></label>
               </div>
               <div className="calendar-toolbar">
-                <label>Calendar range<select value={calendarView} onChange={(event) => setCalendarView(event.target.value as CalendarView)}><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></label>
+                <label>Calendar range<select value={calendarView} onChange={(event) => setCalendarView(event.target.value as CalendarView)}><option value="all">All dates</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></label>
                 <label>Anchor date<input type="date" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value || localDateKey(new Date()))} /></label>
-                <button type="button" className="secondary" onClick={() => setSelectedDate(calendarView === "monthly" ? addLocalMonths(selectedDate, -1) : addLocalDays(selectedDate, calendarView === "daily" ? -1 : -7))}>Previous</button>
-                <button type="button" className="secondary" onClick={() => setSelectedDate(calendarView === "monthly" ? addLocalMonths(selectedDate, 1) : addLocalDays(selectedDate, calendarView === "daily" ? 1 : 7))}>Next</button>
-                <span className="range-label">{range.start} – {range.end}</span>
+                <button type="button" className="secondary" disabled={calendarView === "all"} onClick={() => setSelectedDate(calendarView === "monthly" ? addLocalMonths(selectedDate, -1) : addLocalDays(selectedDate, calendarView === "daily" ? -1 : -7))}>Previous</button>
+                <button type="button" className="secondary" disabled={calendarView === "all"} onClick={() => setSelectedDate(calendarView === "monthly" ? addLocalMonths(selectedDate, 1) : addLocalDays(selectedDate, calendarView === "daily" ? 1 : 7))}>Next</button>
+                <span className="range-label">{range ? `${range.start} – ${range.end}` : "All dates"}</span>
               </div>
               {visibleTasks.length === 0 ? <div className="empty-state"><h3>No tasks in this view</h3><p>Create a task or change the selected date, range or track filter.</p></div> :
               view === "list" ? <ul className="task-list">{visibleTasks.map((task) => <li className="task-card" key={task.id}>
