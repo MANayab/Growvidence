@@ -2,19 +2,19 @@ import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-const JAVASCRIPT_REFERENCE = /\\.m?js(?:[?#][^"'\\s<>]*)?$/i;
+const JAVASCRIPT_REFERENCE = /\.m?js(?:[?#][^"'\s<>]*)?$/i;
 
 export function htmlJavaScriptReferences(html) {
   const references = new Set();
 
   for (const tagMatch of html.matchAll(/<[^>]+>/g)) {
     const tag = tagMatch[0];
-    const isScript = /^<script\\b/i.test(tag);
+    const isScript = /^<script\b/i.test(tag);
     const isModulePreload =
-      /^<link\\b/i.test(tag) && /\\brel=["']modulepreload["']/i.test(tag);
+      /^<link\b/i.test(tag) && /\brel=["']modulepreload["']/i.test(tag);
 
     for (const attributeMatch of tag.matchAll(
-      /([^\\s=]+)\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))/g,
+      /([^\s=]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g,
     )) {
       const name = attributeMatch[1].toLowerCase();
       const value =
@@ -70,7 +70,7 @@ export function resolveAssetPath(
   if (pathname.startsWith(basePath)) {
     pathname = pathname.slice(basePath.length);
   } else {
-    pathname = pathname.replace(/^\\/+/, "");
+    pathname = pathname.replace(/^\/+/, "");
   }
 
   return path.resolve(outputDirectory, pathname);
@@ -112,7 +112,7 @@ export async function collectLoadedJavaScript(
     if (
       !filePath ||
       !isInsideDirectory(filePath, outputDirectory) ||
-      !/\\.(?:js|mjs)$/i.test(filePath) ||
+      !/\.(?:js|mjs)$/i.test(filePath) ||
       collected.has(filePath)
     ) {
       continue;
@@ -127,9 +127,9 @@ export async function collectLoadedJavaScript(
     collected.add(filePath);
     const source = await readFile(filePath, "utf8");
     const imports = [
-      /\\b(?:import|export)\\s+[^"'()]*?\\s+from\\s*["']([^"']+)["']/g,
-      /\\bimport\\s*["']([^"']+)["']/g,
-      /\\bimport\\(\\s*["']([^"']+)["']\\s*\\)/g,
+      /\b(?:import|export)\s+[^"'()]*?\s+from\s*["']([^"']+)["']/g,
+      /\bimport\s*["']([^"']+)["']/g,
+      /\bimport\(\s*["']([^"']+)["']\s*\)/g,
     ];
 
     for (const pattern of imports) {
