@@ -21,7 +21,7 @@
 <p align="center"><em>Learning becomes more meaningful when practice produces evidence that can be independently reviewed.</em></p>
 
 > [!IMPORTANT]
-> **Current status (21 November 2026):** The public Astro landing page is live. The Slice 1 PR adds a noindex `/app/` shell, hash navigation, a persisted theme preference and a minimal IndexedDB tracks repository. Until that PR is merged and deployed, the published site remains the landing page. Track creation, task management, journal, competencies, evidence, exports and dashboard are not available.
+> **Current status (21 November 2026):** The public Astro landing page is live. Slice 1 has been merged: the noindex `/app/` shell, hash navigation, persisted theme preference and minimal IndexedDB persistence foundation are now on `main`. The deployment of this merged change has not been independently verified here. Track CRUD, task management, journal, competencies, evidence, exports and dashboard remain future slices.
 
 **Live site:** [https://manayab.github.io/Growvidence/](https://manayab.github.io/Growvidence/)
 
