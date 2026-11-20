@@ -47,10 +47,10 @@ erDiagram
 Mutable records include schemaVersion, createdAt and updatedAt. Prefer links over binary attachments initially. IndexedDB is not proposed as encrypted storage and is not protection against compromised same-origin scripts or devices.
 
 ## Backup format
-JSON backup includes format identifier, export version, timestamp, app schema version and arrays for supported stores. Validate all records and relationships before import; preview counts and require confirmation. Define merge/replace behavior explicitly. Reject unsupported versions, malformed records, duplicate IDs and broken references. CSV is not full-fidelity backup; escape formula-leading cells.
+JSON backup includes format identifier, export version, timestamp, app schema version and arrays for supported stores. Validate all records and relationships before import; preview both modes and require confirmation. Reject unsupported versions, malformed records, duplicate IDs and broken references. The accepted modes are “Replace everything” and “Merge (newer updatedAt wins)”: merge adds new IDs, replaces matching records only when the imported `updatedAt` is newer, and retains local records when timestamps are equal or imported timestamps are older. Apply either mode atomically; per-record conflict choices are deferred. Reject files above 10 MiB before parsing. CSV is not full-fidelity backup; escape formula-leading cells.
 
 ## Optional future sync schema — not MVP
 If approved, add Account and Device models. Candidate sync envelope fields: ownerId, deviceId, clientMutationId, serverVersion, baseVersion, syncedAt and deletedAt. Require explicit opt-in account linking, idempotent mutations, owner-scoped authorization and conflict detection. Preserve local-only use and export. This is conceptual, not a selected Supabase schema.
 
 ## Open questions
-Import merge/replace policy; attachment blobs; rubric migration; reviewer identity; browser data deletion limitations.
+Attachment blobs; rubric migration; reviewer identity; browser data deletion limitations.
