@@ -10,7 +10,7 @@ These contracts define the shape and invariants for local learner records. The T
 ## Shared conventions
 
 - IDs: UUID v4 strings generated with `crypto.randomUUID()`; never use names, email addresses or evidence content as IDs.
-- Dates: ISO 8601 UTC strings. Validate parseability and normalize to UTC on write.
+- Record metadata timestamps: ISO 8601 UTC strings, normalized to UTC on write. Task due dates are a separate local-calendar date-only value (`YYYY-MM-DD`) and are not converted to UTC.
 - Every mutable user-owned record includes `id`, `schemaVersion`, `createdAt`, `updatedAt`, and `deletedAt` (nullable).
 - Timestamps are system metadata, not proof of when a learner performed work.
 - Soft deletion sets `deletedAt`; normal views exclude deleted records. Soft-deleted records remain in JSON backups until permanently deleted. Provide per-record “Permanently delete” and “Delete all local data”; permanently deleted records are excluded from future backups.
