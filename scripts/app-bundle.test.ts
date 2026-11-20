@@ -20,7 +20,7 @@ afterEach(async () => {
 });
 
 describe("app bundle asset discovery", () => {
-  it("finds island, renderer, and recursively imported React chunks from Astro HTML", async () => {
+  it("discovers Astro island, renderer, and transitive JavaScript chunks", async () => {
     const outputDirectory = await mkdtemp(
       path.join(os.tmpdir(), "growvidence-bundle-"),
     );
