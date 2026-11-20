@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { FormEvent } from "react";
+import type { SyntheticEvent } from "react";
 
 import { addLocalDays, addLocalMonths, dateRangeFor, isDateInRange, localDateKey, type CalendarView } from "../domain/dates";
 import { openPersistence, PersistenceError, type PersistenceHandle, type StorageNotice } from "../persistence";
@@ -133,7 +133,7 @@ export default function WorkspaceIsland() {
     catch (error) { setNotice({ code: error instanceof PersistenceError ? error.code : "unknown", message: error instanceof Error ? error.message : "Theme could not be saved." }); }
     finally { setSaving(false); }
   }
-  async function saveTrack(event: FormEvent<HTMLFormElement>): Promise<void> {
+  async function saveTrack(event: SyntheticEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     const existing = tracks.find((item) => item.id === editingTrackId);
     const base = makeRecordBase(existing);
@@ -156,7 +156,7 @@ export default function WorkspaceIsland() {
     setTaskId(null); setTaskTitle(""); setTaskDescription(""); setTaskStatus("backlog"); setTaskPriority("normal");
     setTaskDueDate(""); setTaskEstimate(""); setTaskActual(""); setTaskTags("");
   }
-  async function saveTask(event: FormEvent<HTMLFormElement>): Promise<void> {
+  async function saveTask(event: SyntheticEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     const existing = tasks.find((item) => item.id === taskId);
     const base = makeRecordBase(existing);
