@@ -24,12 +24,12 @@
 
 ## Current product status
 
-The landing page and publishing pipeline exist. The learner-facing product does not yet exist. There is no dashboard, task manager, journal, competency assessment, evidence manager, IndexedDB persistence, JSON backup/restore or CSV export.
+The public landing page and publishing pipeline exist. The Slice 1 branch proposes the first `/app/` shell, settings preference and IndexedDB adapter; these changes are not yet merged or deployed. There is no track creation, task manager, journal, competency assessment, evidence manager, JSON backup/restore, CSV export or dashboard.
 
 MVP platform constraints:
 - GitHub Pages static files only; no server, runtime SSR, API routes or database server.
 - No account system or cloud sync in the MVP.
-- Learner records are intended to remain in browser storage; IndexedDB is proposed, not implemented.
+- Learner records are intended to remain in browser storage; the Slice 1 PR proposes IndexedDB v2 through a typed `idb` adapter, with settings and minimal tracks repositories.
 - Public content is indexable. Future `/app/` HTML must carry build-time noindex and remain out of the sitemap. Do not disallow it in robots.txt because crawlers must be able to read the noindex directive.
 - PWA/offline is optional future scope and must be explicitly confirmed before implementation.
 - No analytics or third-party scripts by default.
@@ -102,7 +102,7 @@ Update this roadmap only through focused pull requests. The maintainer reviews a
 | 8 | Reviews | Accepted: reviewerType is self or external; clearly distinguish in UI. Proposed Consistent corroboration weight: external 2, self 1. |
 | 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
 | 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
-| 11 | Bundle/charts | Accepted: 200 KiB gzip initial workspace JS excluding Astro-shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
+| 11 | Bundle/charts | Accepted: 200 KiB gzip for all JavaScript loaded by the initial workspace, including React runtime, Astro renderer, island and shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
 | 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
 
 ### Competency levels — NEEDS APPROVAL
