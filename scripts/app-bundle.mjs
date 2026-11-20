@@ -14,10 +14,11 @@ export function htmlJavaScriptReferences(html) {
       /^<link\b/i.test(tag) && /\brel=["']modulepreload["']/i.test(tag);
 
     for (const attributeMatch of tag.matchAll(
-      /([^\s=]+)\s*=\s*(?:"([^"]*)"|'([^']*)')/g,
+      /([^\s=]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g,
     )) {
       const name = attributeMatch[1].toLowerCase();
-      const value = attributeMatch[2] ?? attributeMatch[3] ?? "";
+      const value =
+        attributeMatch[2] ?? attributeMatch[3] ?? attributeMatch[4] ?? "";
 
       if (
         name === "component-url" ||
