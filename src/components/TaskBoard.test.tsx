@@ -1,3 +1,4 @@
+import { Children, isValidElement, type ReactElement } from "react";
 import { renderToString } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import TaskBoard from "./TaskBoard";
@@ -18,3 +19,16 @@ describe("TaskBoard keyboard-accessible status controls", () => {
     expect(html).toContain("<select");
   });
 });
+
+  it("routes a native status-select change through the keyboard-operable control", () => {
+    const onMove = vi.fn();
+    const board = TaskBoard({ tasks: [task], tracks: [], onMove, onEdit: vi.fn(), onDelete: vi.fn() });
+    const columns = Children.toArray(board.props.children).filter(isValidElement) as ReactElement[];
+    const backlogChildren = Children.toArray(columns[0].props.children);
+    const card = backlogChildren.find((node) => isValidElement(node) && node.type === "article") as ReactElement;
+    const cardChildren = Children.toArray(card.props.children);
+    const moveLabel = cardChildren.find((node) => isValidElement(node) && node.type === "label") as ReactElement;
+    const select = Children.toArray(moveLabel.props.children).find((node) => isValidElement(node) && node.type === "select") as ReactElement<{ onChange: (event: { target: { value: string } }) => void }>;
+    select.props.onChange({ target: { value: "today" } });
+    expect(onMove).toHaveBeenCalledWith(task.id, "today");
+  });
