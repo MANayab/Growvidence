@@ -127,7 +127,7 @@ export async function collectLoadedJavaScript(
     collected.add(filePath);
     const source = await readFile(filePath, "utf8");
     const imports = [
-      /\b(?:import|export)\s+[^"'()]*?\s+from\s*["']([^"']+)["']/g,
+      /\b(?:import|export)\s*[^"'()]*?\bfrom\s*["']([^"']+)["']/g,
       /\bimport\s*["']([^"']+)["']/g,
       /\bimport\(\s*["']([^"']+)["']\s*\)/g,
     ];
