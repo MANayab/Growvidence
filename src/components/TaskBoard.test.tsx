@@ -11,7 +11,7 @@ const task: Task = {
 };
 describe("TaskBoard keyboard-accessible status controls", () => {
   it("renders native labeled Move to selects and all five status options", () => {
-    const html = renderToString(<TaskBoard tasks={[task]} tracks={[]} onMove={vi.fn()} onEdit={vi.fn()} />);
+    const html = renderToString(<TaskBoard tasks={[task]} tracks={[]} onMove={vi.fn()} onEdit={vi.fn()} onDelete={vi.fn()} />);
     expect(html).toContain('aria-label="Task status board"');
     expect(html).toContain('aria-label="Move Build test to status"');
     for (const label of ["Backlog", "Today", "In progress", "Review", "Done"]) expect(html).toContain(label);
