@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const IsoDateTimeSchema = z.string().datetime({ offset: true });
+export const IsoDateTimeSchema = z.iso.datetime({ offset: true });
 
 const BaseRecordSchema = z.object({
   id: z.string().uuid(),
