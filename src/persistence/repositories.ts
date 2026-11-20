@@ -76,16 +76,9 @@ export class IndexedDbTracksRepository implements TracksRepository {
       if (!track) { await tx.done; return; }
       const now = new Date().toISOString();
       await tx.objectStore("tracks").put(TrackSchema.parse({ ...track, deletedAt: now, updatedAt: now }));
-      const cursor = await tx.objectStore("tasks").index("by_trackId").openCursor(id);
-      if (cursor) {
-        let current = cursor;
-        do {
-          const task = TaskSchema.parse(current.value);
-          if (!task.deletedAt) await current.update(TaskSchema.parse({ ...task, deletedAt: now, updatedAt: now }));
-          const next = await current.continue();
-          if (!next) break;
-          current = next;
-        } while (true);
+      for (let cursor = await tx.objectStore("tasks").index("by_trackId").openCursor(id); cursor; cursor = await cursor.continue()) {
+        const task = TaskSchema.parse(cursor.value);
+        if (!task.deletedAt) await cursor.update(TaskSchema.parse({ ...task, deletedAt: now, updatedAt: now }));
       }
       await tx.done;
     } catch (error) { throw toPersistenceError(error); }
@@ -94,15 +87,8 @@ export class IndexedDbTracksRepository implements TracksRepository {
     try {
       const tx = this.database.transaction(["tracks", "tasks"], "readwrite");
       void tx.done.catch(() => undefined);
-      const cursor = await tx.objectStore("tasks").index("by_trackId").openCursor(id);
-      if (cursor) {
-        let current = cursor;
-        do {
-          await current.delete();
-          const next = await current.continue();
-          if (!next) break;
-          current = next;
-        } while (true);
+      for (let cursor = await tx.objectStore("tasks").index("by_trackId").openCursor(id); cursor; cursor = await cursor.continue()) {
+        await cursor.delete();
       }
       await tx.objectStore("tracks").delete(id);
       await tx.done;
