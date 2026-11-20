@@ -24,10 +24,25 @@ export class PersistenceError extends Error {
 export function toPersistenceError(error: unknown): PersistenceError {
   if (error instanceof PersistenceError) return error;
   const name = error instanceof Error ? error.name : "";
+
   if (name === "QuotaExceededError") {
     return new PersistenceError(
       "quota-exceeded",
       "The browser's storage quota was exceeded. The save did not complete; existing records were not removed.",
+      { cause: error },
+    );
+  }
+  if (name === "VersionError") {
+    return new PersistenceError(
+      "migration-failed",
+      "This browser profile contains a newer Growvidence database version. This app will not downgrade or replace it; open the newer app version to continue.",
+      { cause: error },
+    );
+  }
+  if (name === "NotFoundError") {
+    return new PersistenceError(
+      "storage-cleared",
+      "The local database or a required store is no longer available. Browser site data may have been cleared; Growvidence cannot recover deleted data.",
       { cause: error },
     );
   }
