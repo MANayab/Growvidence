@@ -7,6 +7,7 @@ import {
   type StorageNotice,
 } from "../persistence";
 import type { ThemePreference, Track } from "../persistence/schemas";
+import "./WorkspaceIsland.css";
 
 const navigation = [
   { id: "tracks", label: "Tracks" },
