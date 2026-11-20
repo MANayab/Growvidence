@@ -195,7 +195,7 @@ Use plain, supportive language. Prefer “You have evidence for…” over “Yo
 | 8 | Reviews | Accepted: reviewerType is self or external; clearly distinguish in UI. Proposed Consistent corroboration weight: external 2, self 1. |
 | 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
 | 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
-| 11 | Bundle/charts | Accepted: 200 KiB gzip initial workspace JS excluding Astro-shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
+| 11 | Bundle/charts | Accepted: 200 KiB gzip for all JavaScript loaded by `/app/`, including Astro renderer, React runtime, island and shared/imported chunks; Slice 1 measured 95.51 KiB gzip. Hand-built SVG or lazy-loaded charts; bundle-size check required. |
 | 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
 
 ### Competency levels — NEEDS APPROVAL
@@ -211,4 +211,4 @@ Use plain, supportive language. Prefer “You have evidence for…” over “Yo
 - Reject import files above 10 MiB before parsing. Preview the effects of exactly two modes: “Replace everything” and “Merge (newer updatedAt wins)”. Merge adds new IDs, replaces matching records only when imported `updatedAt` is newer, and retains local records on equal or older imported timestamps. Per-record choices are deferred. Apply the selected mode atomically.
 - Evidence URLs accept HTTP/HTTPS only. Reject javascript:, data: and other schemes. External links use rel="noopener noreferrer"; never fetch, preview or embed.
 - Provide soft delete, per-record “Permanently delete” and “Delete all local data”. State clearly: **Soft-deleted items remain in JSON backups until permanently deleted.**
-- Initial workspace JS budget is 200 KiB gzip excluding Astro-shared assets. Charts are hand-built lightweight SVG or lazy-loaded; provide text/table alternatives and a bundle-size check.
+- All JavaScript loaded by `/app/` is included in the 200 KiB gzip budget, including Astro renderer, React runtime, island and shared/imported chunks. Slice 1 measured 95.51 KiB gzip. Charts are hand-built lightweight SVG or lazy-loaded; provide text/table alternatives and a bundle-size check.
