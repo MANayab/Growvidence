@@ -126,7 +126,8 @@ export class IndexedDbTasksRepository implements TasksRepository {
     try {
       const task = TaskSchema.parse(input);
       const track = await this.database.get("tracks", task.trackId);
-      if (!track || track.deletedAt || track.archivedAt) throw new PersistenceError("unknown", "Choose an active learning track before saving this task.");
+      const existing = await this.get(task.id);
+      if (!track || track.deletedAt || (track.archivedAt && (!existing || existing.trackId !== task.trackId))) throw new PersistenceError("unknown", "Choose an active learning track before creating a task. Existing tasks in archived tracks may still be updated.");
       await this.database.put("tasks", task);
       return task;
     } catch (error) { if (error instanceof PersistenceError) throw error; throw toPersistenceError(error); }
