@@ -71,6 +71,7 @@ export class IndexedDbTracksRepository implements TracksRepository {
   async softDelete(id: string): Promise<void> {
     try {
       const tx = this.database.transaction(["tracks", "tasks"], "readwrite");
+      void tx.done.catch(() => undefined);
       const track = await tx.objectStore("tracks").get(id);
       if (!track) { await tx.done; return; }
       const now = new Date().toISOString();
@@ -92,6 +93,7 @@ export class IndexedDbTracksRepository implements TracksRepository {
   async permanentlyDelete(id: string): Promise<void> {
     try {
       const tx = this.database.transaction(["tracks", "tasks"], "readwrite");
+      void tx.done.catch(() => undefined);
       const cursor = await tx.objectStore("tasks").index("by_trackId").openCursor(id);
       if (cursor) {
         let current = cursor;
