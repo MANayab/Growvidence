@@ -1,7 +1,7 @@
 # Growvidence roadmap
 
 **Last updated:** 2026-11-21  
-**Current state:** Phase 1 static foundation is complete, merged and deployed. PR #7 dependency remediation is merged. The public landing page is live. The interactive learner application has not been implemented. Phase 2 design is being proposed in a docs-only PR; architecture and rubric recommendations require maintainer approval.
+**Current state:** Phase 1 static foundation is complete, merged and deployed. PR #7 dependency remediation and PR #8 Phase 2 design are merged. This follow-up records maintainer-approved Phase 2 decisions; the learner application has not been implemented.
 
 ## Completed
 
@@ -44,9 +44,9 @@ The Phase 2 design package proposes:
 4. **mind.md:** measurable evidence criteria proposed for all six competency areas. Every proposed criterion and the “Demonstrated” threshold is marked **NEEDS APPROVAL**.
 5. **UX_SPEC.md:** overview, daily/weekly/monthly views, tracks, task list/Kanban, journal, competencies/evidence, data settings, accessibility, responsive behavior and Mermaid flows.
 6. **TESTING_PLAN.md:** unit, persistence, E2E, accessibility, privacy/security and performance test plan; seven implementation slices plus optional PWA; each slice includes acceptance criteria and a learning exercise.
-7. Consolidated open decisions with recommendations for maintainer response.
+7. Decisions log recording twelve accepted recommendations and two competency definitions that remain NEEDS APPROVAL.
 
-These ADRs and recommendations are proposals, not approved architecture. No app code, new dependency, IndexedDB schema or rubric behavior is implemented by the design package. Do not start a feature slice until the maintainer reviews and merges the design PR and answers or explicitly defers the open decisions.
+The architecture, persistence approach and twelve product recommendations were accepted on 2026-11-21. The two competency-level definitions remain NEEDS APPROVAL. No app code, new dependency or IndexedDB schema is implemented by these documentation decisions. Implementation requires a separate focused PR and explicit “next” from the maintainer.
 
 ## Build slices — each a separate PR after Phase 2 design is approved and merged
 
@@ -87,3 +87,26 @@ Do not introduce payments or paid gates before user research, product validation
 - Test latest PR head; do not infer success from an earlier commit.
 
 Update this roadmap only through focused pull requests. The maintainer reviews and merges every PR.
+
+## Decisions log — 2026-11-21
+
+| # | Decision | Outcome |
+|---|---|---|
+| 1 | Workspace UI | Accepted: Astro static site with React islands; Preact only if measured bundle constraints justify it. |
+| 2 | IndexedDB | Accepted: idb behind a typed repository adapter. |
+| 3 | Competency levels | NEEDS APPROVAL: Demonstrated and Consistent definitions remain proposed. |
+| 4 | Import limit | Accepted: 10 MiB; reject larger files before parsing/writing. |
+| 5 | Import modes | Accepted: preview, then “Replace everything” or “Merge (newer updatedAt wins)”; atomic application. Per-record choices deferred. |
+| 6 | Backup reminders | Accepted: dismissible reminder 30 days after last successful export, plus first-export prompt after meaningful data accumulates. |
+| 7 | Evidence URLs | Accepted: HTTP/HTTPS only; reject other schemes; external links use rel="noopener noreferrer"; never fetch, preview or embed. |
+| 8 | Reviews | Accepted: reviewerType is self or external; clearly distinguish in UI. Proposed Consistent corroboration weight: external 2, self 1. |
+| 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
+| 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
+| 11 | Bundle/charts | Accepted: 200 KiB gzip initial workspace JS excluding Astro-shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
+| 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
+
+### Competency levels — NEEDS APPROVAL
+
+- **Demonstrated (NEEDS APPROVAL):** every mandatory criterion has at least one independent artifact.
+- **Consistent (NEEDS APPROVAL):** the demonstration is repeated in a different task or context.
+- Proposed Consistent corroboration: external review weight 2, self review weight 1. Reviews cannot replace the required independent artifact or repeated demonstration.
