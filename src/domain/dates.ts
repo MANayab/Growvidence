@@ -18,6 +18,16 @@ export function addLocalDays(value: string, amount: number): string {
   date.setDate(date.getDate() + amount);
   return localDateKey(date);
 }
+export function addLocalMonths(value: string, amount: number): string {
+  if (!Number.isInteger(amount)) throw new RangeError("Month offset must be an integer.");
+  const date = parseLocalDate(value);
+  const originalDay = date.getDate();
+  date.setDate(1);
+  date.setMonth(date.getMonth() + amount);
+  const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0, 12).getDate();
+  date.setDate(Math.min(originalDay, lastDay));
+  return localDateKey(date);
+}
 export function startOfWeekMonday(value: string): string {
   const date = parseLocalDate(value);
   const offset = (date.getDay() + 6) % 7;
