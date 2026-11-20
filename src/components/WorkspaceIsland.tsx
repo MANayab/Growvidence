@@ -112,15 +112,17 @@ export default function WorkspaceIsland() {
     return () => { active = false; handle?.close(); };
   }, []);
 
-  async function perform(action: () => Promise<unknown>, success: string): Promise<void> {
-    if (!persistence || saving) return;
+  async function perform(action: () => Promise<unknown>, success: string): Promise<boolean> {
+    if (!persistence || saving) return false;
     setSaving(true);
     try {
       await action();
       await refresh(persistence);
       setNotice({ code: "ready", message: success });
+      return true;
     } catch (error) {
       setNotice({ code: error instanceof PersistenceError ? error.code : "unknown", message: error instanceof Error ? error.message : "The change could not be saved." });
+      return false;
     } finally { setSaving(false); }
   }
   async function changeTheme(next: ThemePreference): Promise<void> {
@@ -134,8 +136,8 @@ export default function WorkspaceIsland() {
     event.preventDefault();
     const existing = tracks.find((item) => item.id === editingTrackId);
     const base = makeRecordBase(existing);
-    await perform(() => persistence!.tracks.save({ ...base, title: trackTitle, description: trackDescription, archivedAt: existing?.archivedAt ?? null }), existing ? "Track updated." : "Track created.");
-    setTrackTitle(""); setTrackDescription(""); setEditingTrackId(null);
+    const saved = await perform(() => persistence!.tracks.save({ ...base, title: trackTitle, description: trackDescription, archivedAt: existing?.archivedAt ?? null }), existing ? "Track updated." : "Track created.");
+    if (saved) { setTrackTitle(""); setTrackDescription(""); setEditingTrackId(null); }
   }
   async function addStarterTracks(): Promise<void> {
     if (!persistence || saving) return;
@@ -164,14 +166,16 @@ export default function WorkspaceIsland() {
       actualMinutes: taskActual === "" ? null : Number(taskActual),
       tags: [...new Set(taskTags.split(",").map((tag) => tag.trim()).filter(Boolean))],
     };
-    await perform(() => persistence!.tasks.save(record), existing ? "Task updated." : "Task created.");
-    clearTaskForm();
+    const saved = await perform(() => persistence!.tasks.save(record), existing ? "Task updated." : "Task created.");
+    if (saved) clearTaskForm();
   }
   async function moveTask(id: string, status: TaskStatus): Promise<void> {
     await perform(() => persistence!.tasks.move(id, status), `Task moved to ${statusLabel(status)}.`);
   }
 
   const activeTracks = tracks.filter((track) => !track.archivedAt && !track.deletedAt);
+  const taskTrackOptions = tracks.filter((track) => !track.deletedAt && (!track.archivedAt || track.id === taskTrackId));
+  const canSaveTask = activeTracks.length > 0 || Boolean(taskId && taskTrackOptions.some((track) => track.id === taskTrackId));
   const range = dateRangeFor(selectedDate, calendarView);
   const visibleTasks = useMemo(() => tasks.filter((task) =>
     (filterTrack === "all" || task.trackId === filterTrack) &&
@@ -208,7 +212,7 @@ export default function WorkspaceIsland() {
               <ul className="track-list">{tracks.map((track) => <li className="track-card" key={track.id}>
                 <div className="card-heading"><div><h3>{track.title}</h3>{track.description ? <p>{track.description}</p> : null}<span>{track.deletedAt ? "Deleted" : track.archivedAt ? "Archived" : "Active"}</span></div></div>
                 <div className="form-actions">
-                  <button type="button" className="secondary" onClick={() => { setEditingTrackId(track.id); setTrackTitle(track.title); setTrackDescription(track.description); }}>Edit</button>
+                  {!track.deletedAt ? <button type="button" className="secondary" onClick={() => { setEditingTrackId(track.id); setTrackTitle(track.title); setTrackDescription(track.description); }}>Edit</button> : null}
                   {!track.archivedAt && !track.deletedAt ? <button type="button" className="secondary" disabled={saving} onClick={() => void perform(() => persistence!.tracks.archive(track.id), "Track archived.")}>Archive</button> : null}
                   {!track.deletedAt ? <button type="button" className="danger" disabled={saving} onClick={() => { if (window.confirm("Soft-delete this track and its tasks? They will remain in JSON backups until permanently deleted.")) void perform(() => persistence!.tracks.softDelete(track.id), "Track and its tasks moved to deleted records."); }}>Delete</button> : null}
                   {track.deletedAt ? <button type="button" className="danger" disabled={saving} onClick={() => { if (window.confirm("Permanently delete this track and every task in it? This cannot be undone. Soft-deleted items stay in backups until permanently deleted.")) void perform(() => persistence!.tracks.permanentlyDelete(track.id), "Track and its tasks permanently deleted."); }}>Permanently delete</button> : null}
@@ -223,7 +227,7 @@ export default function WorkspaceIsland() {
                 <label>Title<input required maxLength={160} value={taskTitle} onChange={(event) => setTaskTitle(event.target.value)} /></label>
                 <label>Description<textarea rows={3} maxLength={5000} value={taskDescription} onChange={(event) => setTaskDescription(event.target.value)} /></label>
                 <div className="form-grid">
-                  <label>Track<select required value={taskTrackId} onChange={(event) => setTaskTrackId(event.target.value)}><option value="">Choose a track</option>{activeTracks.map((track) => <option key={track.id} value={track.id}>{track.title}</option>)}</select></label>
+                  <label>Track<select required value={taskTrackId} onChange={(event) => setTaskTrackId(event.target.value)}><option value="">Choose a track</option>{taskTrackOptions.map((track) => <option key={track.id} value={track.id}>{track.title}{track.archivedAt ? " (archived)" : ""}</option>)}</select></label>
                   <label>Priority<select value={taskPriority} onChange={(event) => setTaskPriority(event.target.value as TaskPriority)}><option value="low">Low</option><option value="normal">Normal</option><option value="high">High</option></select></label>
                   <label>Status<select value={taskStatus} onChange={(event) => setTaskStatus(event.target.value as TaskStatus)}>{statuses.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label>
                   <label>Due date<input type="date" value={taskDueDate} onChange={(event) => setTaskDueDate(event.target.value)} /></label>
@@ -231,7 +235,7 @@ export default function WorkspaceIsland() {
                   <label>Actual minutes<input type="number" min="0" max="10080" value={taskActual} onChange={(event) => setTaskActual(event.target.value)} /></label>
                 </div>
                 <label>Tags (comma separated)<input value={taskTags} onChange={(event) => setTaskTags(event.target.value)} placeholder="practice, portfolio, review" /></label>
-                <div className="form-actions"><button type="submit" disabled={saving || !persistence || activeTracks.length === 0}>{taskId ? "Save task" : "Add task"}</button>{taskId ? <button type="button" className="secondary" onClick={clearTaskForm}>Cancel edit</button> : null}</div>
+                <div className="form-actions"><button type="submit" disabled={saving || !persistence || !canSaveTask}>{taskId ? "Save task" : "Add task"}</button>{taskId ? <button type="button" className="secondary" onClick={clearTaskForm}>Cancel edit</button> : null}</div>
               </form>
               <div className="task-toolbar">
                 <div className="view-switch" role="group" aria-label="Task presentation"><button type="button" aria-pressed={view === "list"} onClick={() => setView("list")}>List</button><button type="button" aria-pressed={view === "board"} onClick={() => setView("board")}>Status board</button></div>
