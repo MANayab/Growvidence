@@ -26,7 +26,7 @@ describe("TaskBoard keyboard-accessible status controls", () => {
     const backlogChildren = Children.toArray(columns[0].props.children);
     const card = backlogChildren.find((node) => isValidElement(node) && node.type === "article") as ReactElement<{ children?: ReactNode }>;
     const cardChildren = Children.toArray(card.props.children);
-    const moveLabel = cardChildren.find((node) => isValidElement(node) && node.type === "label") as ReactElement;
+    const moveLabel = cardChildren.find((node) => isValidElement(node) && node.type === "label") as ReactElement<{ children?: ReactNode }>;
     const select = Children.toArray(moveLabel.props.children).find((node) => isValidElement(node) && node.type === "select") as ReactElement<{ children?: ReactNode; onChange: (event: { target: { value: string } }) => void }>;
     select.props.onChange({ target: { value: "today" } });
     expect(onMove).toHaveBeenCalledWith(task.id, "today");
