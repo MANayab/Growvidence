@@ -8,6 +8,7 @@ const outputDirectory = path.resolve("dist");
 const limitBytes = 200 * 1024;
 const appHtmlPath = path.join(outputDirectory, "app", "index.html");
 const basePath = "/Growvidence/";
+const siteOrigin = "https://manayab.github.io";
 
 function attributeValue(tag, attribute) {
   return tag.match(new RegExp(attribute + '="([^"]+)"', "i"))?.[1];
@@ -40,9 +41,9 @@ function htmlJavaScriptReferences(html) {
 function resolveAsset(reference, parentFile) {
   const resolved = parentFile
     ? new URL(reference, pathToFileURL(parentFile))
-    : new URL(reference, "https://growvidence.invalid");
+    : new URL(reference, siteOrigin);
   if (resolved.protocol === "file:") return fileURLToPath(resolved);
-  if (resolved.origin !== "https://growvidence.invalid") return null;
+  if (resolved.origin !== siteOrigin) return null;
 
   let pathname = decodeURIComponent(resolved.pathname);
   if (pathname.startsWith(basePath)) pathname = pathname.slice(basePath.length);
