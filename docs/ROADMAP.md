@@ -26,6 +26,16 @@
 
 The public landing page and publishing pipeline exist. Slice 1 provides the `/app/` shell, settings preference and IndexedDB v2 adapter. Slice 2 implements track/task workflows and a v3 task store on its review branch; it is not merged or deployed. Journal, competency assessment, evidence manager, JSON backup/restore, CSV export and dashboard remain future slices.
 
+## Slice 2 — Tracks and tasks (implementation on review branch)
+
+Implemented on `feat/slice-2-tracks-tasks`, pending local verification, latest-head CI and maintainer review:
+- Track create/rename/archive/soft-delete/permanent-delete; optional six suggested learning-area tracks from `mind.md`, never automatically seeded.
+- Task create/edit, list and status board; five statuses, priority, local due date, estimate/actual minutes and tags.
+- Native labeled “Move to…” controls; no drag-and-drop dependency.
+- Daily/weekly/monthly due-date views; Monday week start and local date-only storage.
+- IndexedDB v3 migration, Zod contracts, repositories, repository/date/component tests.
+- No journal, competency, evidence, dashboard, backup/import/export or PWA functionality is added by this slice.
+
 MVP platform constraints:
 - GitHub Pages static files only; no server, runtime SSR, API routes or database server.
 - No account system or cloud sync in the MVP.
