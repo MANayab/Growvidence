@@ -60,6 +60,30 @@ describe("database migrations", () => {
     });
   });
 
+  it("upgrades the current version 2 schema to version 3 and creates task indexes", async () => {
+    const name = nextName();
+    const previous = await openDB<GrowvidenceDB>(name, 2, {
+      upgrade(db) {
+        db.createObjectStore("meta", { keyPath: "key" });
+        db.createObjectStore("settings", { keyPath: "id" });
+        const tracks = db.createObjectStore("tracks", { keyPath: "id" });
+        tracks.createIndex("by_updatedAt", "updatedAt");
+        db.createObjectStore("tasks", { keyPath: "id" });
+      },
+    });
+    previous.close();
+
+    const upgraded = await openDatabase({ databaseName: name });
+    opened.push(upgraded);
+    expect(upgraded.version).toBe(3);
+    const taskStore = upgraded.transaction("tasks").store;
+    expect(taskStore.indexNames.contains("by_trackId")).toBe(true);
+    expect(taskStore.indexNames.contains("by_status")).toBe(true);
+    expect(taskStore.indexNames.contains("by_dueDate")).toBe(true);
+    expect(taskStore.indexNames.contains("by_updatedAt")).toBe(true);
+    expect(await upgraded.get("meta", "schemaVersion")).toEqual({ key: "schemaVersion", value: 3 });
+  });
+
   it("aborts a broken upgrade, preserves prior data/version and handles transaction rejection", async () => {
     const name = nextName();
     const previous = await openDB<GrowvidenceDB>(name, 1, {
