@@ -40,17 +40,22 @@ for (const filePath of [...assets].sort()) {
   });
 }
 
-console.log("JavaScript loaded by /app/ (each file gzip-compressed independently):");
+console.log("JavaScript loaded by /app/ (gzip sizes are per-file):");
 for (const report of reports) {
   console.log(
-    `  ${report.file}: ${report.rawBytes.toLocaleString("en-US")} bytes raw; ${report.gzipBytes.toLocaleString("en-US")} bytes gzip (${(report.gzipBytes / 1024).toFixed(2)} KiB)`,
+    `  ${report.file}: ${report.rawBytes.toLocaleString("en-US")} bytes raw; ` +
+      `${report.gzipBytes.toLocaleString("en-US")} bytes gzip ` +
+      `(${(report.gzipBytes / 1024).toFixed(2)} KiB)`,
   );
 }
 console.log(
-  `Total /app/ JavaScript: ${totalGzipBytes.toLocaleString("en-US")} bytes gzip (${(totalGzipBytes / 1024).toFixed(2)} KiB) across ${reports.length} files; limit ${limitBytes.toLocaleString("en-US")} bytes (200 KiB).`,
+  `Total /app/ JavaScript: ${totalGzipBytes.toLocaleString("en-US")} bytes gzip ` +
+    `(${(totalGzipBytes / 1024).toFixed(2)} KiB) across ${reports.length} files; ` +
+    `limit ${limitBytes.toLocaleString("en-US")} bytes (200 KiB).`,
 );
 
 assert.ok(
   totalGzipBytes <= limitBytes,
-  `All /app/ JavaScript totals ${(totalGzipBytes / 1024).toFixed(2)} KiB gzip, exceeding the 200 KiB budget by ${((totalGzipBytes - limitBytes) / 1024).toFixed(2)} KiB.`,
+  `All /app/ JavaScript totals ${(totalGzipBytes / 1024).toFixed(2)} KiB gzip, ` +
+    `exceeding the 200 KiB budget by ${((totalGzipBytes - limitBytes) / 1024).toFixed(2)} KiB.`,
 );
