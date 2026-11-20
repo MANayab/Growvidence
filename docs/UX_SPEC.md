@@ -56,7 +56,7 @@ Avoid gamified scores that imply mastery. Streaks, if later included, are option
 - Implemented statuses: Backlog, Today, In progress, Review and Done.
 - Implemented task fields: title, description, track, priority, optional local-calendar due date, status, estimated minutes, actual minutes and tags.
 - The status board uses native, explicitly labeled “Move to…” select controls. These are keyboard and screen-reader operable; drag-and-drop is not included.
-- Slice 2 provides list/board switching, track filtering and daily/weekly/monthly due-date views with no-results states. Status/priority filters remain future refinement.
+- Slice 2 provides list/board switching, track filtering, an All dates view (including undated tasks) and daily/weekly/monthly due-date views with no-results states. Status/priority filters remain future refinement.
 - Completing a task records task status only. UI must not display “skill mastered” as a result.
 
 ### Journal
