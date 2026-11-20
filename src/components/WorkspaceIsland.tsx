@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { addLocalDays, dateRangeFor, isDateInRange, localDateKey, type CalendarView } from "../domain/dates";
+import { addLocalDays, addLocalMonths, dateRangeFor, isDateInRange, localDateKey, type CalendarView } from "../domain/dates";
 import { openPersistence, PersistenceError, type PersistenceHandle, type StorageNotice } from "../persistence";
 import TaskBoard from "./TaskBoard";
 import type { Task, TaskPriority, TaskStatus, ThemePreference, Track } from "../persistence/schemas";
@@ -240,8 +240,8 @@ export default function WorkspaceIsland() {
               <div className="calendar-toolbar">
                 <label>Calendar range<select value={calendarView} onChange={(event) => setCalendarView(event.target.value as CalendarView)}><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></label>
                 <label>Anchor date<input type="date" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} /></label>
-                <button type="button" className="secondary" onClick={() => setSelectedDate(addLocalDays(selectedDate, calendarView === "daily" ? -1 : calendarView === "weekly" ? -7 : -new Date(selectedDate + "T12:00:00").getDate()))}>Previous</button>
-                <button type="button" className="secondary" onClick={() => setSelectedDate(addLocalDays(selectedDate, calendarView === "daily" ? 1 : calendarView === "weekly" ? 7 : new Date(new Date(selectedDate + "T12:00:00").getFullYear(), new Date(selectedDate + "T12:00:00").getMonth() + 1, 0).getDate()))}>Next</button>
+                <button type="button" className="secondary" onClick={() => setSelectedDate(calendarView === "monthly" ? addLocalMonths(selectedDate, -1) : addLocalDays(selectedDate, calendarView === "daily" ? -1 : -7))}>Previous</button>
+                <button type="button" className="secondary" onClick={() => setSelectedDate(calendarView === "monthly" ? addLocalMonths(selectedDate, 1) : addLocalDays(selectedDate, calendarView === "daily" ? 1 : 7))}>Next</button>
                 <span className="range-label">{range.start} – {range.end}</span>
               </div>
               {visibleTasks.length === 0 ? <div className="empty-state"><h3>No tasks in this view</h3><p>Create a task or change the selected date, range or track filter.</p></div> :
