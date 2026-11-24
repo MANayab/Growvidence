@@ -107,7 +107,7 @@ export const JournalEntrySchema = BaseRecord.extend({
   title: z.string().trim().min(1).max(160),
   summary: z.string().max(4000).default(""),
   reflection: z.string().max(10000),
-  attemptedAt: IsoDateTime.nullable().default(null),
+  // Removed in Slice 3: attemptedAt. The canonical date is date-only YYYY-MM-DD.\n  date: z.string().regex(/^\\d{4}-\\d{2}-\\d{2}$/),
   aiUse: AiUseDisclosureSchema,
 });
 export type JournalEntry = z.infer<typeof JournalEntrySchema>;
