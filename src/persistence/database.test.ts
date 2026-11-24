@@ -189,7 +189,7 @@ describe("database migrations", () => {
         key: "schemaVersion",
         value: 4,
       });
-  },
+    },
   );
 
   it("aborts a broken upgrade, preserves prior data/version and handles transaction rejection", async () => {
@@ -311,7 +311,7 @@ describe("database migrations", () => {
         key: "sentinel",
         value: "keep",
       });
-  },
+    },
   );
 
 
