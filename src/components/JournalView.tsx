@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { filterJournalEntries, summarizeJournal, AI_USE_MODES } from "../domain/journal";
 import type { PersistenceHandle } from "../persistence";
 import type { AiUseMode, JournalEntry, Task, Track } from "../persistence/schemas";
@@ -39,7 +39,7 @@ export default function JournalView({ persistence, tracks, tasks, saving, onRefr
   const [error, setError] = useState("");
   const focusTarget = useRef<HTMLHeadingElement>(null);
   async function reload() { setEntries(await persistence.journal.list({ includeDeleted: true })); }
-  useMemo(() => { void reload(); }, [persistence]);
+  useEffect(() => { void reload(); }, [persistence]);
   const activeEntries = entries.filter((entry) => entry.deletedAt === null);
   const deletedEntries = entries.filter((entry) => entry.deletedAt !== null);
   const visible = filterJournalEntries(activeEntries, { trackId: filterTrack, startDate, endDate, aiUseMode: filterMode });
