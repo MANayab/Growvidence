@@ -2,7 +2,8 @@ import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import JournalView from "./JournalView";
 import type { PersistenceHandle } from "../persistence";
-const fake = { journal: { list: async () => [], save: async (e:any)=>e, softDelete: async ()=>{}, permanentlyDelete: async ()=>{} } } as unknown as PersistenceHandle;
+import type { JournalEntry } from "../persistence/schemas";
+const fake = { journal: { list: async () => [], save: async (e:JournalEntry)=>e, softDelete: async ()=>{}, permanentlyDelete: async ()=>{} } } as unknown as PersistenceHandle;
 describe("JournalView", () => {
   it("renders labelled journal fields and all disclosure categories with neutral default", () => {
     const html=renderToString(<JournalView persistence={fake} tracks={[]} tasks={[]} saving={false} onRefresh={async()=>{}} />);
