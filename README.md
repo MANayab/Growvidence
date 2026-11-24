@@ -21,7 +21,7 @@
 <p align="center"><em>Learning becomes more meaningful when practice produces evidence that can be independently reviewed.</em></p>
 
 > [!IMPORTANT]
-> **Current status (25 November 2026):** The public Astro landing page is live. Slice 1 is merged on `main`; its app-shell deployment has not been independently verified. This branch contains the Slice 2 track/task implementation for review; it is not merged into `main` or confirmed on the published site. Journal, competencies, evidence, exports and dashboard remain future slices.
+> **Current status (25 November 2026):** The public Astro landing page is live. Slice 1 (app shell) and Slice 2 (tracks/tasks, PR #12) are merged on `main`; the merged app shell has not been independently verified on the published site. Slice 3 adds the learning journal and AI-use disclosure on a separate review branch and is not merged/deployed yet. Competencies, evidence, backup/import/export and dashboard remain future slices.
 
 **Live site:** [https://manayab.github.io/Growvidence/](https://manayab.github.io/Growvidence/)
 
