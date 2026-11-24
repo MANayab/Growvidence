@@ -80,9 +80,19 @@ describe("task repository", () => {
     const persistence = await createPersistence();
     await persistence.tracks.save(track);
     await persistence.tasks.save(task);
-    expect(await persistence.tasks.get(task.id)).toMatchObject({ title: task.title, actualMinutes: 15 });
-    await expect(persistence.tasks.save({ ...task, dueDate: "2026-02-30" })).rejects.toThrow();
-    await expect(persistence.tasks.save({ ...task, trackId: "c2f3d74c-27b7-4d1f-9f80-4b7d2f36b4c9" })).rejects.toThrow("active learning track");
+    expect(await persistence.tasks.get(task.id)).toMatchObject({
+      title: task.title,
+      actualMinutes: 15,
+    });
+    await expect(
+      persistence.tasks.save({ ...task, dueDate: "2026-02-30" }),
+    ).rejects.toThrow();
+    await expect(
+      persistence.tasks.save({
+        ...task,
+        trackId: "c2f3d74c-27b7-4d1f-9f80-4b7d2f36b4c9",
+      }),
+    ).rejects.toThrow("active learning track");
   });
 
   it("soft-deletes tracks and dependent tasks, then permanently removes both", async () => {
@@ -93,7 +103,9 @@ describe("task repository", () => {
     expect(await persistence.tracks.list()).toHaveLength(0);
     expect(await persistence.tracks.list(true, true)).toHaveLength(1);
     expect(await persistence.tasks.list()).toHaveLength(0);
-    expect(await persistence.tasks.list({ includeDeleted: true })).toHaveLength(1);
+    expect(await persistence.tasks.list({ includeDeleted: true })).toHaveLength(
+      1,
+    );
     await persistence.tracks.permanentlyDelete(track.id);
     expect(await persistence.tracks.get(track.id)).toBeUndefined();
     expect(await persistence.tasks.get(task.id)).toBeUndefined();
@@ -105,7 +117,9 @@ describe("task repository", () => {
     await persistence.tasks.save(task);
     await persistence.tracks.archive(track.id);
     expect(await persistence.tasks.get(task.id)).toBeDefined();
-    expect(await persistence.tasks.move(task.id, "done")).toMatchObject({ status: "done" });
+    expect(await persistence.tasks.move(task.id, "done")).toMatchObject({
+      status: "done",
+    });
   });
 
   it("soft-deletes and permanently deletes an individual task", async () => {
@@ -114,7 +128,9 @@ describe("task repository", () => {
     await persistence.tasks.save(task);
     await persistence.tasks.softDelete(task.id);
     expect(await persistence.tasks.list()).toHaveLength(0);
-    expect(await persistence.tasks.list({ includeDeleted: true })).toHaveLength(1);
+    expect(await persistence.tasks.list({ includeDeleted: true })).toHaveLength(
+      1,
+    );
     await persistence.tasks.permanentlyDelete(task.id);
     expect(await persistence.tasks.get(task.id)).toBeUndefined();
   });
