@@ -1,6 +1,6 @@
 # Learner workspace UX specification
 
-- **Status:** Slice 1 shell is merged. Tracks and tasks in this specification are implemented on `feat/slice-2-tracks-tasks` CI-verified on PR #12 head `54e15c95fe72f830c9c2b6458bfa6d47edae3`; not merged or deployed. Journal, competencies, evidence, data backup/import and dashboard remain proposed.
+- **Status:** Slice 1 and Slice 2 (tracks/tasks, PR #12) are merged. Slice 3 Journal workflows are implemented on the review branch `feat/slice-3-journal-ai-disclosure`; not yet merged or deployed. Competencies, evidence, data backup/import and dashboard remain proposed.
 - **Audience:** IT beginners, students, self-taught learners and reviewers.
 - **Product promise:** “Don't just learn. Prove your progress.”
 - **Core rule:** task completion records activity; competency status requires criteria and evidence.
@@ -62,10 +62,12 @@ Avoid gamified scores that imply mastery. Streaks, if later included, are option
 ### Journal
 
 - Create an entry independently or from a task.
-- Fields: title, summary, reflection, optional attempted-at date, optional task link and required AI-use disclosure.
-- AI-use modes: unassisted, assisted, partially assisted, unknown and not recorded.
-- When assisted or partially assisted, ask which tool(s) were used, what AI generated and what the learner personally contributed. These fields may be concise but must not be fabricated.
-- If unknown/not recorded, show a neutral “disclosure incomplete/uncertain” state rather than treating it as unassisted.
+- Implemented in Slice 3: title, learned, blocked, next, optional track/task links, confidence (1–5), minutes spent, local learning date and AI-use disclosure.
+- The canonical learning date is `date`, stored as date-only `YYYY-MM-DD` and never converted through UTC. The earlier `attemptedAt` field is removed; do not store both.
+- AI-use modes: assisted, unassisted, partially assisted, unknown and not recorded. New and imported records default to `not_recorded` until disclosure is chosen.
+- Disclosure object includes mode, optional tool name and what was generated. Unknown and not recorded remain separate categories and are never treated as unassisted in filters, summaries or exports.
+- Journal list filters by track, inclusive date range and AI-use mode. Summary reports counts and minutes for all five categories separately.
+- Soft-delete and permanent-delete are supported with confirmation; deleting a track/task does not delete journal entries, and unavailable references remain safe to display/edit.
 - Empty state: prompt the learner to record one attempt, obstacle, decision and next step.
 
 ### Competencies and evidence
