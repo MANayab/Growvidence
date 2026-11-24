@@ -45,6 +45,7 @@ export default function JournalView({ persistence, tracks, tasks, saving, onRefr
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{ title?: string; confidence?: string; minutes?: string; date?: string }>({});
   const headingRef = useRef<HTMLHeadingElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
@@ -72,7 +73,7 @@ export default function JournalView({ persistence, tracks, tasks, saving, onRefr
     setEditing(entry); setTitle(entry.title); setLearned(entry.learned); setBlocked(entry.blocked); setNext(entry.next);
     setTrackId(entry.trackId ?? ""); setTaskId(entry.taskId ?? ""); setConfidence(String(entry.confidence));
     setMinutes(String(entry.minutesSpent)); setDate(entry.date); setMode(entry.aiUse.mode); setTool(entry.aiUse.tool);
-    setGenerated(entry.aiUse.whatWasGenerated); setError(""); setMessage("");
+    setGenerated(entry.aiUse.whatWasGenerated); setError(""); setMessage(""); setFieldErrors({});
     titleRef.current?.focus();
   }
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -162,11 +163,11 @@ export default function JournalView({ persistence, tracks, tasks, saving, onRefr
       <label htmlFor="journal-blocked">What blocked me<textarea id="journal-blocked" maxLength={5000} rows={3} value={blocked} onChange={(event) => setBlocked(event.target.value)} /></label>
       <label htmlFor="journal-next">What I’ll do next<textarea id="journal-next" maxLength={5000} rows={3} value={next} onChange={(event) => setNext(event.target.value)} /></label>
       <div className="form-grid">
-        <label htmlFor="journal-track">Track (optional)<select id="journal-track" value={trackId} onChange={(event) => { setTrackId(event.target.value); setTaskId(""); }}><option value="">No track</option>{trackId && !tracks.some((track) => track.id === trackId) && <option value={trackId}>Deleted or unavailable track (keep link)</option>}{tracks.filter((track) => !track.deletedAt).map((track) => <option key={track.id} value={track.id}>{track.title}{track.archivedAt ? " (archived)" : ""}</option>)}</select></label>
-        <label htmlFor="journal-task">Task (optional)<select id="journal-task" value={taskId} onChange={(event) => setTaskId(event.target.value)}><option value="">No task</option>{taskId && (!tasks.some((task) => task.id === taskId) || (linkedTask && trackId && linkedTask.trackId !== trackId)) && <option value={taskId}>Deleted or unavailable task (keep link)</option>}{tasks.filter((task) => !task.deletedAt && (!trackId || task.trackId === trackId)).map((task) => <option key={task.id} value={task.id}>{task.title}{task.deletedAt ? " (deleted)" : ""}</option>)}</select></label>
-        <label htmlFor="journal-confidence">Confidence (1–5)<select id="journal-confidence" required value={confidence} onChange={(event) => setConfidence(event.target.value)}>{[1,2,3,4,5].map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
+        <label htmlFor="journal-track">Track (optional)<select id="journal-track" value={trackId} onChange={(event) => { setTrackId(event.target.value); setTaskId(""); }}><option value="">No track</option>{trackId && !tracks.some((track) => track.id === trackId && !track.deletedAt) && <option value={trackId}>Deleted or unavailable track (keep link)</option>}{tracks.filter((track) => !track.deletedAt).map((track) => <option key={track.id} value={track.id}>{track.title}{track.archivedAt ? " (archived)" : ""}</option>)}</select></label>
+        <label htmlFor="journal-task">Task (optional)<select id="journal-task" value={taskId} onChange={(event) => setTaskId(event.target.value)}><option value="">No task</option>{taskId && (!linkedTask || linkedTask.deletedAt || (trackId && linkedTask.trackId !== trackId))) && <option value={taskId}>Deleted or unavailable task (keep link)</option>}{tasks.filter((task) => !task.deletedAt && (!trackId || task.trackId === trackId)).map((task) => <option key={task.id} value={task.id}>{task.title}{task.deletedAt ? " (deleted)" : ""}</option>)}</select></label>
+        <label htmlFor="journal-confidence">Confidence (1–5)<select id="journal-confidence" required value={confidence} aria-invalid={Boolean(fieldErrors.confidence)} aria-describedby="journal-confidence-error" onChange={(event) => { setConfidence(event.target.value); setFieldErrors((prev) => ({ ...prev, confidence: undefined })); }}>{[1,2,3,4,5].map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
         <label htmlFor="journal-minutes">Minutes spent<input id="journal-minutes" type="number" min="0" max="10080" step="1" value={minutes} onChange={(event) => setMinutes(event.target.value)} /></label>
-        <label htmlFor="journal-date">Learning date<input id="journal-date" required type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label>
+        <label htmlFor="journal-date">Learning date<input id="journal-date" required type="date" value={date} aria-invalid={Boolean(fieldErrors.date)} aria-describedby="journal-date-error" onChange={(event) => { setDate(event.target.value); setFieldErrors((prev) => ({ ...prev, date: undefined })); }} /></label>{fieldErrors.date && <p id="journal-date-error" className="error-detail">{fieldErrors.date}</p>}
       </div>
       <fieldset><legend>AI-use disclosure</legend><p>Select the option that best describes this entry. Unknown and not recorded are separate from unassisted.</p>
         <label htmlFor="journal-ai-mode">AI-use type<select id="journal-ai-mode" value={mode} onChange={(event) => setMode(event.target.value as AiUseMode)}>{AI_USE_MODES.map((value) => <option key={value} value={value}>{modeLabels[value]}</option>)}</select></label>
