@@ -144,6 +144,19 @@ const journalEntry: JournalEntry = {
   aiUse: { mode: "not_recorded", tool: "", whatWasGenerated: "" },
 };
 describe("journal repository", () => {
+  it("retains journal links safely after linked track and task are permanently removed", async () => {
+    const persistence = await createPersistence();
+    await persistence.tracks.save(track);
+    await persistence.tasks.save(task);
+    await persistence.journal.save(journalEntry);
+    await persistence.tracks.permanentlyDelete(track.id);
+    expect(await persistence.journal.get(journalEntry.id)).toMatchObject({
+      trackId: track.id,
+      taskId: task.id,
+    });
+    expect(await persistence.tracks.get(track.id)).toBeUndefined();
+    expect(await persistence.tasks.get(task.id)).toBeUndefined();
+  });
   it("persists, soft-deletes and permanently deletes journal entries without cascading task links", async () => {
     const persistence = await createPersistence();
     await persistence.tracks.save(track);
