@@ -2,13 +2,14 @@
   <title id="title">The Growvidence evidence trail</title>
   <desc id="desc">Five connected stages: Learn, Practice, Create, Demonstrate and Review. A subtle pulse travels across the stages.</desc>
   <style>
+    .bg{fill:#f2eee3}
     .track{fill:none;stroke:#c8431f;stroke-width:5;stroke-linecap:round;stroke-dasharray:9 11}
     .node{fill:#f2eee3;stroke:#c8431f;stroke-width:5}
     .pulse{fill:#c8431f;fill-opacity:.12;stroke:#c8431f;stroke-width:2}
-    .label{font:700 20px system-ui,sans-serif;fill:#1c1b19}
-    .sub{font:14px system-ui,sans-serif;fill:#5d574e}
+    .label{font:800 26px system-ui,sans-serif;fill:#1c1b19}
     @media(prefers-reduced-motion:reduce){.motion{display:none}}
   </style>
+  <rect class="bg" width="1000" height="190"/>
   <path class="track" d="M95 72H905"/>
   <path class="track motion" d="M95 72H905">
     <animate attributeName="stroke-dashoffset" from="0" to="-200" dur="6s" repeatCount="indefinite"/>
@@ -28,10 +29,10 @@
     <circle class="pulse" cx="905" cy="72" r="20"><animate attributeName="r" values="20;20;25;20;20" keyTimes="0;.84;.88;.92;1" dur="6s" repeatCount="indefinite"/><animate attributeName="fill-opacity" values=".12;.12;.4;.12;.12" keyTimes="0;.84;.88;.92;1" dur="6s" repeatCount="indefinite"/></circle>
   </g>
   <g text-anchor="middle">
-    <text class="label" x="95" y="125">Learn</text><text class="sub" x="95" y="148">Understand</text>
-    <text class="label" x="297" y="125">Practice</text><text class="sub" x="297" y="148">Try deliberately</text>
-    <text class="label" x="500" y="125">Create</text><text class="sub" x="500" y="148">Make an artifact</text>
-    <text class="label" x="703" y="125">Demonstrate</text><text class="sub" x="703" y="148">Work independently</text>
-    <text class="label" x="905" y="125">Review</text><text class="sub" x="905" y="148">Assess evidence</text>
+    <text class="label" x="95" y="132">Learn</text>
+    <text class="label" x="297" y="132">Practice</text>
+    <text class="label" x="500" y="132">Create</text>
+    <text class="label" x="703" y="132">Demonstrate</text>
+    <text class="label" x="905" y="132">Review</text>
   </g>
 </svg>
