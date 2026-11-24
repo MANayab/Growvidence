@@ -217,7 +217,7 @@ describe("database migrations", () => {
   it("aborts a v3 migration and retains the old version, settings, tracks and tasks without an unhandled rejection", async () => {
     const name = nextName();
     const retainedSettings = {
-      id: "user-settings",
+      id: "user-settings" as const,
       schemaVersion: 1,
       createdAt: "2026-11-21T00:00:00.000Z",
       updatedAt: "2026-11-21T00:00:00.000Z",
