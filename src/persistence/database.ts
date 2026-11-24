@@ -10,7 +10,7 @@ export const DATABASE_VERSION = 4;
 
 interface MetaRecord {
   key: string;
-  value: number;
+  value: number | string;
 }
 export interface GrowvidenceDB extends DBSchema {
   meta: { key: string; value: MetaRecord };
@@ -30,13 +30,22 @@ export interface GrowvidenceDB extends DBSchema {
       by_updatedAt: string;
     };
   };
+  journalEntries: {
+    key: string;
+    value: import("./schemas").JournalEntry;
+    indexes: {
+      by_trackId: string;
+      by_taskId: string;
+      by_date: string;
+      by_updatedAt: string;
+    };
+  };
 }
 type UpgradeTransaction = IDBPTransaction<
   GrowvidenceDB,
   ("meta" | "settings" | "tracks" | "tasks" | "journalEntries")[],
   "versionchange"
 >;
-
 export class MigrationError extends Error {
   constructor(message: string, options?: ErrorOptions) {
     super(message, options);
@@ -60,7 +69,7 @@ export function applyMigrations(
     }
     if (oldVersion < 2) {
       const tracks = transaction.objectStore("tracks");
-      if (!tracks.indexNames.contains("by_updatedAt"))
+      if (!tracks.indexNames.contains("by_updatedAt")
         tracks.createIndex("by_updatedAt", "updatedAt");
       transaction.objectStore("meta").put({ key: "schemaVersion", value: 2 });
     }
