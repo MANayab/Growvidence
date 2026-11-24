@@ -36,6 +36,14 @@ Use `fake-indexeddb` for deterministic repository and migration integration test
 - Per-record permanent deletion removes the record from future backups; soft-deleted records remain in backups; delete-all clears all user-owned records and metadata.
 - Reload persistence works for records saved successfully.
 
+### Slice 3 Journal checks
+
+- Schema validation: title, text length, confidence 1–5, minute bounds, date-only local date, default AI disclosure, all five AI modes, and attemptedAt removal (date is canonical).
+- Repository: create/read/update/list, soft delete, permanent delete, safe dangling task/track references, and no cascading journal deletion when task/track is removed.
+- Domain logic: inclusive local date filters, track and AI-mode filtering; summary counts and minutes across all five AI modes, keeping unknown and not_recorded separate from unassisted.
+- Migration: fresh v4 DB, v1/v2/v3 to v4 stores/indexes and prior data retained; forced migration failure aborts without data/version loss or unhandled rejection.
+- Component: labeled form fields, default not_recorded, all disclosure states, filter/summary labels, delete confirmation and focus states. SSR smoke tests are not substitutes for browser keyboard/screen-reader review.
+
 ### 3. Component and accessibility tests
 
 Slice 2 includes component tests for native status selection. Slice 3 includes journal component smoke coverage for labeled fields and all AI disclosure categories; additional real-browser manual validation is required. The browser supplies keyboard behavior for native selects; the test does not emulate a real browser keyboard or screen reader. Manual keyboard and screen-reader testing is still required.
