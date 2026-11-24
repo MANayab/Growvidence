@@ -61,7 +61,8 @@ export default function JournalView({ persistence, tracks, tasks, saving, onRefr
   }, [persistence]);
   const activeEntries = entries.filter((entry) => entry.deletedAt === null);
   const deletedEntries = entries.filter((entry) => entry.deletedAt !== null);
-  const dateRangeError = Boolean(startDate && endDate && endDate < startDate);\n  const visible = dateRangeError ? [] : filterJournalEntries(activeEntries, { trackId: filterTrack, startDate, endDate, aiUseMode: filterMode });
+  const dateRangeError = Boolean(startDate && endDate && endDate < startDate);
+  const visible = dateRangeError ? [] : filterJournalEntries(activeEntries, { trackId: filterTrack, startDate, endDate, aiUseMode: filterMode });
   const summary = summarizeJournal(activeEntries);
   function clearForm() {
     setEditing(null);
@@ -79,10 +80,6 @@ export default function JournalView({ persistence, tracks, tasks, saving, onRefr
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(""); setMessage("");
-    if (endDate && startDate && endDate < startDate) {
-      setError("The end date for the filter must be on or after the start date.");
-      return;
-    }
     const parsedConfidence = Number(confidence);
     const parsedMinutes = Number(minutes);
     const validationErrors: { title?: string; confidence?: string; minutes?: string; date?: string } = {};
