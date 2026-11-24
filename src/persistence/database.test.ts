@@ -92,7 +92,7 @@ describe("database migrations", () => {
       expect(journalStore.indexNames.contains(index)).toBe(true);
     expect(await upgraded.get("meta", "schemaVersion")).toEqual({
       key: "schemaVersion",
-      value: 3,
+      value: 4,
     });
   });
 
@@ -127,4 +127,26 @@ describe("database migrations", () => {
       value: 41,
     });
   });
-});
+  it("aborts the v3 journal migration when a duplicate store is present and retains old data", async () => {
+    const name = nextName();
+    const prior = await openDB<GrowvidenceDB>(name, 3, { upgrade(db) {
+      db.createObjectStore("meta", { keyPath: "key" });
+      db.createObjectStore("settings", { keyPath: "id" });
+      const tracks = db.createObjectStore("tracks", { keyPath: "id" });
+      tracks.createIndex("by_updatedAt", "updatedAt");
+      db.createObjectStore("tasks", { keyPath: "id" });
+      db.createObjectStore("journalEntries", { keyPath: "id" });
+    }});
+    await prior.put("meta", { key: "schemaVersion", value: 3 });
+    await prior.put("meta", { key: "sentinel", value: "keep" });
+    prior.close();
+    await expect(openDatabase({ databaseName: name })).rejects.toThrow("safely upgrade");
+    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    const retained = await openDB<GrowvidenceDB>(name, 3);
+    opened.push(retained);
+    expect(retained.version).toBe(3);
+    expect(await retained.get("meta", "schemaVersion")).toEqual({ key: "schemaVersion", value: 3 });
+    expect(await retained.get("meta", "sentinel")).toEqual({ key: "sentinel", value: "keep" });
+  });
+
+}
