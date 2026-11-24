@@ -1,6 +1,6 @@
 # Growvidence roadmap
 
-**Last updated:** 2026-11-21  
+**Last updated:** 2026-11-25  
 **Current state:** Phase 1 and Slice 1 are merged. PR #11 import-contract documentation alignment is merged. Slice 2 track/task workflows are implemented on `feat/slice-2-tracks-tasks` and awaiting maintainer review; they are not yet on `main` or verified on the published site.
 
 ## Completed
@@ -28,13 +28,15 @@ The public landing page and publishing pipeline exist. Slice 1 provides the `/ap
 
 ## Slice 2 — Tracks and tasks (implementation on review branch)
 
-Implemented on `feat/slice-2-tracks-tasks`, pending local verification, latest-head CI and maintainer review:
+Implemented on `feat/slice-2-tracks-tasks`; exact-head CI is green (runs 45498401417 push and 45498411745 pull_request), awaiting maintainer review and merge:
 - Track create/rename/archive/soft-delete/permanent-delete; optional six suggested learning-area tracks from `mind.md`, never automatically seeded.
 - Task create/edit, list and status board; five statuses, priority, local due date, estimate/actual minutes and tags.
 - Native labeled “Move to…” controls; no drag-and-drop dependency.
 - Daily/weekly/monthly due-date views; Monday week start and local date-only storage.
 - IndexedDB v3 migration, Zod contracts, repositories, repository/date/component tests.
 - No journal, competency, evidence, dashboard, backup/import/export or PWA functionality is added by this slice.
+- CI: check, lint, Prettier, tests (37), static build, verify-build, bundle-size and audits passed on head `54e15c95fe72f830c9c2b6458bfa6d47edae3`.
+- Bundle: 99.39 KiB gzip total (32.31 KiB island, 64.14 KiB Astro client, 2.94 KiB React runtime), +3.88 KiB versus Slice 1's 95.51 KiB; within 200 KiB budget.
 
 MVP platform constraints:
 - GitHub Pages static files only; no server, runtime SSR, API routes or database server.
