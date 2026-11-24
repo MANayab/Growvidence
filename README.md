@@ -21,7 +21,7 @@
 <p align="center"><em>Learning becomes more meaningful when practice produces evidence that can be independently reviewed.</em></p>
 
 > [!IMPORTANT]
-> **Current status (21 November 2026):** The public Astro landing page is live. Slice 1 is merged on `main`; its app-shell deployment has not been independently verified. This branch contains the Slice 2 track/task implementation for review; it is not merged into `main` or confirmed on the published site. Journal, competencies, evidence, exports and dashboard remain future slices.
+> **Current status (25 November 2026):** The public Astro landing page is live. Slice 1 is merged on `main`; its app-shell deployment has not been independently verified. This branch contains the Slice 2 track/task implementation for review; it is not merged into `main` or confirmed on the published site. Journal, competencies, evidence, exports and dashboard remain future slices.
 
 **Live site:** [https://manayab.github.io/Growvidence/](https://manayab.github.io/Growvidence/)
 
@@ -68,12 +68,14 @@ No single artifact automatically proves a broad competency. Criteria, context, i
 
 - Static `/app/` entry with React island, hash navigation, noindex metadata, local theme preference and IndexedDB v2 persistence foundation.
 
-### Implemented on this Slice 2 review branch — not merged or deployed
+### Implemented on this Slice 2 review branch — not merged or deployed (CI verified)
 
 - Track create, rename, archive, soft-delete and permanent-delete flows; optional six suggested starter tracks, never auto-seeded.
 - Task create/edit, list and status board; keyboard-operable native “Move to…” controls; soft and permanent deletion.
 - Daily, Monday-start weekly and monthly due-date views using local calendar dates.
 - IndexedDB v3 task store, Zod validation, repositories and migration tests.
+- CI verified on PR #12 head `54e15c95fe72f830c9c2b6458bfa6d47eda844e3`: Astro/TypeScript, lint, formatting, 37 unit tests, build, verify-build, bundle gate and informational audits all passed.
+- `/app/` bundle at Slice 2 head: 99.39 KiB gzip total, 3 files; budget 200 KiB. Slice 1 was 95.51 KiB, growth 3.88 KiB gzip.
 
 ### Planned — not implemented
 
@@ -259,7 +261,7 @@ npm ci
 npm run dev
 ```
 
-Open **http://localhost:4321/Growvidence/**. The proposed workspace route is **http://localhost:4321/Growvidence/app/** after the Slice 1 branch is built. Leave the terminal running while developing; press `Ctrl+C` to stop the server.
+Open **http://localhost:4321/Growvidence/**. The workspace route is **http://localhost:4321/Growvidence/app/**. Slice 2 features are only on the PR branch until merged. Leave the terminal running while developing; press `Ctrl+C` to stop the server.
 
 ### macOS / Linux
 
@@ -386,7 +388,7 @@ No. Authentication and cloud accounts are not implemented and are outside the cu
 
 ### Is the learner workspace ready?
 
-Not yet. The public landing page is live; the workspace is a planned Phase 2 build.
+The public landing page is live. The app shell is merged; tracks and tasks are implemented on PR #12 but not merged/deployed. Journal, competency and evidence features remain planned.
 
 ### Does checking a task mean I have mastered a skill?
 
