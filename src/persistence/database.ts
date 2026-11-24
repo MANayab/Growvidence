@@ -69,7 +69,7 @@ export function applyMigrations(
     }
     if (oldVersion < 2) {
       const tracks = transaction.objectStore("tracks");
-      if (!tracks.indexNames.contains("by_updatedAt")
+      if (!tracks.indexNames.contains("by_updatedAt"))
         tracks.createIndex("by_updatedAt", "updatedAt");
       transaction.objectStore("meta").put({ key: "schemaVersion", value: 2 });
     }
