@@ -4,7 +4,7 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/growvidence-hero-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="docs/assets/growvidence-hero-light.svg">
-    <img src="docs/assets/growvidence-hero-light.svg" alt="Growvidence: a learning path turning practice into evidence of independent capability." width="100%">
+    <img src="docs/assets/growvidence-hero-light.svg" alt="Split hero layout: Growvidence text on the left and a rising progress path with milestones and a sprout illustration on the right." width="100%">
   </picture>
 </p>
 
