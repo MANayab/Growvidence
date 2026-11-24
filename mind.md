@@ -116,3 +116,9 @@ Guaranteed rankings, employment or accreditation; opaque AI mastery scores; mand
 - **Demonstrated (NEEDS APPROVAL):** every mandatory criterion has at least one independent artifact.
 - **Consistent (NEEDS APPROVAL):** the demonstration is repeated in a different task or context.
 - Proposed Consistent corroboration: external review weight 2, self review weight 1. Reviews cannot replace the required independent artifact or repeated demonstration.
+
+
+## Slice 3 journal contract
+- Journal learning date is the single canonical `date` field: local date-only `YYYY-MM-DD`, never converted through UTC. `attemptedAt` is removed and must not be stored.
+- Entries include title, learned, blocked, next, optional trackId/taskId, confidence 1–5, minutesSpent, and AI-use disclosure.
+- AI disclosure states are assisted, unassisted, partially_assisted, unknown and not_recorded. New/imported entries default to not_recorded; unknown and not_recorded remain separate and are never treated as unassisted.
