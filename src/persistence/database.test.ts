@@ -92,7 +92,7 @@ describe("database migrations", () => {
     expect(taskStore.indexNames.contains("by_updatedAt")).toBe(true);
     expect(upgraded.objectStoreNames.contains("journalEntries")).toBe(true);
     const journalStore = upgraded.transaction("journalEntries").store;
-    for (const index of ["by_trackId", "by_taskId", "by_date", "by_updatedAt"])
+    for (const index of ["by_trackId", "by_taskId", "by_date", "by_updatedAt"] as const)
       expect(journalStore.indexNames.contains(index)).toBe(true);
     expect(await upgraded.get("meta", "schemaVersion")).toEqual({
       key: "schemaVersion",
@@ -178,4 +178,4 @@ describe("database migrations", () => {
     expect(await retained.get("meta", "schemaVersion")).toEqual({ key: "schemaVersion", value: 3 });
     expect(await retained.get("meta", "sentinel")).toEqual({ key: "sentinel", value: "keep" });
   });
-});
+})});
