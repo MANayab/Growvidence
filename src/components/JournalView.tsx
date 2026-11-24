@@ -2,7 +2,7 @@ import "./JournalView.css";
 import { useEffect, useRef, useState } from "react";
 import { filterJournalEntries, summarizeJournal, AI_USE_MODES } from "../domain/journal";
 import type { PersistenceHandle } from "../persistence";
-import type { AiUseMode, JournalEntry, Task, Track } from "../persistence/schemas";
+import { LocalDateSchema } from "../persistence/schemas";\nimport type { AiUseMode, JournalEntry, Task, Track } from "../persistence/schemas";
 
 interface Props {
   persistence: PersistenceHandle;
@@ -85,7 +85,7 @@ export default function JournalView({ persistence, tracks, tasks, saving, onRefr
     if (!title.trim()) validationErrors.title = "Enter a journal title.";
     if (!Number.isInteger(parsedConfidence) || parsedConfidence < 1 || parsedConfidence > 5) validationErrors.confidence = "Choose a whole number from 1 to 5.";
     if (!Number.isInteger(parsedMinutes) || parsedMinutes < 0 || parsedMinutes > 10080) validationErrors.minutes = "Enter a whole number from 0 to 10,080.";
-    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)) validationErrors.date = "Choose a valid local date.";
+    if (!LocalDateSchema.safeParse(date).success) validationErrors.date = "Choose a valid local date.";
     if (Object.keys(validationErrors).length) {
       setFieldErrors(validationErrors);
       setError("Please correct the highlighted fields.");
