@@ -314,5 +314,4 @@ describe("database migrations", () => {
     },
   );
 
-
 });
