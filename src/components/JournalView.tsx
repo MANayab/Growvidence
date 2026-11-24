@@ -85,12 +85,15 @@ export default function JournalView({ persistence, tracks, tasks, saving, onRefr
     }
     const parsedConfidence = Number(confidence);
     const parsedMinutes = Number(minutes);
-    if (!Number.isInteger(parsedConfidence) || parsedConfidence < 1 || parsedConfidence > 5) {
-      setError("Confidence must be a whole number from 1 to 5.");
-      return;
-    }
-    if (!Number.isInteger(parsedMinutes) || parsedMinutes < 0 || parsedMinutes > 10080) {
-      setError("Minutes spent must be a whole number from 0 to 10,080.");
+    const validationErrors: { title?: string; confidence?: string; minutes?: string; date?: string } = {};
+    if (!title.trim()) validationErrors.title = "Enter a journal title.";
+    if (!Number.isInteger(parsedConfidence) || parsedConfidence < 1 || parsedConfidence > 5) validationErrors.confidence = "Choose a whole number from 1 to 5.";
+    if (!Number.isInteger(parsedMinutes) || parsedMinutes < 0 || parsedMinutes > 10080) validationErrors.minutes = "Enter a whole number from 0 to 10,080.";
+    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)) validationErrors.date = "Choose a valid local date.";
+    if (Object.keys(validationErrors).length) {
+      setFieldErrors(validationErrors);
+      setError("Please correct the highlighted fields.");
+      if (validationErrors.title) titleRef.current?.focus();
       return;
     }
     if (trackId && taskId) {
@@ -166,7 +169,7 @@ export default function JournalView({ persistence, tracks, tasks, saving, onRefr
         <label htmlFor="journal-track">Track (optional)<select id="journal-track" value={trackId} onChange={(event) => { setTrackId(event.target.value); setTaskId(""); }}><option value="">No track</option>{trackId && !tracks.some((track) => track.id === trackId && !track.deletedAt) && <option value={trackId}>Deleted or unavailable track (keep link)</option>}{tracks.filter((track) => !track.deletedAt).map((track) => <option key={track.id} value={track.id}>{track.title}{track.archivedAt ? " (archived)" : ""}</option>)}</select></label>
         <label htmlFor="journal-task">Task (optional)<select id="journal-task" value={taskId} onChange={(event) => setTaskId(event.target.value)}><option value="">No task</option>{taskId && (!linkedTask || linkedTask.deletedAt || (trackId && linkedTask.trackId !== trackId))) && <option value={taskId}>Deleted or unavailable task (keep link)</option>}{tasks.filter((task) => !task.deletedAt && (!trackId || task.trackId === trackId)).map((task) => <option key={task.id} value={task.id}>{task.title}{task.deletedAt ? " (deleted)" : ""}</option>)}</select></label>
         <label htmlFor="journal-confidence">Confidence (1–5)<select id="journal-confidence" required value={confidence} aria-invalid={Boolean(fieldErrors.confidence)} aria-describedby="journal-confidence-error" onChange={(event) => { setConfidence(event.target.value); setFieldErrors((prev) => ({ ...prev, confidence: undefined })); }}>{[1,2,3,4,5].map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
-        <label htmlFor="journal-minutes">Minutes spent<input id="journal-minutes" type="number" min="0" max="10080" step="1" value={minutes} onChange={(event) => setMinutes(event.target.value)} /></label>
+        <label htmlFor="journal-minutes">Minutes spent<input id="journal-minutes" type="number" min="0" max="10080" step="1" value={minutes} aria-invalid={Boolean(fieldErrors.minutes)} aria-describedby="journal-minutes-error" onChange={(event) => { setMinutes(event.target.value); setFieldErrors((prev) => ({ ...prev, minutes: undefined })); }} /></label>
         <label htmlFor="journal-date">Learning date<input id="journal-date" required type="date" value={date} aria-invalid={Boolean(fieldErrors.date)} aria-describedby="journal-date-error" onChange={(event) => { setDate(event.target.value); setFieldErrors((prev) => ({ ...prev, date: undefined })); }} /></label>{fieldErrors.date && <p id="journal-date-error" className="error-detail">{fieldErrors.date}</p>}
       </div>
       <fieldset><legend>AI-use disclosure</legend><p>Select the option that best describes this entry. Unknown and not recorded are separate from unassisted.</p>
