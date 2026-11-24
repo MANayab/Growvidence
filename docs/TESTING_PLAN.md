@@ -1,6 +1,6 @@
 # Growvidence testing plan and implementation slices
 
-- **Status:** Slice 1 is merged. Slice 2 track/task implementation and Vitest coverage are present on `feat/slice-2-tracks-tasks`, pending maintainer review and latest-head CI. Playwright remains deferred to Slice 7.
+- **Status:** Slice 1 is merged. Slice 2 track/task implementation and Vitest coverage are present on `feat/slice-2-tracks-tasks`, pending maintainer review; CI passed on head `54e15c95fe72f830c9c2b6458bfa6d47edae3` (push run 45498401417 and PR run 45498411745). Playwright remains deferred to Slice 7. CI passed 37 unit tests, Astro diagnostics, lint, formatting, build, verify-build and the 200 KiB gzip budget. Slice 2 bundle is 99.39 KiB gzip, up 3.88 KiB from Slice 1 baseline 95.51 KiB.
 - **Release posture:** Phase 2 design decisions were accepted on 2026-11-21. One slice PR is active at a time; stop after this PR for maintainer review.
 
 ## Test strategy
