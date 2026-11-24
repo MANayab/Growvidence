@@ -10,7 +10,7 @@ export const DATABASE_VERSION = 4;
 
 interface MetaRecord {
   key: string;
-  value: number | string;
+  value: unknown;
 }
 export interface GrowvidenceDB extends DBSchema {
   meta: { key: string; value: MetaRecord };
