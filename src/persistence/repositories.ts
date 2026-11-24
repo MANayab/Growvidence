@@ -33,6 +33,13 @@ export interface TasksRepository {
   permanentlyDelete(id: string): Promise<void>;
   move(id: string, status: TaskStatus): Promise<Task>;
 }
+export interface JournalEntriesRepository {
+  get(id: string): Promise<import("./schemas").JournalEntry | undefined>;
+  list(options?: { includeDeleted?: boolean }): Promise<import("./schemas").JournalEntry[]>;
+  save(entry: import("./schemas").JournalEntry): Promise<import("./schemas").JournalEntry>;
+  softDelete(id: string): Promise<void>;
+  permanentlyDelete(id: string): Promise<void>;
+}
 
 export class IndexedDbSettingsRepository implements SettingsRepository {
   constructor(private readonly database: IDBPDatabase<GrowvidenceDB>) {}
@@ -256,5 +263,55 @@ export class IndexedDbTasksRepository implements TasksRepository {
       throw new PersistenceError("unknown", "That task no longer exists.");
     const now = new Date().toISOString();
     return this.save(TaskSchema.parse({ ...task, status, updatedAt: now }));
+  }
+}
+
+export class IndexedDbJournalEntriesRepository implements JournalEntriesRepository {
+  constructor(private readonly database: IDBPDatabase<GrowvidenceDB>) {}
+  async get(id: string): Promise<import("./schemas").JournalEntry | undefined> {
+    try {
+      const record = await this.database.get("journalEntries", id);
+      return record ? (await import("./schemas")).JournalEntrySchema.parse(record) : undefined;
+    } catch (error) {
+      throw toPersistenceError(error);
+    }
+  }
+  async list(options: { includeDeleted?: boolean } = {}): Promise<import("./schemas").JournalEntry[]> {
+    try {
+      const records = await this.database.getAll("journalEntries");
+      return records
+        .map((record) => (await import("./schemas")).JournalEntrySchema.parse(record))
+        .filter((record) => options.includeDeleted || record.deletedAt === null)
+        .sort((a, b) => b.date.localeCompare(a.date) || b.updatedAt.localeCompare(a.updatedAt));
+    } catch (error) {
+      throw toPersistenceError(error);
+    }
+  }
+  async save(input: import("./schemas").JournalEntry): Promise<import("./schemas").JournalEntry> {
+    try {
+      const entry = (await import("./schemas")).JournalEntrySchema.parse(input);
+      await this.database.put("journalEntries", entry);
+      return entry;
+    } catch (error) {
+      if (error instanceof PersistenceError) throw error;
+      throw toPersistenceError(error);
+    }
+  }
+  async softDelete(id: string): Promise<void> {
+    try {
+      const entry = await this.get(id);
+      if (!entry || entry.deletedAt) return;
+      const now = new Date().toISOString();
+      await this.database.put("journalEntries", (await import("./schemas")).JournalEntrySchema.parse({ ...entry, deletedAt: now, updatedAt: now }));
+    } catch (error) {
+      throw toPersistenceError(error);
+    }
+  }
+  async permanentlyDelete(id: string): Promise<void> {
+    try {
+      await this.database.delete("journalEntries", id);
+    } catch (error) {
+      throw toPersistenceError(error);
+    }
   }
 }
