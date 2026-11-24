@@ -1,3 +1,4 @@
+import "./JournalView.css";
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { filterJournalEntries, summarizeJournal, AI_USE_MODES } from "../domain/journal";
