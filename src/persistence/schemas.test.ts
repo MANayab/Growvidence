@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { IsoDateTimeSchema, SettingsSchema, TrackSchema } from "./schemas";
+import {
+  IsoDateTimeSchema,
+  LocalDateSchema,
+  SettingsSchema,
+  TaskSchema,
+  TrackSchema,
+} from "./schemas";
 
 const validTrack = {
   id: "4b6b3c1e-43a7-4c31-9e6e-b2d62d9e4c4f",
@@ -83,5 +89,57 @@ describe("SettingsSchema", () => {
     });
 
     expect(unknownTheme.success).toBe(false);
+  });
+});
+
+describe("TaskSchema", () => {
+  const validTask = {
+    ...validTrack,
+    trackId: validTrack.id,
+    title: "Build a small feature",
+    status: "today",
+    priority: "high",
+    dueDate: "2026-11-21",
+    estimatedMinutes: 45,
+    actualMinutes: 30,
+    tags: ["practice", "portfolio"],
+  };
+
+  it("accepts all five workflow statuses and the full task contract", () => {
+    expect(TaskSchema.parse(validTask)).toMatchObject({
+      status: "today",
+      estimatedMinutes: 45,
+      actualMinutes: 30,
+    });
+    for (const status of [
+      "backlog",
+      "today",
+      "in_progress",
+      "review",
+      "done",
+    ]) {
+      expect(TaskSchema.safeParse({ ...validTask, status }).success).toBe(true);
+    }
+  });
+
+  it("rejects unknown statuses, invalid local dates and non-integer minutes", () => {
+    expect(
+      TaskSchema.safeParse({ ...validTask, status: "blocked" }).success,
+    ).toBe(false);
+    expect(
+      TaskSchema.safeParse({ ...validTask, dueDate: "2026-02-30" }).success,
+    ).toBe(false);
+    expect(
+      TaskSchema.safeParse({ ...validTask, estimatedMinutes: 1.5 }).success,
+    ).toBe(false);
+  });
+});
+
+describe("LocalDateSchema", () => {
+  it("accepts a date-only calendar value and rejects a timestamp", () => {
+    expect(LocalDateSchema.safeParse("2026-11-21").success).toBe(true);
+    expect(LocalDateSchema.safeParse("2026-11-21T00:00:00.000Z").success).toBe(
+      false,
+    );
   });
 });

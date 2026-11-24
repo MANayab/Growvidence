@@ -4,8 +4,8 @@ import {
   openDatabase,
   type GrowvidenceDB,
   type DatabaseOpenOptions,
+  MigrationError,
 } from "./database";
-import { MigrationError } from "./database";
 import {
   PersistenceError,
   toPersistenceError,
@@ -13,26 +13,41 @@ import {
 } from "./errors";
 import {
   IndexedDbSettingsRepository,
+  IndexedDbTasksRepository,
   IndexedDbTracksRepository,
 } from "./repositories";
 
 export { PersistenceError } from "./errors";
 export type { StorageNotice } from "./errors";
-export { TrackSchema, SettingsSchema, ThemePreferenceSchema } from "./schemas";
-export type { Track, Settings, ThemePreference } from "./schemas";
+export {
+  TrackSchema,
+  TaskSchema,
+  TaskStatusSchema,
+  TaskPrioritySchema,
+  LocalDateSchema,
+  SettingsSchema,
+  ThemePreferenceSchema,
+} from "./schemas";
+export type {
+  Track,
+  Task,
+  TaskStatus,
+  TaskPriority,
+  Settings,
+  ThemePreference,
+} from "./schemas";
 export { DATABASE_NAME, DATABASE_VERSION, applyMigrations } from "./database";
 
 export interface PersistenceHandle {
   database: IDBPDatabase<GrowvidenceDB>;
   settings: IndexedDbSettingsRepository;
   tracks: IndexedDbTracksRepository;
+  tasks: IndexedDbTasksRepository;
   close(): void;
 }
-
 export interface OpenPersistenceOptions extends DatabaseOpenOptions {
   onNotice?: (notice: StorageNotice) => void;
 }
-
 export async function openPersistence(
   options: OpenPersistenceOptions = {},
 ): Promise<PersistenceHandle> {
@@ -48,7 +63,7 @@ export async function openPersistence(
         options.onNotice?.({
           code: "upgrade-blocked",
           message:
-            "This tab closed its older connection so another tab can upgrade the database. Reload this tab.",
+            "This tab closed its older connection so another tab can upgrade it. Reload this tab.",
         }),
       onUnexpectedClose: () =>
         options.onNotice?.({
@@ -60,14 +75,14 @@ export async function openPersistence(
       database,
       settings: new IndexedDbSettingsRepository(database),
       tracks: new IndexedDbTracksRepository(database),
+      tasks: new IndexedDbTasksRepository(database),
       close: () => database.close(),
     };
   } catch (error) {
-    if (error instanceof MigrationError) {
+    if (error instanceof MigrationError)
       throw new PersistenceError("migration-failed", error.message, {
         cause: error,
       });
-    }
     throw toPersistenceError(error);
   }
 }

@@ -1,10 +1,10 @@
 # Growvidence project memory
 
-**Last updated:** 2026-11-21 — Slice 1 PR #10 merged; documentation alignment PR in progress  
-**Current phase:** Slice 1 merged; next implementation slice awaits maintainer instruction  
-**Latest verified main:** 8e61768fc0db709c7b6db047d0f0dc8035200dee  
-**Current branch:** docs/fix-import-contract  
-**Current PR:** Import contract documentation alignment (open)
+**Last updated:** 2026-11-25 — Slice 2 CI green; release draft documentation underway  
+**Current phase:** Slice 2 — tracks and tasks, implementation under review preparation  
+**Latest verified main:** ef58a84c86710cb79ca889d3c442e27a89e70bea  
+**Current branch:** feat/slice-2-tracks-tasks  
+**Current PR:** [PR #12 — Slice 2 tracks and tasks](https://github.com/MANayab/Growvidence/pull/12) (Draft; latest-head CI green)
 
 ## Repository and product
 
@@ -34,10 +34,19 @@
 - The public landing page is live.
 - Slice 1 is merged in PR #10 at commit `c93c5e89b67194fcf6c08bca00e0d01c73347660`; merge commit on main: `8e61768fc0db709c7b6db047d0f0dc8035200dee`. It adds the `/app/` shell, React island, hash navigation, theme preference, IndexedDB v2 adapter, settings/minimal tracks repositories and initial persistence tests. Deployment of this merged app shell has not been independently verified in this update.
 - The measured JavaScript loaded by `/app/` is **95.51 KiB gzip of the 200 KiB budget**, including the workspace island, Astro renderer and React runtime. CI bundle-size check passed on the PR #10 head.
-- Track CRUD, task manager, journal, competency assessment, evidence manager, exports and dashboard are not implemented.
+- Track CRUD and task management are implemented on `feat/slice-2-tracks-tasks` but are not yet merged or deployed. Journal, competency assessment, evidence manager, exports and dashboard are not implemented.
 - No authentication, backend, cloud sync, analytics or payments.
 - PWA/offline remains optional future scope and requires explicit confirmation.
 - The current sitemap contains only the public homepage. Future app routes must be noindex and excluded from sitemap; robots.txt must not disallow them.
+
+## Slice 2 implementation on review branch
+
+- Branch: `feat/slice-2-tracks-tasks`; base/main at creation: `ef58a84c86710cb79ca889d3c442e27a89e70bea`.
+- Database schema version 3 adds the tasks store and indexes `by_trackId`, `by_status`, `by_dueDate` and `by_updatedAt`; migration path v2→v3 is covered, as is a failed upgrade preserving the prior database.
+- Track and Task Zod schemas and typed IndexedDB repositories. Track soft-delete cascades task soft-delete; permanent track deletion permanently removes dependent tasks.
+- Task statuses: backlog, today, in_progress, review, done. Task fields include track, title, description, priority, local due date, estimated/actual minutes and tags.
+- Calendar due dates are local date-only `YYYY-MM-DD`; metadata timestamps remain UTC ISO strings. Monday is the week start. Date math uses local noon and clamps month ends; timezone changes do not rewrite due dates.
+- Slice 2 source/tests/docs are on PR #12 (Draft), not merged or deployed. The maintainer pushed Prettier formatting. CI runs 45498401417 (push) and 45498411745 (pull_request) passed on exact head `54e15c95fe72f830c9c2b6458bfa6d47eda844e3`. Bundle-size check reports 99.39 KiB gzip total across three files (32.31 KiB WorkspaceIsland, 64.14 KiB Astro client, 2.94 KiB React runtime), +3.88 KiB versus Slice 1 baseline 95.51 KiB. CI passed all required checks; npm audits reported zero vulnerabilities. The All dates view includes undated tasks; daily/weekly/monthly views filter by local due date.
 
 ## Technical baseline
 
@@ -95,7 +104,7 @@ PR #8 established the Phase 2 design package and has been merged. Its open-decis
 
 ## Current handoff
 
-PR #9 and Slice 1 PR #10 are merged. Latest main is `8e61768fc0db709c7b6db047d0f0dc8035200dee`. Current documentation-only follow-up is on `docs/fix-import-contract`; do not merge it. Stop after opening its PR and wait for maintainer review and **“next”**.
+PR #11 is merged at `ef58a84c86710cb79ca889d3c442e27a89e70bea`. Slice 2 is on Draft PR #12 from `feat/slice-2-tracks-tasks`. Do not merge or push to `main`; stop for maintainer review and **“next”**.
 
 ## Decisions log — 2026-11-21
 

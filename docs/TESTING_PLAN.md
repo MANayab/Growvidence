@@ -1,6 +1,6 @@
 # Growvidence testing plan and implementation slices
 
-- **Status:** Slice 1 implementation is proposed in `feat/slice-1-app-shell`; later app workflows and Playwright tests are not implemented.
+- **Status:** Slice 1 is merged. Slice 2 track/task implementation and Vitest coverage are present on `feat/slice-2-tracks-tasks`, pending maintainer review; CI passed on head `54e15c95fe72f830c9c2b6458bfa6d47edae3` (push run 45498401417 and PR run 45498411745). Playwright remains deferred to Slice 7. CI passed 37 unit tests, Astro diagnostics, lint, formatting, build, verify-build and the 200 KiB gzip budget. Slice 2 bundle is 99.39 KiB gzip, up 3.88 KiB from Slice 1 baseline 95.51 KiB.
 - **Release posture:** Phase 2 design decisions were accepted on 2026-11-21. One slice PR is active at a time; stop after this PR for maintainer review.
 
 ## Test strategy
@@ -22,6 +22,8 @@ Aim for at least 80% statement coverage in core domain modules as a diagnostic t
 
 ### 2. Persistence integration tests
 
+Slice 2 adds fake-indexeddb coverage for task/track persistence, referential validation, archive behavior, soft-delete cascade, permanent deletion and the v2-to-v3 migration. The failed-upgrade fixture checks that the old version and metadata remain intact.
+
 Use `fake-indexeddb` for deterministic repository and migration integration tests in Vitest. Follow with real-browser IndexedDB checks during the dedicated E2E slice; fake-indexeddb does not replace browser quota/private-mode testing.
 
 - Fresh database creation and expected stores/indexes.
@@ -35,6 +37,8 @@ Use `fake-indexeddb` for deterministic repository and migration integration test
 - Reload persistence works for records saved successfully.
 
 ### 3. Component and accessibility tests
+
+Slice 2 includes component tests for the native, explicitly labeled status select and its change callback with all five statuses. The browser supplies keyboard behavior for native selects; the test does not emulate a real browser keyboard or screen reader. Manual keyboard and screen-reader testing is still required.
 
 - Labels, descriptions, validation messages and status announcements.
 - Keyboard operation for task list and Kanban without drag-and-drop.
@@ -82,7 +86,7 @@ Each slice is one focused PR, based on freshly verified main, and must stop for 
 | Slice | Scope | Acceptance criteria | “Write this yourself” exercise |
 |---|---|---|---|
 | 1. App shell + persistence | Astro `/app/` entry, one React island, hash navigation, noindex, typed `idb` adapter, Zod settings/track schemas, versioned migrations and settings/minimal tracks repositories. | App direct-load/refresh works at Pages base path; app noindex and sitemap exclusion verified; public pages do not hydrate React; fake-indexeddb repository/schema/upgrade/failure tests pass; storage failures are recoverable; all JavaScript loaded by `/app/`, including React runtime, Astro renderer, island and shared assets, is at most 200 KiB gzip. | Write a typed repository interface for tracks and explain why UI components must not call IndexedDB directly. |
-| 2. Tracks + tasks | Track CRUD/archive; task list and Kanban; daily/weekly/monthly task views and filters. | Task lifecycle persists across reload; keyboard alternative to drag; responsive layout; track/task reference integrity; completion does not change competency state. | Implement a pure task transition function and write tests for every allowed and rejected transition. |
+| 2. Tracks + tasks | Implemented on `feat/slice-2-tracks-tasks`: track CRUD/archive/delete, optional starter tracks, task CRUD/status/list/board, calendar views, v3 migration and repositories. | Repository/migration/date/component tests are included; native labeled status selects provide the keyboard alternative to drag. Await local verification, latest-head CI and manual browser/screen-reader review. | **I should write this myself:** [implement a pure task transition function and test allowed/rejected transitions](EXERCISES/SLICE-2.md). |
 | 3. Journal + AI disclosure | Journal CRUD, task linking, reflection and disclosure form. | Every entry stores one of the five disclosure modes; assisted/partial fields capture tool and contribution; unknown/not-recorded are visibly incomplete; validation and persistence tests pass. | Write a Zod schema for AI-use disclosure and test the difference between unknown and unassisted. |
 | 4. Competency + evidence | Six rubric definitions, criteria, evidence, links, reviews and assessment engine. | Criteria carry approval status; unapproved criteria cannot produce demonstrated; evidence links are referentially valid; assessment is independent of task completion; unit and integration tests pass. | Write one criterion evidence evaluator that returns explicit reasons rather than a numeric mastery score. |
 | 5. Export/import/delete | Versioned JSON backup, validated preview, Replace everything and Merge (newer updatedAt wins), CSV convenience export, full local deletion and backup UX. | Valid round-trip; both modes follow the accepted timestamp rules; invalid/oversized/unsupported imports make no writes; transaction failure preserves old data; formula injection neutralized; deletion is verified and explained; no per-record choices. | Write a pure import planner that returns additions, newer-timestamp replacements, equal-timestamp retained records, invalid references and a user-confirmation summary without writing to storage. |

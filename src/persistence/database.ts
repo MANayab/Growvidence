@@ -6,13 +6,12 @@ import {
 } from "idb";
 
 export const DATABASE_NAME = "growvidence-local";
-export const DATABASE_VERSION = 2;
+export const DATABASE_VERSION = 3;
 
 interface MetaRecord {
   key: string;
   value: number;
 }
-
 export interface GrowvidenceDB extends DBSchema {
   meta: { key: string; value: MetaRecord };
   settings: { key: string; value: import("./schemas").Settings };
@@ -21,11 +20,20 @@ export interface GrowvidenceDB extends DBSchema {
     value: import("./schemas").Track;
     indexes: { by_updatedAt: string };
   };
+  tasks: {
+    key: string;
+    value: import("./schemas").Task;
+    indexes: {
+      by_trackId: string;
+      by_status: string;
+      by_dueDate: string;
+      by_updatedAt: string;
+    };
+  };
 }
-
 type UpgradeTransaction = IDBPTransaction<
   GrowvidenceDB,
-  ("meta" | "settings" | "tracks")[],
+  ("meta" | "settings" | "tracks" | "tasks")[],
   "versionchange"
 >;
 
@@ -35,7 +43,6 @@ export class MigrationError extends Error {
     this.name = "MigrationError";
   }
 }
-
 export function applyMigrations(
   db: IDBPDatabase<GrowvidenceDB>,
   oldVersion: number,
@@ -53,10 +60,17 @@ export function applyMigrations(
     }
     if (oldVersion < 2) {
       const tracks = transaction.objectStore("tracks");
-      if (!tracks.indexNames.contains("by_updatedAt")) {
+      if (!tracks.indexNames.contains("by_updatedAt"))
         tracks.createIndex("by_updatedAt", "updatedAt");
-      }
       transaction.objectStore("meta").put({ key: "schemaVersion", value: 2 });
+    }
+    if (oldVersion < 3) {
+      const tasks = db.createObjectStore("tasks", { keyPath: "id" });
+      tasks.createIndex("by_trackId", "trackId");
+      tasks.createIndex("by_status", "status");
+      tasks.createIndex("by_dueDate", "dueDate");
+      tasks.createIndex("by_updatedAt", "updatedAt");
+      transaction.objectStore("meta").put({ key: "schemaVersion", value: 3 });
     }
   } catch (error) {
     throw new MigrationError(
@@ -65,42 +79,31 @@ export function applyMigrations(
     );
   }
 }
-
 export interface DatabaseOpenOptions {
   databaseName?: string;
   onBlocked?: () => void;
   onBlocking?: () => void;
   onUnexpectedClose?: () => void;
 }
-
 export async function openDatabase(
   options: DatabaseOpenOptions = {},
 ): Promise<IDBPDatabase<GrowvidenceDB>> {
   let migrationFailed = false;
   let upgradeTransactionError: unknown;
-
-  if (typeof indexedDB === "undefined") {
+  if (typeof indexedDB === "undefined")
     throw new DOMException(
       "IndexedDB is unavailable in this browsing context.",
       "SecurityError",
     );
-  }
-
   try {
     return await openDB<GrowvidenceDB>(
       options.databaseName ?? DATABASE_NAME,
       DATABASE_VERSION,
       {
         upgrade(db, oldVersion, _newVersion, transaction) {
-          // idb creates transaction.done as soon as the upgrade transaction is
-          // wrapped. An aborted migration rejects it independently of openDB's
-          // request promise, so attach a handler before running migration work.
-          // The openDB rejection remains the caller-visible failure; this handler
-          // records the transaction failure for its diagnostic cause.
           void transaction.done.catch((error: unknown) => {
             upgradeTransactionError = error;
           });
-
           try {
             applyMigrations(db, oldVersion, transaction);
           } catch (error) {
@@ -121,12 +124,11 @@ export async function openDatabase(
       },
     );
   } catch (error) {
-    if (migrationFailed) {
+    if (migrationFailed)
       throw new MigrationError(
         "Growvidence could not safely upgrade its local database. The previous database version was retained.",
         { cause: upgradeTransactionError ?? error },
       );
-    }
     throw error;
   }
 }
