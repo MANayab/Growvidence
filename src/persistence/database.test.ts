@@ -48,7 +48,7 @@ describe("database migrations", () => {
     expect(upgraded.objectStoreNames.contains("tasks")).toBe(true);
     expect(upgraded.objectStoreNames.contains("journalEntries")).toBe(true);
     const journalStore = upgraded.transaction("journalEntries").store;
-    for (const index of ["by_trackId", "by_taskId", "by_date", "by_updatedAt"])
+    for (const index of ["by_trackId", "by_taskId", "by_date", "by_updatedAt"] as const)
       expect(journalStore.indexNames.contains(index)).toBe(true);
     expect(
       upgraded.transaction("tasks").store.indexNames.contains("by_trackId"),
