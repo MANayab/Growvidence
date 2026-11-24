@@ -178,4 +178,4 @@ describe("database migrations", () => {
     expect(await retained.get("meta", "schemaVersion")).toEqual({ key: "schemaVersion", value: 3 });
     expect(await retained.get("meta", "sentinel")).toEqual({ key: "sentinel", value: "keep" });
   });
-})});
+});
