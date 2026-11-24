@@ -63,6 +63,7 @@ export const AiUseDisclosureSchema = z.object({
   whatWasGenerated: z.string().max(3000).default(""),
 });
 export type AiUseDisclosure = z.infer<typeof AiUseDisclosureSchema>;
+export type AiUseMode = z.infer<typeof AiUseModeSchema>;
 export const JournalEntrySchema = BaseRecordSchema.extend({
   title: z.string().trim().min(1).max(160),
   learned: z.string().max(5000).default(""),
