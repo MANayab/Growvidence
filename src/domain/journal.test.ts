@@ -53,9 +53,12 @@ describe("journal filter and summary", () => {
     expect(unassistedOnly.map((entry) => entry.aiUse.mode)).toEqual([
       "unassisted",
     ]);
-    expect(unassistedOnly.some((entry) =>
-      entry.aiUse.mode === "unknown" || entry.aiUse.mode === "not_recorded",
-    )).toBe(false);
+    expect(
+      unassistedOnly.some(
+        (entry) =>
+          entry.aiUse.mode === "unknown" || entry.aiUse.mode === "not_recorded",
+      ),
+    ).toBe(false);
   });
   it("keeps unknown and not_recorded separate and sums counts/minutes by state", () => {
     const summary = summarizeJournal(entries);
