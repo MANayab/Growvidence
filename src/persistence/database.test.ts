@@ -220,6 +220,7 @@ describe("database migrations", () => {
       value: 41,
     });
   });
+
   it("retains v3 records and version after a failed migration without unhandled rejection", async () => {
     const name = nextName();
     const retainedSettings = {
