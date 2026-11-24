@@ -188,6 +188,7 @@ describe("database migrations", () => {
       value: 4,
     });
   });
+
   it("aborts a broken upgrade, preserves prior data/version and handles transaction rejection", async () => {
     const name = nextName();
     const previous = await openDB<GrowvidenceDB>(name, 1, {
@@ -306,5 +307,4 @@ describe("database migrations", () => {
       value: "keep",
     });
   });
-
 });
