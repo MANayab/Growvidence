@@ -2,7 +2,8 @@ import "./JournalView.css";
 import { useEffect, useRef, useState } from "react";
 import { filterJournalEntries, summarizeJournal, AI_USE_MODES } from "../domain/journal";
 import type { PersistenceHandle } from "../persistence";
-import { LocalDateSchema } from "../persistence/schemas";\nimport type { AiUseMode, JournalEntry, Task, Track } from "../persistence/schemas";
+import { LocalDateSchema } from "../persistence/schemas";
+import type { AiUseMode, JournalEntry, Task, Track } from "../persistence/schemas";
 
 interface Props {
   persistence: PersistenceHandle;
