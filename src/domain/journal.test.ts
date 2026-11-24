@@ -43,14 +43,19 @@ describe("journal filter and summary", () => {
         aiUseMode: "unknown",
       }),
     ).toHaveLength(1);
-    expect(
-      filterJournalEntries(entries, {
-        trackId: base.trackId!,
-        startDate: "",
-        endDate: "",
-        aiUseMode: "unassisted",
-      }),
-    ).toHaveLength(1);
+    const unassistedOnly = filterJournalEntries(entries, {
+      trackId: base.trackId!,
+      startDate: "",
+      endDate: "",
+      aiUseMode: "unassisted",
+    });
+    expect(unassistedOnly).toHaveLength(1);
+    expect(unassistedOnly.map((entry) => entry.aiUse.mode)).toEqual([
+      "unassisted",
+    ]);
+    expect(unassistedOnly.some((entry) =>
+      entry.aiUse.mode === "unknown" || entry.aiUse.mode === "not_recorded",
+    )).toBe(false);
   });
   it("keeps unknown and not_recorded separate and sums counts/minutes by state", () => {
     const summary = summarizeJournal(entries);
@@ -65,6 +70,18 @@ describe("journal filter and summary", () => {
       count: 1,
       minutes: 40,
     });
-    expect(summary.find((x) => x.mode === "unassisted")?.minutes).toBe(10);
+    expect(summary.find((x) => x.mode === "unassisted")).toEqual({
+      mode: "unassisted",
+      count: 1,
+      minutes: 10,
+    });
+    expect(
+      summary.filter((x) => x.mode === "unknown" || x.mode === "not_recorded"),
+    ).toHaveLength(2);
+    expect(
+      summary
+        .filter((x) => x.mode === "unknown" || x.mode === "not_recorded")
+        .reduce((sum, item) => sum + item.count, 0),
+    ).toBe(2);
   });
 });
