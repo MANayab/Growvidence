@@ -42,7 +42,7 @@
     <path class="leaf" d="M0 48C-42 47-55 12-25 5C-6 5 1 25 0 48Z">
       <animateTransform attributeName="transform" type="rotate" values="0 0 48;5 0 48;0 0 48;-3 0 48;0 0 48" dur="5s" repeatCount="indefinite"/>
     </path>
-    <path class="leaf" d="M0 74C42 71 54 36 28 28C8 25-1 48 0 74Z" fill="#4b8b61">
+    <path class="leaf secondary" d="M0 74C42 71 54 36 28 28C8 25-1 48 0 74Z" fill="#4b8b61">
       <animateTransform attributeName="transform" type="rotate" values="0 0 74;-4 0 74;0 0 74;3 0 74;0 0 74" dur="6s" repeatCount="indefinite"/>
     </path>
   </g>
