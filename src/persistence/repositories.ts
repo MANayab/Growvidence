@@ -270,7 +270,7 @@ export class IndexedDbTasksRepository implements TasksRepository {
 
 export class IndexedDbJournalEntriesRepository implements JournalEntriesRepository {
   constructor(private readonly database: IDBPDatabase<GrowvidenceDB>) {}
-  async get(id: string): Promise<import("./schemas").JournalEntry | undefined> {
+  async get(id: string): Promise<JournalEntry | undefined> {
     try {
       const record = await this.database.get("journalEntries", id);
       return record ? JournalEntrySchema.parse(record) : undefined;
@@ -278,18 +278,18 @@ export class IndexedDbJournalEntriesRepository implements JournalEntriesReposito
       throw toPersistenceError(error);
     }
   }
-  async list(options: { includeDeleted?: boolean } = {}): Promise<import("./schemas").JournalEntry[]> {
+  async list(options: { includeDeleted?: boolean } = {}): Promise<JournalEntry[]> {
     try {
       const records = await this.database.getAll("journalEntries");
       return records
-        .map((record) => (await import("./schemas")).JournalEntrySchema.parse(record))
+        .map((record) => JournalEntrySchema.parse(record))
         .filter((record) => options.includeDeleted || record.deletedAt === null)
         .sort((a, b) => b.date.localeCompare(a.date) || b.updatedAt.localeCompare(a.updatedAt));
     } catch (error) {
       throw toPersistenceError(error);
     }
   }
-  async save(input: import("./schemas").JournalEntry): Promise<import("./schemas").JournalEntry> {
+  async save(input: JournalEntry): Promise<JournalEntry> {
     try {
       const entry = JournalEntrySchema.parse(input);
       await this.database.put("journalEntries", entry);
