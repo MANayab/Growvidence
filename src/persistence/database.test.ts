@@ -113,7 +113,7 @@ describe("database migrations", () => {
   it("upgrades version 3 to 4 and preserves existing tracks, tasks and settings", async () => {
     const name = nextName();
     const existingSettings = {
-      id: "user-settings",
+      id: "user-settings" as const,
       schemaVersion: 1,
       createdAt: "2026-11-21T00:00:00.000Z",
       updatedAt: "2026-11-21T00:00:00.000Z",
