@@ -1,1 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 190" role="img" aria-labelledby="t d"><title id="t">The Growvidence evidence trail</title><desc id="d">Five connected stages: Learn, Practice, Create, Demonstrate and Review.</desc><style>.track{stroke:#c8431f;stroke-width:5;stroke-linecap:round;stroke-dasharray:9 11;animation:dash 7s linear infinite}.node{fill:#f2eee3;stroke:#c8431f;stroke-width:5}.label{font:700 20px system-ui,sans-serif;fill:#1c1b19}.sub{font:14px system-ui,sans-serif;fill:#686157}@keyframes dash{to{stroke-dashoffset:-200}}@media(prefers-reduced-motion:reduce){.track{animation:none}}</style><path class="track" d="M95 72H905"/><g><circle class="node" cx="95" cy="72" r="20"/><circle class="node" cx="297" cy="72" r="20"/><circle class="node" cx="500" cy="72" r="20"/><circle class="node" cx="703" cy="72" r="20"/><circle class="node" cx="905" cy="72" r="20"/></g><g text-anchor="middle"><text class="label" x="95" y="125">Learn</text><text class="sub" x="95" y="148">Understand</text><text class="label" x="297" y="125">Practice</text><text class="sub" x="297" y="148">Try deliberately</text><text class="label" x="500" y="125">Create</text><text class="sub" x="500" y="148">Make an artifact</text><text class="label" x="703" y="125">Demonstrate</text><text class="sub" x="703" y="148">Work independently</text><text class="label" x="905" y="125">Review</text><text class="sub" x="905" y="148">Assess evidence</text></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 190" role="img" aria-labelledby="title desc">
+  <title id="title">The Growvidence evidence trail</title>
+  <desc id="desc">Five connected stages: Learn, Practice, Create, Demonstrate and Review. A subtle pulse travels across the stages.</desc>
+  <style>
+    .track{fill:none;stroke:#c8431f;stroke-width:5;stroke-linecap:round;stroke-dasharray:9 11}
+    .node{fill:#f2eee3;stroke:#c8431f;stroke-width:5}
+    .pulse{fill:#c8431f;fill-opacity:.12;stroke:#c8431f;stroke-width:2}
+    .label{font:700 20px system-ui,sans-serif;fill:#1c1b19}
+    .sub{font:14px system-ui,sans-serif;fill:#5d574e}
+    @media(prefers-reduced-motion:reduce){.motion{display:none}}
+  </style>
+  <path class="track" d="M95 72H905"/>
+  <path class="track motion" d="M95 72H905">
+    <animate attributeName="stroke-dashoffset" from="0" to="-200" dur="6s" repeatCount="indefinite"/>
+  </path>
+  <g>
+    <circle class="node" cx="95" cy="72" r="20"/>
+    <circle class="node" cx="297" cy="72" r="20"/>
+    <circle class="node" cx="500" cy="72" r="20"/>
+    <circle class="node" cx="703" cy="72" r="20"/>
+    <circle class="node" cx="905" cy="72" r="20"/>
+  </g>
+  <g class="motion">
+    <circle class="pulse" cx="95" cy="72" r="20"><animate attributeName="r" values="20;20;25;20;20" keyTimes="0;.04;.08;.12;1" dur="6s" repeatCount="indefinite"/><animate attributeName="fill-opacity" values=".12;.12;.4;.12;.12" keyTimes="0;.04;.08;.12;1" dur="6s" repeatCount="indefinite"/></circle>
+    <circle class="pulse" cx="297" cy="72" r="20"><animate attributeName="r" values="20;20;25;20;20" keyTimes="0;.24;.28;.32;1" dur="6s" repeatCount="indefinite"/><animate attributeName="fill-opacity" values=".12;.12;.4;.12;.12" keyTimes="0;.24;.28;.32;1" dur="6s" repeatCount="indefinite"/></circle>
+    <circle class="pulse" cx="500" cy="72" r="20"><animate attributeName="r" values="20;20;25;20;20" keyTimes="0;.44;.48;.52;1" dur="6s" repeatCount="indefinite"/><animate attributeName="fill-opacity" values=".12;.12;.4;.12;.12" keyTimes="0;.44;.48;.52;1" dur="6s" repeatCount="indefinite"/></circle>
+    <circle class="pulse" cx="703" cy="72" r="20"><animate attributeName="r" values="20;20;25;20;20" keyTimes="0;.64;.68;.72;1" dur="6s" repeatCount="indefinite"/><animate attributeName="fill-opacity" values=".12;.12;.4;.12;.12" keyTimes="0;.64;.68;.72;1" dur="6s" repeatCount="indefinite"/></circle>
+    <circle class="pulse" cx="905" cy="72" r="20"><animate attributeName="r" values="20;20;25;20;20" keyTimes="0;.84;.88;.92;1" dur="6s" repeatCount="indefinite"/><animate attributeName="fill-opacity" values=".12;.12;.4;.12;.12" keyTimes="0;.84;.88;.92;1" dur="6s" repeatCount="indefinite"/></circle>
+  </g>
+  <g text-anchor="middle">
+    <text class="label" x="95" y="125">Learn</text><text class="sub" x="95" y="148">Understand</text>
+    <text class="label" x="297" y="125">Practice</text><text class="sub" x="297" y="148">Try deliberately</text>
+    <text class="label" x="500" y="125">Create</text><text class="sub" x="500" y="148">Make an artifact</text>
+    <text class="label" x="703" y="125">Demonstrate</text><text class="sub" x="703" y="148">Work independently</text>
+    <text class="label" x="905" y="125">Review</text><text class="sub" x="905" y="148">Assess evidence</text>
+  </g>
+</svg>
