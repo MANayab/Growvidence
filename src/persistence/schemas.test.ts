@@ -152,6 +152,9 @@ describe("JournalEntrySchema and AI disclosure", () => {
     const parsed = JournalEntrySchema.parse(base);
     expect(parsed.aiUse.mode).toBe("not_recorded");
     expect(parsed.date).toBe("2026-11-21");
+    expect("attemptedAt" in parsed).toBe(false);
+    const withLegacyField = JournalEntrySchema.parse({ ...base, attemptedAt: "2026-11-21" });
+    expect("attemptedAt" in withLegacyField).toBe(false);
     expect(JournalEntrySchema.safeParse({ ...base, confidence: 0 }).success).toBe(false);
     expect(JournalEntrySchema.safeParse({ ...base, date: "2026-11-21T00:00:00.000Z" }).success).toBe(false);
   });
