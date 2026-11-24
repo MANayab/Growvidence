@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import type { FormEvent } from "react";
 import { filterJournalEntries, summarizeJournal, AI_USE_MODES } from "../domain/journal";
 import type { PersistenceHandle } from "../persistence";
 import type { AiUseMode, JournalEntry, Task, Track } from "../persistence/schemas";
@@ -15,7 +16,6 @@ const localDate = () => {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
 };
-const baseDisclosure = { mode: "not_recorded" as const, tool: "", whatWasGenerated: "" };
 export default function JournalView({ persistence, tracks, tasks, saving, onRefresh }: Props) {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [editing, setEditing] = useState<JournalEntry | null>(null);
@@ -38,7 +38,7 @@ export default function JournalView({ persistence, tracks, tasks, saving, onRefr
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const focusTarget = useRef<HTMLHeadingElement>(null);
-  async function reload() { setEntries(await persistence.journal.list({ includeDeleted: true })); }
+  async function reload() { try { setEntries(await persistence.journal.list({ includeDeleted: true })); } catch (e) { setError(e instanceof Error ? e.message : "Could not load journal records."); } }
   useEffect(() => { void reload(); }, [persistence]);
   const activeEntries = entries.filter((entry) => entry.deletedAt === null);
   const deletedEntries = entries.filter((entry) => entry.deletedAt !== null);
@@ -51,7 +51,7 @@ export default function JournalView({ persistence, tracks, tasks, saving, onRefr
     setEditing(entry); setTitle(entry.title); setLearned(entry.learned); setBlocked(entry.blocked); setNext(entry.next); setTrackId(entry.trackId ?? ""); setTaskId(entry.taskId ?? ""); setConfidence(String(entry.confidence)); setMinutes(String(entry.minutesSpent)); setDate(entry.date); setMode(entry.aiUse.mode); setTool(entry.aiUse.tool); setGenerated(entry.aiUse.whatWasGenerated); setError("");
     focusTarget.current?.focus();
   }
-  async function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setError(""); setMessage("");
     const now = new Date().toISOString();
     const record: JournalEntry = {
@@ -90,8 +90,8 @@ export default function JournalView({ persistence, tracks, tasks, saving, onRefr
       <label>What blocked me<textarea maxLength={5000} rows={3} value={blocked} onChange={(e)=>setBlocked(e.target.value)} /></label>
       <label>What I’ll do next<textarea maxLength={5000} rows={3} value={next} onChange={(e)=>setNext(e.target.value)} /></label>
       <div className="form-grid">
-        <label>Track (optional)<select value={trackId} onChange={(e)=>{setTrackId(e.target.value);setTaskId("");}}><option value="">No track</option>{tracks.filter(t=>!t.deletedAt).map(t=><option key={t.id} value={t.id}>{t.title}{t.archivedAt?" (archived)":""}</option>)}</select></label>
-        <label>Task (optional)<select value={taskId} onChange={(e)=>setTaskId(e.target.value)}><option value="">No task</option>{tasks.filter(t=>!t.deletedAt&&(!trackId||t.trackId===trackId)).map(t=><option key={t.id} value={t.id}>{t.title}</option>)}</select></label>
+        <label>Track (optional)<select value={trackId} onChange={(e)=>{setTrackId(e.target.value);setTaskId("");}}><option value="">No track</option>{trackId && !tracks.some(t=>t.id===trackId) && <option value={trackId}>Deleted or unavailable track (keep link)</option>}{tracks.filter(t=>!t.deletedAt).map(t=><option key={t.id} value={t.id}>{t.title}{t.archivedAt?" (archived)":""}</option>)}</select></label>
+        <label>Task (optional)<select value={taskId} onChange={(e)=>setTaskId(e.target.value)}><option value="">No task</option>{taskId && !tasks.some(t=>t.id===taskId) && <option value={taskId}>Deleted or unavailable task (keep link)</option>}{tasks.filter(t=>!t.deletedAt&&(!trackId||t.trackId===trackId)).map(t=><option key={t.id} value={t.id}>{t.title}</option>)}</select></label>
         <label>Confidence (1–5)<select required value={confidence} onChange={(e)=>setConfidence(e.target.value)}>{[1,2,3,4,5].map(n=><option key={n} value={n}>{n}</option>)}</select></label>
         <label>Minutes spent<input type="number" min="0" max="10080" step="1" value={minutes} onChange={(e)=>setMinutes(e.target.value)} /></label>
         <label>Learning date<input required type="date" value={date} onChange={(e)=>setDate(e.target.value)} /></label>
