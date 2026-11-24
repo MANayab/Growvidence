@@ -1,6 +1,6 @@
 # Learner workspace UX specification
 
-- **Status:** Slice 1 shell is merged. Tracks and tasks in this specification are implemented on `feat/slice-2-tracks-tasks` pending review; journal, competencies, evidence, data backup/import and dashboard remain proposed.
+- **Status:** Slice 1 shell is merged. Tracks and tasks in this specification are implemented on `feat/slice-2-tracks-tasks` CI-verified on PR #12 head `54e15c95fe72f830c9c2b6458bfa6d47edae3`; not merged or deployed. Journal, competencies, evidence, data backup/import and dashboard remain proposed.
 - **Audience:** IT beginners, students, self-taught learners and reviewers.
 - **Product promise:** “Don't just learn. Prove your progress.”
 - **Core rule:** task completion records activity; competency status requires criteria and evidence.
