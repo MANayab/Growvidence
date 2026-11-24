@@ -4,9 +4,11 @@ import type { GrowvidenceDB } from "./database";
 import { PersistenceError, toPersistenceError } from "./errors";
 import {
   SettingsSchema,
+  JournalEntrySchema,
   TaskSchema,
   TrackSchema,
   type Settings,
+  type JournalEntry,
   type Task,
   type TaskStatus,
   type ThemePreference,
@@ -34,9 +36,9 @@ export interface TasksRepository {
   move(id: string, status: TaskStatus): Promise<Task>;
 }
 export interface JournalEntriesRepository {
-  get(id: string): Promise<import("./schemas").JournalEntry | undefined>;
-  list(options?: { includeDeleted?: boolean }): Promise<import("./schemas").JournalEntry[]>;
-  save(entry: import("./schemas").JournalEntry): Promise<import("./schemas").JournalEntry>;
+  get(id: string): Promise<JournalEntry | undefined>;
+  list(options?: { includeDeleted?: boolean }): Promise<JournalEntry[]>;
+  save(entry: import("./schemas").JournalEntry): Promise<JournalEntry>;
   softDelete(id: string): Promise<void>;
   permanentlyDelete(id: string): Promise<void>;
 }
@@ -271,7 +273,7 @@ export class IndexedDbJournalEntriesRepository implements JournalEntriesReposito
   async get(id: string): Promise<import("./schemas").JournalEntry | undefined> {
     try {
       const record = await this.database.get("journalEntries", id);
-      return record ? (await import("./schemas")).JournalEntrySchema.parse(record) : undefined;
+      return record ? JournalEntrySchema.parse(record) : undefined;
     } catch (error) {
       throw toPersistenceError(error);
     }
@@ -289,7 +291,7 @@ export class IndexedDbJournalEntriesRepository implements JournalEntriesReposito
   }
   async save(input: import("./schemas").JournalEntry): Promise<import("./schemas").JournalEntry> {
     try {
-      const entry = (await import("./schemas")).JournalEntrySchema.parse(input);
+      const entry = JournalEntrySchema.parse(input);
       await this.database.put("journalEntries", entry);
       return entry;
     } catch (error) {
@@ -302,7 +304,7 @@ export class IndexedDbJournalEntriesRepository implements JournalEntriesReposito
       const entry = await this.get(id);
       if (!entry || entry.deletedAt) return;
       const now = new Date().toISOString();
-      await this.database.put("journalEntries", (await import("./schemas")).JournalEntrySchema.parse({ ...entry, deletedAt: now, updatedAt: now }));
+      await this.database.put("journalEntries", JournalEntrySchema.parse({ ...entry, deletedAt: now, updatedAt: now }));
     } catch (error) {
       throw toPersistenceError(error);
     }
