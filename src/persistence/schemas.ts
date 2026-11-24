@@ -49,3 +49,31 @@ export type Task = z.infer<typeof TaskSchema>;
 export type TaskStatus = z.infer<typeof TaskStatusSchema>;
 export type TaskPriority = z.infer<typeof TaskPrioritySchema>;
 export type Settings = z.infer<typeof SettingsSchema>;
+
+export const AiUseModeSchema = z.enum([
+  "assisted",
+  "unassisted",
+  "partially_assisted",
+  "unknown",
+  "not_recorded",
+]);
+export const AiUseDisclosureSchema = z.object({
+  mode: AiUseModeSchema.default("not_recorded"),
+  tool: z.string().trim().max(120).default(""),
+  whatWasGenerated: z.string().max(3000).default(""),
+});
+export type AiUseDisclosure = z.infer<typeof AiUseDisclosureSchema>;
+export const JournalEntrySchema = BaseRecordSchema.extend({
+  title: z.string().trim().min(1).max(160),
+  learned: z.string().max(5000).default(""),
+  blocked: z.string().max(5000).default(""),
+  next: z.string().max(5000).default(""),
+  trackId: z.uuid().nullable().default(null),
+  taskId: z.uuid().nullable().default(null),
+  confidence: z.number().int().min(1).max(5),
+  minutesSpent: z.number().int().min(0).max(10080).default(0),
+  date: LocalDateSchema,
+  aiUse: AiUseDisclosureSchema.default({ mode: "not_recorded", tool: "", whatWasGenerated: "" }),
+});
+export type JournalEntry = z.infer<typeof JournalEntrySchema>;
+
