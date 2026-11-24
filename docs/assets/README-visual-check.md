@@ -17,8 +17,9 @@
 - **Static fallback:** The static line, node circles and labels remain complete; CSS reduced-motion hides the pulse/animated overlay. GitHub rendering has not been verified.
 
 ### Six competency icons
-- **Audit finding (source/geometry only):** All six are compact 48×48 vector icons with a `role="img"` and `<title>` accessible label. No text is drawn inside the icons, no external resources or scripts are present, and the inspected paths/strokes remain inside the viewBox with a small stroke-safe margin. The line colors are orange/green and have good contrast against both light and dark backgrounds by source color inspection.
-- **Change:** No icon geometry was changed because no source-level overlap, clipping or text-size issue was detected. Visual confirmation is still needed.
+- **Audit finding (source/geometry only):** All six are compact 48×48 vector icons with a `role="img"` and `<title>` accessible label. No text is drawn inside the icons, no external resources or scripts are present, and the inspected paths/strokes remain inside the viewBox with a small stroke-safe margin. No icon contains small text.
+- **Found and fixed:** The original green stroke `#1f6b45` was slightly below 3:1 non-text contrast against a charcoal background (about 2.78:1). It was adjusted to `#2e8055`, which measures about 3.71:1 against `#171715` and 4.18:1 against paper `#f2eee3`. Orange `#c8431f` is about 4.23:1 on paper and 3.66:1 on charcoal.
+- **Geometry:** No source-level overlap or clipping was detected; icon paths stay inside the 48×48 viewBox. Geometry is unchanged. Visual confirmation is still needed.
 
 ## Animation implementation and GitHub README behavior
 
@@ -55,12 +56,12 @@ The README uses `<picture>` with theme-specific `<source>` elements. Source sele
 - [Hero — light](https://raw.githubusercontent.com/MANayab/Growvidence/fix/readme-hero-visuals/docs/assets/growvidence-hero-light.svg)
 - [Hero — dark](https://raw.githubusercontent.com/MANayab/Growvidence/fix/readme-hero-visuals/docs/assets/growvidence-hero-dark.svg)
 - [Evidence trail](https://raw.githubusercontent.com/MANayab/Growvidence/fix/readme-hero-visuals/docs/assets/evidence-trail.svg)
-- [Competency — architecture](https://raw.githubusercontent.com/MANayab/Growvidence/main/docs/assets/competency-architecture.svg)
-- [Competency — coding](https://raw.githubusercontent.com/MANayab/Growvidence/main/docs/assets/competency-coding.svg)
-- [Competency — debugging](https://raw.githubusercontent.com/MANayab/Growvidence/main/docs/assets/competency-debugging.svg)
-- [Competency — fundamentals](https://raw.githubusercontent.com/MANayab/Growvidence/main/docs/assets/competency-fundamentals.svg)
-- [Competency — testing](https://raw.githubusercontent.com/MANayab/Growvidence/main/docs/assets/competency-testing.svg)
-- [Competency — validation](https://raw.githubusercontent.com/MANayab/Growvidence/main/docs/assets/competency-validation.svg)
+- [Competency — architecture](https://raw.githubusercontent.com/MANayab/Growvidence/fix/readme-hero-visuals/docs/assets/competency-architecture.svg)
+- [Competency — coding](https://raw.githubusercontent.com/MANayab/Growvidence/fix/readme-hero-visuals/docs/assets/competency-coding.svg)
+- [Competency — debugging](https://raw.githubusercontent.com/MANayab/Growvidence/fix/readme-hero-visuals/docs/assets/competency-debugging.svg)
+- [Competency — fundamentals](https://raw.githubusercontent.com/MANayab/Growvidence/fix/readme-hero-visuals/docs/assets/competency-fundamentals.svg)
+- [Competency — testing](https://raw.githubusercontent.com/MANayab/Growvidence/fix/readme-hero-visuals/docs/assets/competency-testing.svg)
+- [Competency — validation](https://raw.githubusercontent.com/MANayab/Growvidence/fix/readme-hero-visuals/docs/assets/competency-validation.svg)
 
 ## Verify animation on GitHub
 
