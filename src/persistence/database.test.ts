@@ -46,6 +46,10 @@ describe("database migrations", () => {
       upgraded.transaction("tracks").store.indexNames.contains("by_updatedAt"),
     ).toBe(true);
     expect(upgraded.objectStoreNames.contains("tasks")).toBe(true);
+    expect(upgraded.objectStoreNames.contains("journalEntries")).toBe(true);
+    const journalStore = upgraded.transaction("journalEntries").store;
+    for (const index of ["by_trackId", "by_taskId", "by_date", "by_updatedAt"])
+      expect(journalStore.indexNames.contains(index)).toBe(true);
     expect(
       upgraded.transaction("tasks").store.indexNames.contains("by_trackId"),
     ).toBe(true);
@@ -96,6 +100,32 @@ describe("database migrations", () => {
     });
   });
 
+  it("upgrades version 3 to 4 and preserves metadata", async () => {
+    const name = nextName();
+    const previous = await openDB<GrowvidenceDB>(name, 3, {
+      upgrade(db) {
+        const meta = db.createObjectStore("meta", { keyPath: "key" });
+        meta.put({ key: "schemaVersion", value: 3 });
+        meta.put({ key: "sentinel", value: "keep" });
+        db.createObjectStore("settings", { keyPath: "id" });
+        const tracks = db.createObjectStore("tracks", { keyPath: "id" });
+        tracks.createIndex("by_updatedAt", "updatedAt");
+        const tasks = db.createObjectStore("tasks", { keyPath: "id" });
+        tasks.createIndex("by_trackId", "trackId");
+        tasks.createIndex("by_status", "status");
+        tasks.createIndex("by_dueDate", "dueDate");
+        tasks.createIndex("by_updatedAt", "updatedAt");
+      },
+    });
+    previous.close();
+    const upgraded = await openDatabase({ databaseName: name });
+    opened.push(upgraded);
+    expect(upgraded.version).toBe(4);
+    expect(upgraded.objectStoreNames.contains("journalEntries")).toBe(true);
+    expect(await upgraded.get("meta", "sentinel")).toEqual({ key: "sentinel", value: "keep" });
+    expect(await upgraded.get("meta", "schemaVersion")).toEqual({ key: "schemaVersion", value: 4 });
+  });
+
   it("aborts a broken upgrade, preserves prior data/version and handles transaction rejection", async () => {
     const name = nextName();
     const previous = await openDB<GrowvidenceDB>(name, 1, {
@@ -127,7 +157,7 @@ describe("database migrations", () => {
       value: 41,
     });
   });
-  it("aborts the v3 journal migration when a duplicate store is present and retains old data", async () => {
+  it("aborts a v3 migration when a duplicate store is present and retains old data", async () => {
     const name = nextName();
     const prior = await openDB<GrowvidenceDB>(name, 3, { upgrade(db) {
       db.createObjectStore("meta", { keyPath: "key" });
