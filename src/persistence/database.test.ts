@@ -110,7 +110,9 @@ describe("database migrations", () => {
     });
   });
 
-  it("upgrades version 3 to 4 and preserves existing tracks, tasks and settings", async () => {
+  it(
+    "upgrades version 3 to 4 and preserves existing tracks, tasks and settings",
+    async () => {
     const name = nextName();
     const existingSettings = {
       id: "user-settings" as const,
@@ -220,7 +222,9 @@ describe("database migrations", () => {
       value: 41,
     });
   });
-  it("aborts a v3 migration and retains the old version, settings, tracks and tasks without an unhandled rejection", async () => {
+  it(
+    "aborts a v3 migration and retains the old version, settings, tracks and tasks without an unhandled rejection",
+    async () => {
     const name = nextName();
     const retainedSettings = {
       id: "user-settings" as const,
