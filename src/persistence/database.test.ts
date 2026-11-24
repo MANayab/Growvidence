@@ -62,11 +62,11 @@ describe("database migrations", () => {
     });
     expect(await upgraded.get("meta", "schemaVersion")).toEqual({
       key: "schemaVersion",
-      value: 3,
+      value: 4,
     });
   });
 
-  it("upgrades the current version 2 schema to version 3 and creates task indexes", async () => {
+  it("upgrades the version 2 schema to version 4 and creates task and journal stores", async () => {
     const name = nextName();
     const previous = await openDB<GrowvidenceDB>(name, 2, {
       upgrade(db) {
@@ -80,12 +80,16 @@ describe("database migrations", () => {
 
     const upgraded = await openDatabase({ databaseName: name });
     opened.push(upgraded);
-    expect(upgraded.version).toBe(3);
+    expect(upgraded.version).toBe(4);
     const taskStore = upgraded.transaction("tasks").store;
     expect(taskStore.indexNames.contains("by_trackId")).toBe(true);
     expect(taskStore.indexNames.contains("by_status")).toBe(true);
     expect(taskStore.indexNames.contains("by_dueDate")).toBe(true);
     expect(taskStore.indexNames.contains("by_updatedAt")).toBe(true);
+    expect(upgraded.objectStoreNames.contains("journalEntries")).toBe(true);
+    const journalStore = upgraded.transaction("journalEntries").store;
+    for (const index of ["by_trackId", "by_taskId", "by_date", "by_updatedAt"])
+      expect(journalStore.indexNames.contains(index)).toBe(true);
     expect(await upgraded.get("meta", "schemaVersion")).toEqual({
       key: "schemaVersion",
       value: 3,
