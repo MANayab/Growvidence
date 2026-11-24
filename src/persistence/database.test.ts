@@ -110,8 +110,42 @@ describe("database migrations", () => {
     });
   });
 
-  it("upgrades version 3 to 4 and preserves metadata", async () => {
+  it("upgrades version 3 to 4 and preserves existing tracks, tasks and settings", async () => {
     const name = nextName();
+    const existingSettings = {
+      id: "user-settings",
+      schemaVersion: 1,
+      createdAt: "2026-11-21T00:00:00.000Z",
+      updatedAt: "2026-11-21T00:00:00.000Z",
+      deletedAt: null,
+      theme: "dark" as const,
+    };
+    const existingTrack = {
+      id: "4b6b3c1e-43a7-4c31-9e6e-b2d62d9e4c4f",
+      schemaVersion: 1,
+      createdAt: "2026-11-21T00:00:00.000Z",
+      updatedAt: "2026-11-21T00:00:00.000Z",
+      deletedAt: null,
+      title: "Preserved track",
+      description: "Track record must survive the v4 upgrade.",
+      archivedAt: null,
+    };
+    const existingTask = {
+      id: "f11b83a0-16f0-4d1a-9e2f-29b1b85b04a2",
+      schemaVersion: 1,
+      createdAt: "2026-11-21T00:00:00.000Z",
+      updatedAt: "2026-11-21T00:00:00.000Z",
+      deletedAt: null,
+      trackId: existingTrack.id,
+      title: "Preserved task",
+      description: "Task record must survive the v4 upgrade.",
+      status: "today" as const,
+      priority: "high" as const,
+      dueDate: "2026-11-21",
+      estimatedMinutes: 45,
+      actualMinutes: 30,
+      tags: ["migration-test"],
+    };
     const previous = await openDB<GrowvidenceDB>(name, 3, {
       upgrade(db) {
         const meta = db.createObjectStore("meta", { keyPath: "key" });
@@ -127,11 +161,18 @@ describe("database migrations", () => {
         tasks.createIndex("by_updatedAt", "updatedAt");
       },
     });
+    await previous.put("settings", existingSettings);
+    await previous.put("tracks", existingTrack);
+    await previous.put("tasks", existingTask);
     previous.close();
+
     const upgraded = await openDatabase({ databaseName: name });
     opened.push(upgraded);
     expect(upgraded.version).toBe(4);
     expect(upgraded.objectStoreNames.contains("journalEntries")).toBe(true);
+    expect(await upgraded.get("settings", existingSettings.id)).toEqual(existingSettings);
+    expect(await upgraded.get("tracks", existingTrack.id)).toEqual(existingTrack);
+    expect(await upgraded.get("tasks", existingTask.id)).toEqual(existingTask);
     expect(await upgraded.get("meta", "sentinel")).toEqual({
       key: "sentinel",
       value: "keep",
@@ -173,28 +214,78 @@ describe("database migrations", () => {
       value: 41,
     });
   });
-  it("aborts a v3 migration when a duplicate store is present and retains old data", async () => {
+  it("aborts a v3 migration and retains the old version, settings, tracks and tasks without an unhandled rejection", async () => {
     const name = nextName();
+    const retainedSettings = {
+      id: "user-settings",
+      schemaVersion: 1,
+      createdAt: "2026-11-21T00:00:00.000Z",
+      updatedAt: "2026-11-21T00:00:00.000Z",
+      deletedAt: null,
+      theme: "light" as const,
+    };
+    const retainedTrack = {
+      id: "4b6b3c1e-43a7-4c31-9e6e-b2d62d9e4c4f",
+      schemaVersion: 1,
+      createdAt: "2026-11-21T00:00:00.000Z",
+      updatedAt: "2026-11-21T00:00:00.000Z",
+      deletedAt: null,
+      title: "Old track remains",
+      description: "",
+      archivedAt: null,
+    };
+    const retainedTask = {
+      id: "f11b83a0-16f0-4d1a-9e2f-29b1b85b04a2",
+      schemaVersion: 1,
+      createdAt: "2026-11-21T00:00:00.000Z",
+      updatedAt: "2026-11-21T00:00:00.000Z",
+      deletedAt: null,
+      trackId: retainedTrack.id,
+      title: "Old task remains",
+      description: "",
+      status: "backlog" as const,
+      priority: "normal" as const,
+      dueDate: null,
+      estimatedMinutes: null,
+      actualMinutes: null,
+      tags: [],
+    };
     const prior = await openDB<GrowvidenceDB>(name, 3, {
       upgrade(db) {
-        db.createObjectStore("meta", { keyPath: "key" });
+        const meta = db.createObjectStore("meta", { keyPath: "key" });
+        meta.put({ key: "schemaVersion", value: 3 });
+        meta.put({ key: "sentinel", value: "keep" });
         db.createObjectStore("settings", { keyPath: "id" });
         const tracks = db.createObjectStore("tracks", { keyPath: "id" });
         tracks.createIndex("by_updatedAt", "updatedAt");
-        db.createObjectStore("tasks", { keyPath: "id" });
+        const tasks = db.createObjectStore("tasks", { keyPath: "id" });
+        tasks.createIndex("by_trackId", "trackId");
+        tasks.createIndex("by_status", "status");
+        tasks.createIndex("by_dueDate", "dueDate");
+        tasks.createIndex("by_updatedAt", "updatedAt");
+        // Deliberately pre-create the store that v4 migration creates to fail
+        // inside the versionchange transaction.
         db.createObjectStore("journalEntries", { keyPath: "id" });
       },
     });
-    await prior.put("meta", { key: "schemaVersion", value: 3 });
-    await prior.put("meta", { key: "sentinel", value: "keep" });
+    await prior.put("settings", retainedSettings);
+    await prior.put("tracks", retainedTrack);
+    await prior.put("tasks", retainedTask);
     prior.close();
+
     await expect(openDatabase({ databaseName: name })).rejects.toThrow(
       "safely upgrade",
     );
+    // Wait through the rejection checkpoint. The migration attaches a handler
+    // to transaction.done so the abort rejection is not left unhandled.
     await new Promise<void>((resolve) => setTimeout(resolve, 0));
+
     const retained = await openDB<GrowvidenceDB>(name, 3);
     opened.push(retained);
     expect(retained.version).toBe(3);
+    expect(await retained.get("settings", retainedSettings.id)).toEqual(retainedSettings);
+    expect(await retained.get("tracks", retainedTrack.id)).toEqual(retainedTrack);
+    expect(await retained.get("tasks", retainedTask.id)).toEqual(retainedTask);
     expect(await retained.get("meta", "schemaVersion")).toEqual({
       key: "schemaVersion",
       value: 3,
