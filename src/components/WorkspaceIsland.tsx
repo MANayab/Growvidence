@@ -391,7 +391,8 @@ export default function WorkspaceIsland() {
                 {item.label}
                 {item.id !== "tracks" &&
                 item.id !== "tasks" &&
-                item.id !== "settings" && item.id !== "journal" ? (
+                item.id !== "settings" &&
+                item.id !== "journal" ? (
                   <span className="nav-status">Planned</span>
                 ) : null}
               </a>
@@ -994,7 +995,13 @@ export default function WorkspaceIsland() {
                 ) : null}
               </section>
             ) : route === "journal" && persistence ? (
-              <JournalView persistence={persistence} tracks={tracks} tasks={tasks} saving={saving} onRefresh={() => refresh(persistence)} />
+              <JournalView
+                persistence={persistence}
+                tracks={tracks}
+                tasks={tasks}
+                saving={saving}
+                onRefresh={() => refresh(persistence)}
+              />
             ) : route === "settings" ? (
               <section
                 className="workspace-card"

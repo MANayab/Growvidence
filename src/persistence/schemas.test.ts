@@ -147,22 +147,55 @@ describe("LocalDateSchema", () => {
 });
 
 describe("JournalEntrySchema and AI disclosure", () => {
-  const base = { id: "aab6e5e8-fd34-4ad1-9f02-1dd44c80a231", schemaVersion: 1, createdAt: "2026-11-21T00:00:00.000Z", updatedAt: "2026-11-21T00:00:00.000Z", deletedAt: null, title: "Practice", learned: "I used a reducer.", blocked: "Typing issue.", next: "Add tests.", trackId: null, taskId: null, confidence: 4, minutesSpent: 25, date: "2026-11-21" };
+  const base = {
+    id: "aab6e5e8-fd34-4ad1-9f02-1dd44c80a231",
+    schemaVersion: 1,
+    createdAt: "2026-11-21T00:00:00.000Z",
+    updatedAt: "2026-11-21T00:00:00.000Z",
+    deletedAt: null,
+    title: "Practice",
+    learned: "I used a reducer.",
+    blocked: "Typing issue.",
+    next: "Add tests.",
+    trackId: null,
+    taskId: null,
+    confidence: 4,
+    minutesSpent: 25,
+    date: "2026-11-21",
+  };
   it("defaults disclosure to not_recorded and validates local date and confidence bounds", () => {
     const parsed = JournalEntrySchema.parse(base);
     expect(parsed.aiUse.mode).toBe("not_recorded");
     expect(parsed.date).toBe("2026-11-21");
     expect("attemptedAt" in parsed).toBe(false);
-    const withLegacyField = JournalEntrySchema.parse({ ...base, attemptedAt: "2026-11-21" });
+    const withLegacyField = JournalEntrySchema.parse({
+      ...base,
+      attemptedAt: "2026-11-21",
+    });
     expect("attemptedAt" in withLegacyField).toBe(false);
-    expect(JournalEntrySchema.safeParse({ ...base, confidence: 0 }).success).toBe(false);
-    expect(JournalEntrySchema.safeParse({ ...base, date: "2026-11-21T00:00:00.000Z" }).success).toBe(false);
+    expect(
+      JournalEntrySchema.safeParse({ ...base, confidence: 0 }).success,
+    ).toBe(false);
+    expect(
+      JournalEntrySchema.safeParse({
+        ...base,
+        date: "2026-11-21T00:00:00.000Z",
+      }).success,
+    ).toBe(false);
   });
   it("keeps all five AI-use states distinct and rejects unknown modes", () => {
-    for (const mode of ["assisted", "unassisted", "partially_assisted", "unknown", "not_recorded"]) {
+    for (const mode of [
+      "assisted",
+      "unassisted",
+      "partially_assisted",
+      "unknown",
+      "not_recorded",
+    ]) {
       const result = AiUseDisclosureSchema.parse({ mode });
       expect(result.mode).toBe(mode);
     }
-    expect(AiUseDisclosureSchema.safeParse({ mode: "none" }).success).toBe(false);
+    expect(AiUseDisclosureSchema.safeParse({ mode: "none" }).success).toBe(
+      false,
+    );
   });
 });

@@ -278,13 +278,19 @@ export class IndexedDbJournalEntriesRepository implements JournalEntriesReposito
       throw toPersistenceError(error);
     }
   }
-  async list(options: { includeDeleted?: boolean } = {}): Promise<JournalEntry[]> {
+  async list(
+    options: { includeDeleted?: boolean } = {},
+  ): Promise<JournalEntry[]> {
     try {
       const records = await this.database.getAll("journalEntries");
       return records
         .map((record) => JournalEntrySchema.parse(record))
         .filter((record) => options.includeDeleted || record.deletedAt === null)
-        .sort((a, b) => b.date.localeCompare(a.date) || b.updatedAt.localeCompare(a.updatedAt));
+        .sort(
+          (a, b) =>
+            b.date.localeCompare(a.date) ||
+            b.updatedAt.localeCompare(a.updatedAt),
+        );
     } catch (error) {
       throw toPersistenceError(error);
     }
@@ -304,7 +310,10 @@ export class IndexedDbJournalEntriesRepository implements JournalEntriesReposito
       const entry = await this.get(id);
       if (!entry || entry.deletedAt) return;
       const now = new Date().toISOString();
-      await this.database.put("journalEntries", JournalEntrySchema.parse({ ...entry, deletedAt: now, updatedAt: now }));
+      await this.database.put(
+        "journalEntries",
+        JournalEntrySchema.parse({ ...entry, deletedAt: now, updatedAt: now }),
+      );
     } catch (error) {
       throw toPersistenceError(error);
     }

@@ -137,10 +137,20 @@ describe("task repository", () => {
 });
 
 const journalEntry: JournalEntry = {
-  id: "aab6e5e8-fd34-4ad1-9f02-1dd44c80a231", schemaVersion: 1,
-  createdAt: "2026-11-21T00:00:00.000Z", updatedAt: "2026-11-21T00:00:00.000Z", deletedAt: null,
-  title: "Learning entry", learned: "I practiced.", blocked: "A type error.", next: "Write tests.",
-  trackId: track.id, taskId: task.id, confidence: 4, minutesSpent: 25, date: "2026-11-21",
+  id: "aab6e5e8-fd34-4ad1-9f02-1dd44c80a231",
+  schemaVersion: 1,
+  createdAt: "2026-11-21T00:00:00.000Z",
+  updatedAt: "2026-11-21T00:00:00.000Z",
+  deletedAt: null,
+  title: "Learning entry",
+  learned: "I practiced.",
+  blocked: "A type error.",
+  next: "Write tests.",
+  trackId: track.id,
+  taskId: task.id,
+  confidence: 4,
+  minutesSpent: 25,
+  date: "2026-11-21",
   aiUse: { mode: "not_recorded", tool: "", whatWasGenerated: "" },
 };
 describe("journal repository", () => {
@@ -163,12 +173,18 @@ describe("journal repository", () => {
     await persistence.tasks.save(task);
     const saved = await persistence.journal.save(journalEntry);
     expect(saved.aiUse.mode).toBe("not_recorded");
-    expect(await persistence.journal.get(journalEntry.id)).toMatchObject({ learned: "I practiced." });
+    expect(await persistence.journal.get(journalEntry.id)).toMatchObject({
+      learned: "I practiced.",
+    });
     await persistence.tasks.softDelete(task.id);
-    expect(await persistence.journal.get(journalEntry.id)).toMatchObject({ taskId: task.id });
+    expect(await persistence.journal.get(journalEntry.id)).toMatchObject({
+      taskId: task.id,
+    });
     await persistence.journal.softDelete(journalEntry.id);
     expect(await persistence.journal.list()).toHaveLength(0);
-    expect(await persistence.journal.list({ includeDeleted: true })).toHaveLength(1);
+    expect(
+      await persistence.journal.list({ includeDeleted: true }),
+    ).toHaveLength(1);
     await persistence.journal.permanentlyDelete(journalEntry.id);
     expect(await persistence.journal.get(journalEntry.id)).toBeUndefined();
   });

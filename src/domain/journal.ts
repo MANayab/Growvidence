@@ -27,11 +27,12 @@ export function filterJournalEntries(
       (filters.trackId === "all" || entry.trackId === filters.trackId) &&
       (!filters.startDate || entry.date >= filters.startDate) &&
       (!filters.endDate || entry.date <= filters.endDate) &&
-      (filters.aiUseMode === "all" ||
-        entry.aiUse.mode === filters.aiUseMode),
+      (filters.aiUseMode === "all" || entry.aiUse.mode === filters.aiUseMode),
   );
 }
-export function summarizeJournal(entries: JournalEntry[]): JournalSummaryItem[] {
+export function summarizeJournal(
+  entries: JournalEntry[],
+): JournalSummaryItem[] {
   return AI_USE_MODES.map((mode) => {
     const selected = entries.filter((entry) => entry.aiUse.mode === mode);
     return {

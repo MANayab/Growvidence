@@ -74,7 +74,10 @@ export const JournalEntrySchema = BaseRecordSchema.extend({
   confidence: z.number().int().min(1).max(5),
   minutesSpent: z.number().int().min(0).max(10080).default(0),
   date: LocalDateSchema,
-  aiUse: AiUseDisclosureSchema.default({ mode: "not_recorded", tool: "", whatWasGenerated: "" }),
+  aiUse: AiUseDisclosureSchema.default({
+    mode: "not_recorded",
+    tool: "",
+    whatWasGenerated: "",
+  }),
 });
 export type JournalEntry = z.infer<typeof JournalEntrySchema>;
-
