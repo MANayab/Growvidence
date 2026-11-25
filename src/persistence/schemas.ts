@@ -87,4 +87,3 @@ export const EvidenceSchema=BaseRecordSchema.extend({competencySlug:CompetencySl
 export type Evidence=z.infer<typeof EvidenceSchema>;
 export const ReviewSchema=BaseRecordSchema.extend({evidenceId:z.uuid(),reviewerType:z.enum(["self","external"]),reviewerLabel:z.string().trim().min(1).max(120),feedback:z.string().trim().min(1).max(5000),outcome:z.enum(["confirm","mixed","needs_revision","informational"]),reviewedAt:IsoDateTimeSchema});
 export type Review=z.infer<typeof ReviewSchema>;
-\n// test patch marker
