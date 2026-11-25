@@ -4,7 +4,10 @@ import { readFile } from "node:fs/promises";
 const html = await readFile("dist/index.html", "utf8");
 const packageJson = JSON.parse(await readFile("package.json", "utf8"));
 const licenseText = await readFile("LICENSE", "utf8");
-assert.ok(licenseText.startsWith("MIT License\n"), "LICENSE must begin with the MIT License title.");
+assert.ok(
+  licenseText.startsWith("MIT License\n"),
+  "LICENSE must begin with the MIT License title.",
+);
 assert.equal(packageJson.license, "MIT", "package.json license must be MIT.");
 const required = [
   /<title>Growvidence — Evidence-Based Skill Tracker<\/title>/,
@@ -67,7 +70,6 @@ assert.doesNotMatch(
 
 console.log("App noindex, sitemap exclusion and robots.txt checks passed.");
 
-
 const privacyHtml = await readFile("dist/privacy/index.html", "utf8");
 const privacyRequired = [
   /<title>Privacy Policy — Growvidence<\/title>/,
@@ -75,8 +77,16 @@ const privacyRequired = [
   /<link\b(?=[^>]*\brel="canonical")(?=[^>]*\bhref="https:\/\/manayab\.github\.io\/Growvidence\/privacy\/")[^>]*>/,
 ];
 for (const pattern of privacyRequired) {
-  assert.match(privacyHtml, pattern, "Built privacy page is missing expected SEO output: " + pattern);
+  assert.match(
+    privacyHtml,
+    pattern,
+    "Built privacy page is missing expected SEO output: " + pattern,
+  );
 }
-assert.match(sitemap, /https:\/\/manayab\.github\.io\/Growvidence\/privacy\//, "Privacy page must appear in sitemap.xml.");
+assert.match(
+  sitemap,
+  /https:\/\/manayab\.github\.io\/Growvidence\/privacy\//,
+  "Privacy page must appear in sitemap.xml.",
+);
 console.log("Privacy page SEO and sitemap check passed.");
 console.log("MIT license file and package metadata check passed.");
