@@ -118,7 +118,9 @@ export default function WorkspaceIsland() {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [deletedTasks, setDeletedTasks] = useState<Task[]>([]);
-  const [journalEntries, setJournalEntries] = useState<import("../persistence/schemas").JournalEntry[]>([]);
+  const [journalEntries, setJournalEntries] = useState<
+    import("../persistence/schemas").JournalEntry[]
+  >([]);
   const [theme, setTheme] = useState<ThemePreference>("system");
   const [persistence, setPersistence] = useState<PersistenceHandle | null>(
     null,
@@ -150,16 +152,19 @@ export default function WorkspaceIsland() {
   }, []);
 
   async function refresh(handle: PersistenceHandle): Promise<void> {
-    const [savedSettings, savedTracks, allTasks, allJournalEntries] = await Promise.all([
-      handle.settings.get(),
-      handle.tracks.list(true, true),
-      handle.tasks.list({ includeDeleted: true }),
-      handle.journal.list({ includeDeleted: true }),
-    ]);
+    const [savedSettings, savedTracks, allTasks, allJournalEntries] =
+      await Promise.all([
+        handle.settings.get(),
+        handle.tracks.list(true, true),
+        handle.tasks.list({ includeDeleted: true }),
+        handle.journal.list({ includeDeleted: true }),
+      ]);
     setTracks(savedTracks);
     setTasks(allTasks.filter((task) => task.deletedAt === null));
     setDeletedTasks(allTasks.filter((task) => task.deletedAt !== null));
-    setJournalEntries(allJournalEntries.filter((entry) => entry.deletedAt === null));
+    setJournalEntries(
+      allJournalEntries.filter((entry) => entry.deletedAt === null),
+    );
     if (savedSettings) {
       setTheme(savedSettings.theme);
       applyTheme(savedSettings.theme);
@@ -1007,7 +1012,11 @@ export default function WorkspaceIsland() {
                 onRefresh={() => refresh(persistence)}
               />
             ) : route === "competencies" && persistence ? (
-              <CompetenciesView persistence={persistence} journals={journalEntries} tasks={tasks} />
+              <CompetenciesView
+                persistence={persistence}
+                journals={journalEntries}
+                tasks={tasks}
+              />
             ) : route === "settings" ? (
               <section
                 className="workspace-card"

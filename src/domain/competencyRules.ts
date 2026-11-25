@@ -1,14 +1,160 @@
 import type { CompetencySlug } from "../persistence/schemas";
-export type CriterionRule={key:string;label:string;requirement:string;mandatory:true;requiresUnassisted:boolean};
-export type CompetencyDefinition={slug:CompetencySlug;title:string;description:string;criteria:CriterionRule[]};
-const c=(key:string,label:string,requirement:string,requiresUnassisted=false):CriterionRule=>({key,label,requirement,mandatory:true,requiresUnassisted});
-export const COMPETENCY_RULES:CompetencyDefinition[]=[
-{slug:"independent_coding",title:"Independent coding",description:"Build and explain working solutions independently.",criteria:[c("IC-1","Implement from a requirement","From written requirements, produce working code and demonstrate without generated code.",true),c("IC-2","Modify unfamiliar code","Make a scoped change and show a regression test or verification."),c("IC-3","Explain and adapt","Explain edge cases/trade-offs, then adapt and verify the solution.",true)]},
-{slug:"debugging",title:"Debugging",description:"Reproduce defects, test hypotheses and verify fixes.",criteria:[c("DB-1","Reproduce and isolate","Reproduce minimally and record expected vs actual."),c("DB-2","Test hypotheses","Record two plausible causes and use evidence to narrow them."),c("DB-3","Verify the fix","Fix, add regression test, and show fail-before/pass-after where practical.")]},
-{slug:"architecture",title:"Architecture",description:"Describe system boundaries and trade-offs.",criteria:[c("AR-1","Describe boundaries","Diagram responsibilities, trust boundaries and dependencies."),c("AR-2","Compare alternatives","Decision record comparing two feasible options and trade-offs."),c("AR-3","Evolve safely","Backward-compatible change or migration with rollback considerations and tests.")]},
-{slug:"testing",title:"Testing",description:"Practice behavior, boundary and regression testing.",criteria:[c("TE-1","Test boundaries","Automated normal, invalid and boundary tests."),c("TE-2","Diagnose regression","Show a failing regression test then passing focused fix."),c("TE-3","Verify user journey","Automate a critical browser journey and record test context/results and gaps.")]},
-{slug:"commercial_validation",title:"Commercial validation",description:"Validate user problems ethically.",criteria:[c("CV-1","Identify a problem","Target segment, problem statement and assumptions."),c("CV-2","Gather user evidence","Consent-based interviews; separate observations from interpretation."),c("CV-3","Test value proposition","Non-deceptive experiment with predeclared success/stop criteria.")]},
-{slug:"technical_fundamentals",title:"Technical fundamentals",description:"Apply and explain language, browser and data concepts.",criteria:[c("TF-1","Explain concepts","Explain a core concept in own words with an example."),c("TF-2","Apply concept","Implement and verify a small example."),c("TF-3","Reason about safety","Identify a failure/security/performance boundary and mitigation.")] }
+export type CriterionRule = {
+  key: string;
+  label: string;
+  requirement: string;
+  mandatory: true;
+  requiresUnassisted: boolean;
+};
+export type CompetencyDefinition = {
+  slug: CompetencySlug;
+  title: string;
+  description: string;
+  criteria: CriterionRule[];
+};
+const c = (
+  key: string,
+  label: string,
+  requirement: string,
+  requiresUnassisted = false,
+): CriterionRule => ({
+  key,
+  label,
+  requirement,
+  mandatory: true,
+  requiresUnassisted,
+});
+export const COMPETENCY_RULES: CompetencyDefinition[] = [
+  {
+    slug: "independent_coding",
+    title: "Independent coding",
+    description: "Build and explain working solutions independently.",
+    criteria: [
+      c(
+        "IC-1",
+        "Implement from a requirement",
+        "From written requirements, produce working code and demonstrate without generated code.",
+        true,
+      ),
+      c(
+        "IC-2",
+        "Modify unfamiliar code",
+        "Make a scoped change and show a regression test or verification.",
+      ),
+      c(
+        "IC-3",
+        "Explain and adapt",
+        "Explain edge cases/trade-offs, then adapt and verify the solution.",
+        true,
+      ),
+    ],
+  },
+  {
+    slug: "debugging",
+    title: "Debugging",
+    description: "Reproduce defects, test hypotheses and verify fixes.",
+    criteria: [
+      c(
+        "DB-1",
+        "Reproduce and isolate",
+        "Reproduce minimally and record expected vs actual.",
+      ),
+      c(
+        "DB-2",
+        "Test hypotheses",
+        "Record two plausible causes and use evidence to narrow them.",
+      ),
+      c(
+        "DB-3",
+        "Verify the fix",
+        "Fix, add regression test, and show fail-before/pass-after where practical.",
+      ),
+    ],
+  },
+  {
+    slug: "architecture",
+    title: "Architecture",
+    description: "Describe system boundaries and trade-offs.",
+    criteria: [
+      c(
+        "AR-1",
+        "Describe boundaries",
+        "Diagram responsibilities, trust boundaries and dependencies.",
+      ),
+      c(
+        "AR-2",
+        "Compare alternatives",
+        "Decision record comparing two feasible options and trade-offs.",
+      ),
+      c(
+        "AR-3",
+        "Evolve safely",
+        "Backward-compatible change or migration with rollback considerations and tests.",
+      ),
+    ],
+  },
+  {
+    slug: "testing",
+    title: "Testing",
+    description: "Practice behavior, boundary and regression testing.",
+    criteria: [
+      c(
+        "TE-1",
+        "Test boundaries",
+        "Automated normal, invalid and boundary tests.",
+      ),
+      c(
+        "TE-2",
+        "Diagnose regression",
+        "Show a failing regression test then passing focused fix.",
+      ),
+      c(
+        "TE-3",
+        "Verify user journey",
+        "Automate a critical browser journey and record test context/results and gaps.",
+      ),
+    ],
+  },
+  {
+    slug: "commercial_validation",
+    title: "Commercial validation",
+    description: "Validate user problems ethically.",
+    criteria: [
+      c(
+        "CV-1",
+        "Identify a problem",
+        "Target segment, problem statement and assumptions.",
+      ),
+      c(
+        "CV-2",
+        "Gather user evidence",
+        "Consent-based interviews; separate observations from interpretation.",
+      ),
+      c(
+        "CV-3",
+        "Test value proposition",
+        "Non-deceptive experiment with predeclared success/stop criteria.",
+      ),
+    ],
+  },
+  {
+    slug: "technical_fundamentals",
+    title: "Technical fundamentals",
+    description: "Apply and explain language, browser and data concepts.",
+    criteria: [
+      c(
+        "TF-1",
+        "Explain concepts",
+        "Explain a core concept in own words with an example.",
+      ),
+      c("TF-2", "Apply concept", "Implement and verify a small example."),
+      c(
+        "TF-3",
+        "Reason about safety",
+        "Identify a failure/security/performance boundary and mitigation.",
+      ),
+    ],
+  },
 ];
-export const CONSISTENCY_DAYS=14;
-export const STALE_AFTER_DAYS=180;
+export const CONSISTENCY_DAYS = 14;
+export const STALE_AFTER_DAYS = 180;

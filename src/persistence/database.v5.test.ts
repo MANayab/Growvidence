@@ -1,11 +1,79 @@
 import "fake-indexeddb/auto";
-import {openDB} from "idb";
-import {afterEach,describe,expect,it} from "vitest";
-import {openDatabase,type GrowvidenceDB} from "./database";
-const openHandles:{close():void}[]=[];
-afterEach(()=>openHandles.splice(0).forEach(db=>db.close()));
-async function makeV4(name:string,precreateEvidence=false){return openDB(name,4,{upgrade(db){db.createObjectStore("meta",{keyPath:"key"});db.createObjectStore("settings",{keyPath:"id"});const tracks=db.createObjectStore("tracks",{keyPath:"id"});tracks.createIndex("by_updatedAt","updatedAt");const tasks=db.createObjectStore("tasks",{keyPath:"id"});tasks.createIndex("by_trackId","trackId");tasks.createIndex("by_status","status");tasks.createIndex("by_dueDate","dueDate");tasks.createIndex("by_updatedAt","updatedAt");const journal=db.createObjectStore("journalEntries",{keyPath:"id"});journal.createIndex("by_trackId","trackId");journal.createIndex("by_taskId","taskId");journal.createIndex("by_date","date");journal.createIndex("by_updatedAt","updatedAt");if(precreateEvidence)db.createObjectStore("evidence",{keyPath:"id"});}});}
-describe("v4 to v5 migration",()=>{
-it("preserves settings, tracks, tasks and journal records",async()=>{const name="growvidence-migration-v5-preserve";const old=await makeV4(name);openHandles.push(old);const settings={id:"user-settings",theme:"dark",schemaVersion:1,createdAt:"2026-11-01T00:00:00Z",updatedAt:"2026-11-01T00:00:00Z",deletedAt:null};const track={id:"track-1",title:"Track"},task={id:"task-1",trackId:"track-1",title:"Task"},journal={id:"entry-1",title:"Entry"};await old.put("settings",settings);await old.put("tracks",track);await old.put("tasks",task);await old.put("journalEntries",journal);old.close();const upgraded=await openDatabase({databaseName:name});openHandles.push(upgraded);expect(upgraded.version).toBe(5);expect(await upgraded.get("settings",settings.id)).toEqual(settings);expect(await upgraded.get("tracks",track.id)).toEqual(track);expect(await upgraded.get("tasks",task.id)).toEqual(task);expect(await upgraded.get("journalEntries",journal.id)).toEqual(journal);});
-it("aborts failed upgrade and preserves prior version with no unhandled rejection",async()=>{const name="growvidence-migration-v5-abort";const old=await makeV4(name,true);openHandles.push(old);const saved={key:"marker",value:"retained"};await old.put("meta",saved);old.close();const unhandled:unknown[]=[];const handler=(reason:unknown)=>unhandled.push(reason);process.on("unhandledRejection",handler);await expect(openDatabase({databaseName:name})).rejects.toThrow("safely upgrade");await new Promise(resolve=>setTimeout(resolve,0));process.off("unhandledRejection",handler);const retained=await openDB<GrowvidenceDB>(name,4);openHandles.push(retained);expect(retained.version).toBe(4);expect(await retained.get("meta","marker")).toEqual(saved);expect(unhandled).toEqual([]);});
+import { openDB } from "idb";
+import { afterEach, describe, expect, it } from "vitest";
+import { openDatabase, type GrowvidenceDB } from "./database";
+const openHandles: { close(): void }[] = [];
+afterEach(() => openHandles.splice(0).forEach((db) => db.close()));
+async function makeV4(name: string, precreateEvidence = false) {
+  return openDB(name, 4, {
+    upgrade(db) {
+      db.createObjectStore("meta", { keyPath: "key" });
+      db.createObjectStore("settings", { keyPath: "id" });
+      const tracks = db.createObjectStore("tracks", { keyPath: "id" });
+      tracks.createIndex("by_updatedAt", "updatedAt");
+      const tasks = db.createObjectStore("tasks", { keyPath: "id" });
+      tasks.createIndex("by_trackId", "trackId");
+      tasks.createIndex("by_status", "status");
+      tasks.createIndex("by_dueDate", "dueDate");
+      tasks.createIndex("by_updatedAt", "updatedAt");
+      const journal = db.createObjectStore("journalEntries", { keyPath: "id" });
+      journal.createIndex("by_trackId", "trackId");
+      journal.createIndex("by_taskId", "taskId");
+      journal.createIndex("by_date", "date");
+      journal.createIndex("by_updatedAt", "updatedAt");
+      if (precreateEvidence)
+        db.createObjectStore("evidence", { keyPath: "id" });
+    },
+  });
+}
+describe("v4 to v5 migration", () => {
+  it("preserves settings, tracks, tasks and journal records", async () => {
+    const name = "growvidence-migration-v5-preserve";
+    const old = await makeV4(name);
+    openHandles.push(old);
+    const settings = {
+      id: "user-settings",
+      theme: "dark",
+      schemaVersion: 1,
+      createdAt: "2026-11-01T00:00:00Z",
+      updatedAt: "2026-11-01T00:00:00Z",
+      deletedAt: null,
+    };
+    const track = { id: "track-1", title: "Track" },
+      task = { id: "task-1", trackId: "track-1", title: "Task" },
+      journal = { id: "entry-1", title: "Entry" };
+    await old.put("settings", settings);
+    await old.put("tracks", track);
+    await old.put("tasks", task);
+    await old.put("journalEntries", journal);
+    old.close();
+    const upgraded = await openDatabase({ databaseName: name });
+    openHandles.push(upgraded);
+    expect(upgraded.version).toBe(5);
+    expect(await upgraded.get("settings", settings.id)).toEqual(settings);
+    expect(await upgraded.get("tracks", track.id)).toEqual(track);
+    expect(await upgraded.get("tasks", task.id)).toEqual(task);
+    expect(await upgraded.get("journalEntries", journal.id)).toEqual(journal);
+  });
+  it("aborts failed upgrade and preserves prior version with no unhandled rejection", async () => {
+    const name = "growvidence-migration-v5-abort";
+    const old = await makeV4(name, true);
+    openHandles.push(old);
+    const saved = { key: "marker", value: "retained" };
+    await old.put("meta", saved);
+    old.close();
+    const unhandled: unknown[] = [];
+    const handler = (reason: unknown) => unhandled.push(reason);
+    process.on("unhandledRejection", handler);
+    await expect(openDatabase({ databaseName: name })).rejects.toThrow(
+      "safely upgrade",
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    process.off("unhandledRejection", handler);
+    const retained = await openDB<GrowvidenceDB>(name, 4);
+    openHandles.push(retained);
+    expect(retained.version).toBe(4);
+    expect(await retained.get("meta", "marker")).toEqual(saved);
+    expect(unhandled).toEqual([]);
+  });
 });

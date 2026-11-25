@@ -30,13 +30,44 @@ export interface GrowvidenceDB extends DBSchema {
       by_updatedAt: string;
     };
   };
-  journalEntries: { key:string; value:import("./schemas").JournalEntry; indexes:{by_trackId:string;by_taskId:string;by_date:string;by_updatedAt:string;} };
-  evidence: { key:string; value:import("./schemas").Evidence; indexes:{by_competencySlug:string;by_criterionKey:string;by_journalEntryId:string;by_taskId:string;by_updatedAt:string;} };
-  reviews: { key:string; value:import("./schemas").Review; indexes:{by_evidenceId:string;by_updatedAt:string;} };
+  journalEntries: {
+    key: string;
+    value: import("./schemas").JournalEntry;
+    indexes: {
+      by_trackId: string;
+      by_taskId: string;
+      by_date: string;
+      by_updatedAt: string;
+    };
+  };
+  evidence: {
+    key: string;
+    value: import("./schemas").Evidence;
+    indexes: {
+      by_competencySlug: string;
+      by_criterionKey: string;
+      by_journalEntryId: string;
+      by_taskId: string;
+      by_updatedAt: string;
+    };
+  };
+  reviews: {
+    key: string;
+    value: import("./schemas").Review;
+    indexes: { by_evidenceId: string; by_updatedAt: string };
+  };
 }
 type UpgradeTransaction = IDBPTransaction<
   GrowvidenceDB,
-  ("meta" | "settings" | "tracks" | "tasks" | "journalEntries" | "evidence" | "reviews")[],
+  (
+    | "meta"
+    | "settings"
+    | "tracks"
+    | "tasks"
+    | "journalEntries"
+    | "evidence"
+    | "reviews"
+  )[],
   "versionchange"
 >;
 export class MigrationError extends Error {
@@ -76,16 +107,22 @@ export function applyMigrations(
     }
     if (oldVersion < 4) {
       const journal = db.createObjectStore("journalEntries", { keyPath: "id" });
-      journal.createIndex("by_trackId", "trackId"); journal.createIndex("by_taskId", "taskId");
-      journal.createIndex("by_date", "date"); journal.createIndex("by_updatedAt", "updatedAt");
+      journal.createIndex("by_trackId", "trackId");
+      journal.createIndex("by_taskId", "taskId");
+      journal.createIndex("by_date", "date");
+      journal.createIndex("by_updatedAt", "updatedAt");
       transaction.objectStore("meta").put({ key: "schemaVersion", value: 4 });
     }
     if (oldVersion < 5) {
       const evidence = db.createObjectStore("evidence", { keyPath: "id" });
-      evidence.createIndex("by_competencySlug", "competencySlug"); evidence.createIndex("by_criterionKey", "criterionKey");
-      evidence.createIndex("by_journalEntryId", "journalEntryId"); evidence.createIndex("by_taskId", "taskId"); evidence.createIndex("by_updatedAt", "updatedAt");
+      evidence.createIndex("by_competencySlug", "competencySlug");
+      evidence.createIndex("by_criterionKey", "criterionKey");
+      evidence.createIndex("by_journalEntryId", "journalEntryId");
+      evidence.createIndex("by_taskId", "taskId");
+      evidence.createIndex("by_updatedAt", "updatedAt");
       const reviews = db.createObjectStore("reviews", { keyPath: "id" });
-      reviews.createIndex("by_evidenceId", "evidenceId"); reviews.createIndex("by_updatedAt", "updatedAt");
+      reviews.createIndex("by_evidenceId", "evidenceId");
+      reviews.createIndex("by_updatedAt", "updatedAt");
       transaction.objectStore("meta").put({ key: "schemaVersion", value: 5 });
     }
   } catch (error) {
