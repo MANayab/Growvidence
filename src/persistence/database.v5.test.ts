@@ -2,7 +2,7 @@ import "fake-indexeddb/auto";
 import {openDB} from "idb";
 import {afterEach,describe,expect,it} from "vitest";
 import {openDatabase,type GrowvidenceDB} from "./database";
-const openHandles:IDBDatabase[]=[];
+const openHandles:{close():void}[]=[];
 afterEach(()=>openHandles.splice(0).forEach(db=>db.close()));
 async function makeV4(name:string,precreateEvidence=false){return openDB(name,4,{upgrade(db){db.createObjectStore("meta",{keyPath:"key"});db.createObjectStore("settings",{keyPath:"id"});const tracks=db.createObjectStore("tracks",{keyPath:"id"});tracks.createIndex("by_updatedAt","updatedAt");const tasks=db.createObjectStore("tasks",{keyPath:"id"});tasks.createIndex("by_trackId","trackId");tasks.createIndex("by_status","status");tasks.createIndex("by_dueDate","dueDate");tasks.createIndex("by_updatedAt","updatedAt");const journal=db.createObjectStore("journalEntries",{keyPath:"id"});journal.createIndex("by_trackId","trackId");journal.createIndex("by_taskId","taskId");journal.createIndex("by_date","date");journal.createIndex("by_updatedAt","updatedAt");if(precreateEvidence)db.createObjectStore("evidence",{keyPath:"id"});}});}
 describe("v4 to v5 migration",()=>{
