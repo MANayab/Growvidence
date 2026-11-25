@@ -4,7 +4,7 @@ import type {Evidence,JournalEntry,Review,Task} from "../persistence/schemas";
 const common={schemaVersion:1,updatedAt:"2026-11-01T00:00:00Z",deletedAt:null};
 const make=(id:string,key:string,date:string,taskId:string|null,context="",url:string|null="https://example.org"):Evidence=>({...common,id,createdAt:date+"T00:00:00Z",competencySlug:"independent_coding",criterionKey:key,title:id,description:"",context,linkUrl:url,journalEntryId:null,taskId});
 const journal=(id:string,date:string,mode:JournalEntry["aiUse"]["mode"]):JournalEntry=>({...common,id,createdAt:date+"T00:00:00Z",title:"Practice",learned:"",blocked:"",next:"",trackId:null,taskId:null,confidence:3,minutesSpent:0,date,aiUse:{mode,tool:"",whatWasGenerated:""}});
-const reviews:Review[]=[],tasks:Task[];
+const reviews:Review[]=[],tasks:Task[]=[];
 describe("competency computation",()=>{
 it("task completion does not create evidence",()=>expect(computeCompetencies([],reviews,[],tasks).find(x=>x.slug==="independent_coding")?.status).toBe("Not started"));
 it.each(["unknown","not_recorded"] as const)("blocks unassisted criterion for %s",mode=>{const e=[{...make("a","IC-1","2026-11-01",null),linkUrl:null,journalEntryId:"j"}];expect(computeCompetencies(e,reviews,[journal("j","2026-11-01",mode)],tasks)[0].criteria[0].satisfied).toBe(false);});
