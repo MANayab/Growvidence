@@ -176,9 +176,7 @@ describe("database migrations", () => {
     expect(await upgraded.get("tracks", existingTrack.id)).toEqual(
       existingTrack,
     );
-    expect(await upgraded.get("tasks", existingTask.id)).toEqual(
-      existingTask,
-    );
+    expect(await upgraded.get("tasks", existingTask.id)).toEqual(existingTask);
     expect(await upgraded.get("meta", "sentinel")).toEqual({
       key: "sentinel",
       value: "keep",
@@ -296,9 +294,7 @@ describe("database migrations", () => {
     expect(await retained.get("tracks", retainedTrack.id)).toEqual(
       retainedTrack,
     );
-    expect(await retained.get("tasks", retainedTask.id)).toEqual(
-      retainedTask,
-    );
+    expect(await retained.get("tasks", retainedTask.id)).toEqual(retainedTask);
     expect(await retained.get("meta", "schemaVersion")).toEqual({
       key: "schemaVersion",
       value: 3,
