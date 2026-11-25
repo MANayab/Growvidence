@@ -123,3 +123,6 @@ Guaranteed rankings, employment or accreditation; opaque AI mastery scores; mand
 - Journal learning date is the single canonical `date` field: local date-only `YYYY-MM-DD`, never converted through UTC. `attemptedAt` is removed and must not be stored.
 - Entries include title, learned, blocked, next, optional trackId/taskId, confidence 1–5, minutesSpent, and AI-use disclosure.
 - AI disclosure states are assisted, unassisted, partially_assisted, unknown and not_recorded. New/imported entries default to not_recorded; unknown and not_recorded remain separate and are never treated as unassisted.
+
+## Slice 4 competency defaults — NEEDS APPROVAL
+All six criterion rubrics and assessment thresholds are defaults marked **NEEDS APPROVAL** in this file and `docs/DATA_CONTRACTS.md`. Rules are centralized in `src/domain/competencyRules.ts`. Computed levels: Not started, In progress, Demonstrated, Consistent. Demonstrated requires all mandatory criteria with valid evidence. Consistent requires a repeat in a distinct task/context at least 14 days later or an external confirmation. Self reviews cannot establish Consistent. IC-1 and IC-3 require a linked journal entry explicitly marked unassisted; unknown/not_recorded never qualify. Task completion is irrelevant. Evidence does not expire; show a may-be-stale hint after 180 days.
