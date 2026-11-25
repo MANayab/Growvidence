@@ -15,6 +15,7 @@ import {
   IndexedDbSettingsRepository,
   IndexedDbTasksRepository,
   IndexedDbTracksRepository,
+  IndexedDbJournalEntriesRepository,
 } from "./repositories";
 
 export { PersistenceError } from "./errors";
@@ -27,6 +28,9 @@ export {
   LocalDateSchema,
   SettingsSchema,
   ThemePreferenceSchema,
+  JournalEntrySchema,
+  AiUseDisclosureSchema,
+  AiUseModeSchema,
 } from "./schemas";
 export type {
   Track,
@@ -35,6 +39,8 @@ export type {
   TaskPriority,
   Settings,
   ThemePreference,
+  JournalEntry,
+  AiUseDisclosure,
 } from "./schemas";
 export { DATABASE_NAME, DATABASE_VERSION, applyMigrations } from "./database";
 
@@ -43,6 +49,7 @@ export interface PersistenceHandle {
   settings: IndexedDbSettingsRepository;
   tracks: IndexedDbTracksRepository;
   tasks: IndexedDbTasksRepository;
+  journal: IndexedDbJournalEntriesRepository;
   close(): void;
 }
 export interface OpenPersistenceOptions extends DatabaseOpenOptions {
@@ -76,6 +83,7 @@ export async function openPersistence(
       settings: new IndexedDbSettingsRepository(database),
       tracks: new IndexedDbTracksRepository(database),
       tasks: new IndexedDbTasksRepository(database),
+      journal: new IndexedDbJournalEntriesRepository(database),
       close: () => database.close(),
     };
   } catch (error) {

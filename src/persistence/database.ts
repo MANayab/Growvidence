@@ -6,11 +6,11 @@ import {
 } from "idb";
 
 export const DATABASE_NAME = "growvidence-local";
-export const DATABASE_VERSION = 3;
+export const DATABASE_VERSION = 4;
 
 interface MetaRecord {
   key: string;
-  value: number;
+  value: unknown;
 }
 export interface GrowvidenceDB extends DBSchema {
   meta: { key: string; value: MetaRecord };
@@ -30,13 +30,22 @@ export interface GrowvidenceDB extends DBSchema {
       by_updatedAt: string;
     };
   };
+  journalEntries: {
+    key: string;
+    value: import("./schemas").JournalEntry;
+    indexes: {
+      by_trackId: string;
+      by_taskId: string;
+      by_date: string;
+      by_updatedAt: string;
+    };
+  };
 }
 type UpgradeTransaction = IDBPTransaction<
   GrowvidenceDB,
-  ("meta" | "settings" | "tracks" | "tasks")[],
+  ("meta" | "settings" | "tracks" | "tasks" | "journalEntries")[],
   "versionchange"
 >;
-
 export class MigrationError extends Error {
   constructor(message: string, options?: ErrorOptions) {
     super(message, options);
@@ -71,6 +80,14 @@ export function applyMigrations(
       tasks.createIndex("by_dueDate", "dueDate");
       tasks.createIndex("by_updatedAt", "updatedAt");
       transaction.objectStore("meta").put({ key: "schemaVersion", value: 3 });
+    }
+    if (oldVersion < 4) {
+      const journal = db.createObjectStore("journalEntries", { keyPath: "id" });
+      journal.createIndex("by_trackId", "trackId");
+      journal.createIndex("by_taskId", "taskId");
+      journal.createIndex("by_date", "date");
+      journal.createIndex("by_updatedAt", "updatedAt");
+      transaction.objectStore("meta").put({ key: "schemaVersion", value: 4 });
     }
   } catch (error) {
     throw new MigrationError(

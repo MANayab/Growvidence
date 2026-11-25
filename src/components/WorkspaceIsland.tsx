@@ -16,6 +16,7 @@ import {
   type StorageNotice,
 } from "../persistence";
 import TaskBoard from "./TaskBoard";
+import JournalView from "./JournalView";
 import type {
   Task,
   TaskPriority,
@@ -390,7 +391,8 @@ export default function WorkspaceIsland() {
                 {item.label}
                 {item.id !== "tracks" &&
                 item.id !== "tasks" &&
-                item.id !== "settings" ? (
+                item.id !== "settings" &&
+                item.id !== "journal" ? (
                   <span className="nav-status">Planned</span>
                 ) : null}
               </a>
@@ -992,6 +994,14 @@ export default function WorkspaceIsland() {
                   </section>
                 ) : null}
               </section>
+            ) : route === "journal" && persistence ? (
+              <JournalView
+                persistence={persistence}
+                tracks={tracks}
+                tasks={tasks}
+                saving={saving}
+                onRefresh={() => refresh(persistence)}
+              />
             ) : route === "settings" ? (
               <section
                 className="workspace-card"

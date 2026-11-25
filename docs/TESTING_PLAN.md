@@ -1,6 +1,6 @@
 # Growvidence testing plan and implementation slices
 
-- **Status:** Slice 1 is merged. Slice 2 track/task implementation and Vitest coverage are present on `feat/slice-2-tracks-tasks`, pending maintainer review; CI passed on head `54e15c95fe72f830c9c2b6458bfa6d47edae3` (push run 45498401417 and PR run 45498411745). Playwright remains deferred to Slice 7. CI passed 37 unit tests, Astro diagnostics, lint, formatting, build, verify-build and the 200 KiB gzip budget. Slice 2 bundle is 99.39 KiB gzip, up 3.88 KiB from Slice 1 baseline 95.51 KiB.
+- **Status:** Slice 1 and Slice 2 (PR #12) are merged. Slice 3 Journal implementation and tests are on `feat/slice-3-journal-ai-disclosure` and not yet merged. Slice 2 CI passed on exact head `d307712d63e8d6c6b96a912ea893ae4e2f2fdb58` (runs 45498961099 push and 45498975171 PR); 37 tests, Astro diagnostics, lint, formatting, build, verify-build and bundle gate. Bundle was 99.39 KiB gzip (+3.88 KiB versus Slice 1). Playwright remains deferred to Slice 7.
 - **Release posture:** Phase 2 design decisions were accepted on 2026-11-21. One slice PR is active at a time; stop after this PR for maintainer review.
 
 ## Test strategy
@@ -22,7 +22,7 @@ Aim for at least 80% statement coverage in core domain modules as a diagnostic t
 
 ### 2. Persistence integration tests
 
-Slice 2 adds fake-indexeddb coverage for task/track persistence, referential validation, archive behavior, soft-delete cascade, permanent deletion and the v2-to-v3 migration. The failed-upgrade fixture checks that the old version and metadata remain intact.
+Slice 2 adds fake-indexeddb coverage for task/track persistence, referential validation, archive behavior, soft-delete cascade, permanent deletion and v2-to-v3 migration. Slice 3 adds journal repository, AI-mode summary/filter, schema, and v1/v2/v3-to-v4 migration coverage; migration-abort tests verify the old version and metadata remain intact and the transaction rejection is handled.
 
 Use `fake-indexeddb` for deterministic repository and migration integration tests in Vitest. Follow with real-browser IndexedDB checks during the dedicated E2E slice; fake-indexeddb does not replace browser quota/private-mode testing.
 
@@ -36,9 +36,17 @@ Use `fake-indexeddb` for deterministic repository and migration integration test
 - Per-record permanent deletion removes the record from future backups; soft-deleted records remain in backups; delete-all clears all user-owned records and metadata.
 - Reload persistence works for records saved successfully.
 
+### Slice 3 Journal checks
+
+- Schema validation: title, text length, confidence 1–5, minute bounds, date-only local date, default AI disclosure, all five AI modes, and attemptedAt removal (date is canonical).
+- Repository: create/read/update/list, soft delete, permanent delete, safe dangling task/track references, and no cascading journal deletion when task/track is removed.
+- Domain logic: inclusive local date filters, track and AI-mode filtering; summary counts and minutes across all five AI modes, keeping unknown and not_recorded separate from unassisted.
+- Migration: fresh v4 DB, v1/v2/v3 to v4 stores/indexes and prior data retained; forced migration failure aborts without data/version loss or unhandled rejection.
+- Component: labeled form fields, default not_recorded, all disclosure states, filter/summary labels, delete confirmation and focus states. SSR smoke tests are not substitutes for browser keyboard/screen-reader review.
+
 ### 3. Component and accessibility tests
 
-Slice 2 includes component tests for the native, explicitly labeled status select and its change callback with all five statuses. The browser supplies keyboard behavior for native selects; the test does not emulate a real browser keyboard or screen reader. Manual keyboard and screen-reader testing is still required.
+Slice 2 includes component tests for native status selection. Slice 3 includes journal component smoke coverage for labeled fields and all AI disclosure categories; additional real-browser manual validation is required. The browser supplies keyboard behavior for native selects; the test does not emulate a real browser keyboard or screen reader. Manual keyboard and screen-reader testing is still required.
 
 - Labels, descriptions, validation messages and status announcements.
 - Keyboard operation for task list and Kanban without drag-and-drop.

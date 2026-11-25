@@ -1,11 +1,11 @@
 # Growvidence learner data contracts
 
-- **Status:** Track and task contracts are implemented on `feat/slice-2-tracks-tasks`; journal, competency, evidence, review and backup/import contracts remain design proposals.
-- **Runtime validation:** Zod at persistence/domain boundaries for implemented track/task records.
-- **Persistence:** IndexedDB through the typed `idb` adapter in ADR-0006; database schema version 3 on the Slice 2 review branch.
+- **Status:** Track/task workflows and journal workflows are implemented in the Slice 3 review branch; competency, evidence, review and backup/import remain proposals.
+- **Runtime validation:** Zod at persistence/domain boundaries for track/task/journal records.
+- **Persistence:** IndexedDB through the typed `idb` adapter in ADR-0006; database schema version 4 in Slice 3.
 - **Contract version:** `1` (proposed export format)
 
-These contracts define the shape and invariants for local learner records. The Track and Task portions below are implemented on the Slice 2 review branch but are not merged or deployed. Remaining records are design baselines, not claims that their workflows or storage exist. Keep TypeScript types inferred from runtime schemas rather than maintaining duplicate hand-written types.
+These contracts define the shape and invariants for local learner records. Track, Task and Journal portions are implemented on the Slice 3 review branch and remain unmerged until maintainer review. Competency, evidence, review and backup/import records are design baselines, not claims that their workflows or storage exist. Keep TypeScript types inferred from runtime schemas rather than maintaining duplicate hand-written types.
 
 ## Shared conventions
 
@@ -36,9 +36,23 @@ Calendar views use the browser's local calendar date. Weeks start Monday. Record
 
 The earlier proposed Task schema block below predates Slice 2; use this implementation addendum and the source Zod schemas as the current Track/Task contract. Other entity sketches remain proposals.
 
+## Slice 3 journal implementation contract
+
+The journal record extends the shared mutable-record metadata and includes:
+
+- `title`: trimmed, required, 1–160 characters.
+- `learned`, `blocked`, `next`: plain text, each up to 5,000 characters.
+- Optional `trackId` and `taskId`: nullable UUID references. Deleted/unavailable linked records are retained safely; deletion does not cascade into journal entries.
+- `confidence`: integer 1–5.
+- `minutesSpent`: integer 0–10,080, default 0.
+- `date`: the single canonical learning date, local date-only `YYYY-MM-DD`. It is never converted through UTC. **The earlier `attemptedAt` field is removed and must not be stored.** Do not add a second date field.
+- `aiUse`: disclosure object with `mode`, `tool` and `whatWasGenerated`. The five modes are `assisted`, `unassisted`, `partially_assisted`, `unknown`, and `not_recorded`. The default is `not_recorded`; imported records lacking disclosure remain `not_recorded` until explicitly updated. Unknown and not recorded remain distinct from unassisted in filters, summaries and exports.
+
+Database schema version 4 adds `journalEntries` with indexes for trackId, taskId, date and updatedAt. The v1/v2/v3-to-v4 migrations preserve existing stores and records. A failed upgrade must abort transactionally and leave the previous schema/data available; the failure must not leak an unhandled rejection. This version bump does not rewrite Slice 1/2 track/task records.
+
 ## Zod contract proposal
 
-The following TypeScript is the normative schema sketch. It is intended to be copied into a future implementation module and then covered by tests; it is not executable in the current repository because Zod is not installed.
+The following historical proposal is retained for context only; its older JournalEntry and AI-disclosure sketches are superseded by the Slice 3 implementation contract above and by runtime schemas in `src/persistence/schemas.ts`. Track/Task proposals are also superseded by their implementation addendum.
 
 ```ts
 import { z } from "zod";
@@ -93,7 +107,8 @@ export const JournalEntrySchema = BaseRecord.extend({
   title: z.string().trim().min(1).max(160),
   summary: z.string().max(4000).default(""),
   reflection: z.string().max(10000),
-  attemptedAt: IsoDateTime.nullable().default(null),
+  // Removed in Slice 3: attemptedAt; canonical date is local YYYY-MM-DD.
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   aiUse: AiUseDisclosureSchema,
 });
 export type JournalEntry = z.infer<typeof JournalEntrySchema>;

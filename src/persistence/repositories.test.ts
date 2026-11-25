@@ -3,7 +3,7 @@ import "fake-indexeddb/auto";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { openPersistence, type PersistenceHandle } from "./index";
-import type { Task, Track } from "./schemas";
+import type { JournalEntry, Task, Track } from "./schemas";
 
 const handles: PersistenceHandle[] = [];
 let databaseSequence = 0;
@@ -133,5 +133,59 @@ describe("task repository", () => {
     );
     await persistence.tasks.permanentlyDelete(task.id);
     expect(await persistence.tasks.get(task.id)).toBeUndefined();
+  });
+});
+
+const journalEntry: JournalEntry = {
+  id: "aab6e5e8-fd34-4ad1-9f02-1dd44c80a231",
+  schemaVersion: 1,
+  createdAt: "2026-11-21T00:00:00.000Z",
+  updatedAt: "2026-11-21T00:00:00.000Z",
+  deletedAt: null,
+  title: "Learning entry",
+  learned: "I practiced.",
+  blocked: "A type error.",
+  next: "Write tests.",
+  trackId: track.id,
+  taskId: task.id,
+  confidence: 4,
+  minutesSpent: 25,
+  date: "2026-11-21",
+  aiUse: { mode: "not_recorded", tool: "", whatWasGenerated: "" },
+};
+describe("journal repository", () => {
+  it("retains journal links safely after linked track and task are permanently removed", async () => {
+    const persistence = await createPersistence();
+    await persistence.tracks.save(track);
+    await persistence.tasks.save(task);
+    await persistence.journal.save(journalEntry);
+    await persistence.tracks.permanentlyDelete(track.id);
+    expect(await persistence.journal.get(journalEntry.id)).toMatchObject({
+      trackId: track.id,
+      taskId: task.id,
+    });
+    expect(await persistence.tracks.get(track.id)).toBeUndefined();
+    expect(await persistence.tasks.get(task.id)).toBeUndefined();
+  });
+  it("persists, soft-deletes and permanently deletes journal entries without cascading task links", async () => {
+    const persistence = await createPersistence();
+    await persistence.tracks.save(track);
+    await persistence.tasks.save(task);
+    const saved = await persistence.journal.save(journalEntry);
+    expect(saved.aiUse.mode).toBe("not_recorded");
+    expect(await persistence.journal.get(journalEntry.id)).toMatchObject({
+      learned: "I practiced.",
+    });
+    await persistence.tasks.softDelete(task.id);
+    expect(await persistence.journal.get(journalEntry.id)).toMatchObject({
+      taskId: task.id,
+    });
+    await persistence.journal.softDelete(journalEntry.id);
+    expect(await persistence.journal.list()).toHaveLength(0);
+    expect(
+      await persistence.journal.list({ includeDeleted: true }),
+    ).toHaveLength(1);
+    await persistence.journal.permanentlyDelete(journalEntry.id);
+    expect(await persistence.journal.get(journalEntry.id)).toBeUndefined();
   });
 });

@@ -21,7 +21,7 @@
 <p align="center"><em>Learning becomes more meaningful when practice produces evidence that can be independently reviewed.</em></p>
 
 > [!IMPORTANT]
-> **Current status (25 November 2026):** The public Astro landing page is live. Slice 1 is merged on `main`; its app-shell deployment has not been independently verified. This branch contains the Slice 2 track/task implementation for review; it is not merged into `main` or confirmed on the published site. Journal, competencies, evidence, exports and dashboard remain future slices.
+> **Current status (25 November 2026):** The public Astro landing page is live. Slice 1 (app shell) and Slice 2 (tracks/tasks, PR #12) are merged on `main`; the merged app shell has not been independently verified on the published site. Slice 3 (journal and AI-use disclosure, PR #13) is implemented on its review branch and exact-head CI is green, but it is not merged/deployed. Competencies, evidence, backup/import/export and dashboard remain future slices
 
 **Live site:** [https://manayab.github.io/Growvidence/](https://manayab.github.io/Growvidence/)
 
@@ -68,7 +68,7 @@ No single artifact automatically proves a broad competency. Criteria, context, i
 
 - Static `/app/` entry with React island, hash navigation, noindex metadata, local theme preference and IndexedDB v2 persistence foundation.
 
-### Implemented on this Slice 2 review branch — not merged or deployed (CI verified)
+### Merged in Slice 2 (PR #12)
 
 - Track create, rename, archive, soft-delete and permanent-delete flows; optional six suggested starter tracks, never auto-seeded.
 - Task create/edit, list and status board; keyboard-operable native “Move to…” controls; soft and permanent deletion.
@@ -77,10 +77,16 @@ No single artifact automatically proves a broad competency. Criteria, context, i
 - CI verified on PR #12 head `54e15c95fe72f830c9c2b6458bfa6d47eda844e3`: Astro/TypeScript, lint, formatting, 37 unit tests, build, verify-build, bundle gate and informational audits all passed.
 - `/app/` bundle at Slice 2 head: 99.39 KiB gzip total, 3 files; budget 200 KiB. Slice 1 was 95.51 KiB, growth 3.88 KiB gzip.
 
+### Implemented on Slice 3 review branch — PR #13 (not merged/deployed)
+
+- Learning journal with local date-only `date`, learned/blocked/next reflections, confidence and time spent, optional track/task links.
+- AI-use disclosure has five distinct modes, with filters and summaries; unknown/not_recorded are not counted as unassisted.
+- Journal deletion lifecycle and IndexedDB v4 migration.
+- Exact-head CI run 45515783505 passed; maintainer reports 46 local tests passed with no unhandled errors and bundle 102.31 KiB gzip.
+
 ### Planned — not implemented
 
 - Learner dashboard.
-- Learning journal and explicit AI-use disclosure.
 - Competency criteria, evidence records and reviewer feedback.
 - Versioned JSON backup/restore, CSV export and data deletion UX.
 - Optional PWA/offline support, subject to scope confirmation.
@@ -388,7 +394,7 @@ No. Authentication and cloud accounts are not implemented and are outside the cu
 
 ### Is the learner workspace ready?
 
-The public landing page is live. The app shell is merged; tracks and tasks are implemented on PR #12 but not merged/deployed. Journal, competency and evidence features remain planned.
+The public landing page is live. App shell and Slice 2 tracks/tasks are merged; Slice 3 journal and AI disclosure are implemented in draft PR #13 but not merged/deployed. Competency and evidence features remain planned.
 
 ### Does checking a task mean I have mastered a skill?
 
@@ -400,7 +406,7 @@ The current public landing page does not collect learner records. The planned MV
 
 ### Is AI use allowed?
 
-The product is intended to distinguish assisted, partially assisted and unassisted work. The journal and disclosure workflow are not implemented yet.
+Slice 3 implements the journal and five AI-disclosure states (assisted, unassisted, partially assisted, unknown, not recorded) on draft PR #13; it is not merged or deployed.
 
 ### Is my browser data backed up automatically?
 

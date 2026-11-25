@@ -1,0 +1,68 @@
+.journal-view {
+  display: grid;
+  gap: 1.25rem;
+}
+.journal-view .workspace-form {
+  display: grid;
+  gap: 1rem;
+}
+.journal-view label {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.journal-view input,
+.journal-view select,
+.journal-view textarea {
+  width: 100%;
+  max-width: 100%;
+}
+.journal-view textarea {
+  resize: vertical;
+}
+.journal-view fieldset {
+  min-width: 0;
+  border: 1px solid var(--border, #b7b7b7);
+  border-radius: 0.6rem;
+  padding: 1rem;
+  display: grid;
+  gap: 0.8rem;
+}
+.journal-view legend {
+  font-weight: 700;
+  padding-inline: 0.3rem;
+}
+.journal-view .field-hint {
+  margin-block: -0.6rem 0;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+.journal-view .journal-filters {
+  align-items: end;
+}
+.journal-view .error-detail {
+  padding: 0.7rem 0.9rem;
+  border-inline-start: 0.25rem solid #b42318;
+}
+.journal-view button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+.journal-view h2[tabindex="-1"]:focus,
+.journal-view input:focus-visible,
+.journal-view select:focus-visible,
+.journal-view textarea:focus-visible,
+.journal-view button:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .journal-view *,
+  .journal-view *::before,
+  .journal-view *::after {
+    scroll-behavior: auto;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
