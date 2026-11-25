@@ -1,7 +1,7 @@
 # Growvidence roadmap
 
 **Last updated:** 2026-11-25  
-**Current state:** Phase 1, Slice 1 and Slice 2 (PR #12) are merged. Slice 3 journal and AI disclosure is implemented on `feat/slice-3-journal-ai-disclosure` and is awaiting maintainer review; not yet merged or deployed.
+**Current state:** Phase 1, Slice 1 and Slice 2 (PR #12) are merged. Slice 3 journal and AI disclosure is implemented on `feat/slice-3-journal-ai-disclosure`; exact-head CI is green, awaiting maintainer review, not merged or deployed.
 
 ## Completed
 
@@ -24,7 +24,7 @@
 
 ## Current product status
 
-The public landing page and publishing pipeline exist. Slice 1 provides the `/app/` shell and IndexedDB v2 adapter; Slice 2 track/task workflows and v3 task store are merged in PR #12. Slice 3 journal workflows and AI-use disclosure are implemented on the review branch, including the v4 journal store. Competency assessment, evidence manager, backup/import/export and dashboard remain future slices.
+The public landing page and publishing pipeline exist. Slice 1 provides the `/app/` shell and IndexedDB v2 adapter; Slice 2 track/task workflows and v3 task store are merged in PR #12. Slice 3 journal workflows and AI-use disclosure are implemented on the review branch, including the v4 journal store; exact-head CI is green (46 tests, build and verification passed, bundle 102.31 KiB gzip). Competency assessment, evidence manager, backup/import/export and dashboard remain future slices.
 
 ## Slice 2 — Tracks and tasks (merged in PR #12)
 

@@ -1,10 +1,10 @@
 # Growvidence project memory
 
-**Last updated:** 2026-11-25 — Slice 2 CI green; release draft documentation underway  
-**Current phase:** Slice 2 — tracks and tasks, implementation under review preparation  
+**Last updated:** 2026-11-25 — Slice 3 CI green; documentation sync pending  
+**Current phase:** Slice 3 — learning journal and AI-use disclosure  
 **Latest verified main:** ef58a84c86710cb79ca889d3c442e27a89e70bea  
-**Current branch:** feat/slice-2-tracks-tasks  
-**Current PR:** [PR #12 — Slice 2 tracks and tasks](https://github.com/MANayab/Growvidence/pull/12) (Draft; latest-head CI green)
+**Current branch:** feat/slice-3-journal-ai-disclosure  
+**Current PR:** [PR #13 — Slice 3 journal and AI-use disclosure](https://github.com/MANayab/Growvidence/pull/13) (Draft; exact-head CI green)
 
 ## Repository and product
 
@@ -34,10 +34,19 @@
 - The public landing page is live.
 - Slice 1 is merged in PR #10 at commit `c93c5e89b67194fcf6c08bca00e0d01c73347660`; merge commit on main: `8e61768fc0db709c7b6db047d0f0dc8035200dee`. It adds the `/app/` shell, React island, hash navigation, theme preference, IndexedDB v2 adapter, settings/minimal tracks repositories and initial persistence tests. Deployment of this merged app shell has not been independently verified in this update.
 - The measured JavaScript loaded by `/app/` is **95.51 KiB gzip of the 200 KiB budget**, including the workspace island, Astro renderer and React runtime. CI bundle-size check passed on the PR #10 head.
-- Track/task management from Slice 2 is merged in PR #12. Slice 3 Journal is currently implemented on `feat/slice-3-journal-ai-disclosure`, awaiting PR review; not merged or deployed. Competency assessment, evidence manager, backup/import/export and dashboard remain unimplemented.
+- Track/task management from Slice 2 is merged in PR #12. Slice 3 Journal is implemented on `feat/slice-3-journal-ai-disclosure`, PR #13 awaiting review; not merged or deployed. Exact-head CI run 45515783505 is green; maintainer reports 46 tests, build/verify-build passed and bundle 102.31 KiB gzip. Competency assessment, evidence manager, backup/import/export and dashboard remain unimplemented.
 - No authentication, backend, cloud sync, analytics or payments.
 - PWA/offline remains optional future scope and requires explicit confirmation.
 - The current sitemap contains only the public homepage. Future app routes must be noindex and excluded from sitemap; robots.txt must not disallow them.
+
+## Slice 3 implementation (PR #13, draft and not merged)
+
+- Journal entries use canonical local date-only `date` (replaces `attemptedAt`), `learned`, `blocked`, `next`, confidence, minutes, optional track/task context, and AI-use disclosure.
+- Disclosure modes: assisted, unassisted, partially_assisted, unknown and not_recorded. Unknown/not_recorded remain separate from unassisted in filters and summaries.
+- IndexedDB schema v4 journal store and migration; migration tests cover success and abort safety.
+- Latest exact-head CI run 45515783505 passed all jobs and steps. Maintainer reports local checks and 46 tests passed with no unhandled errors; bundle-size 102.31 KiB gzip.
+- No journal export/import is implemented.
+
 
 ## Slice 2 implementation (merged in PR #12)
 
@@ -104,7 +113,7 @@ PR #8 established the Phase 2 design package and has been merged. Its open-decis
 
 ## Current handoff
 
-PR #11 is merged at `ef58a84c86710cb79ca889d3c442e27a89e70bea`. Slice 3 is being prepared on `feat/slice-3-journal-ai-disclosure`. Do not merge or push to `main`; after opening its Draft PR, stop for maintainer review and **“next”**.
+PR #12 is merged. PR #13 (`feat/slice-3-journal-ai-disclosure`) is open as Draft with exact-head CI green. Maintainer review/merge is pending; do not merge or push to `main`. PR #14 README SVG visuals remain separate and untouched.
 
 ## Decisions log — 2026-11-21
 
