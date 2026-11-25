@@ -146,3 +146,6 @@ PR #13 (Slice 3) and PR #14 (README SVG visuals) are merged. Latest verified `ma
 - The earlier AGPL/open-core recommendation was considered and rejected in favor of a simple permissive license. MIT does not prevent commercial reuse or competing hosted forks.
 - Contributions use inbound = outbound MIT licensing. No DCO or CLA requirement is currently documented.
 - Privacy page work must state only code-audited facts; local browser data is IndexedDB. No accounts, analytics, app-set cookies, uploads or third-party runtime requests were found in the source files reviewed; this was not a full built-output/network audit.
+
+## Slice 4 status (draft branch)
+Competency status is computed from evidence/reviews, not stored and never task-derived. v5 adds evidence/reviews IndexedDB stores. Criteria/defaults remain NEEDS APPROVAL. Privacy page untouched; see docs/PRIVACY_UPDATE_PROPOSAL.md.
