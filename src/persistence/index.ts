@@ -12,7 +12,6 @@ import {
   type StorageNotice,
 } from "./errors";
 import { IndexedDbEvidenceRepository, IndexedDbReviewsRepository } from "./evidence";
-import { IndexedDbEvidenceRepository, IndexedDbReviewsRepository } from "./evidence";
 import {
   IndexedDbSettingsRepository,
   IndexedDbTasksRepository,
