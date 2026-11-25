@@ -418,3 +418,9 @@ html[data-theme="light"] .workspace {
     grid-template-columns: repeat(5, minmax(190px, 1fr));
   }
 }
+
+.competency-view{display:grid;gap:1rem}
+.competency-panel,.criterion-panel,.evidence-row,.review-row{border:1px solid var(--workspace-border);border-radius:.65rem;padding:1rem;margin:.75rem 0}
+.competency-status{display:inline-block;border:1px solid var(--workspace-border);border-radius:99px;padding:.2rem .65rem;font-size:.8rem;margin-left:.4rem}
+.competency-view h3,.competency-view h4{margin-top:.25rem}
+.competency-view a{overflow-wrap:anywhere}
