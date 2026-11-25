@@ -155,18 +155,15 @@ export const EvidenceLinkSchema = BaseRecord.extend({
   rationale: z.string().min(1).max(2000),
 });
 
-export const AssessmentStatusSchema = z.enum([
-  "not_assessed", "emerging", "developing", "demonstrated", "consistent", "needs_more_evidence"
-]);
-export const CompetencyAssessmentSchema = BaseRecord.extend({
-  competencySlug: CompetencySlugSchema,
-  rubricVersion: z.number().int().positive(),
-  status: AssessmentStatusSchema,
-  rationale: z.string().max(3000),
-  evidenceLinkIds: z.array(Id).max(200),
-  assessedAt: IsoDateTime.nullable().default(null),
-});
-export type CompetencyAssessment = z.infer<typeof CompetencyAssessmentSchema>;
+// Slice 4 supersedes the persisted status sketch: status is derived and is never stored.
+export type CompetencyStatus = "Not started" | "In progress" | "Demonstrated" | "Consistent";
+export interface CompetencyAssessment {
+  competencySlug: CompetencySlug;
+  status: CompetencyStatus; // computed from evidence/reviews only
+  criteria: CriterionAssessment[];
+  lastEvidenced: string | null;
+  mayBeStale: boolean;
+}
 
 export const ReviewSchema = BaseRecord.extend({
   evidenceId: Id,
