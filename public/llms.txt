@@ -2,21 +2,24 @@
 
 > Don't just learn. Prove your progress.
 
-Growvidence is a proposed evidence-based skill tracker for IT beginners, students and self-taught learners.
+Growvidence is an evidence-first learning tracker for IT beginners, students and self-taught learners. Tracks, tasks and the learning journal are available in the browser-local workspace. Competency tracking and evidence review are planned.
 
 ## Product principles
 
 - Task completion is activity, not proof of competency.
 - Evidence connects practice, artifacts, independent demonstration and feedback.
 - AI assistance should be disclosed clearly.
-- The MVP is planned as a static, local-first GitHub Pages application.
+- The app stores learner records locally in this browser's IndexedDB.
 
-## Current status
+## Privacy and product status
 
-The project is in its foundation phase. The public homepage explains the product concept; learner workspace features are not yet implemented.
+- No accounts, analytics, app-set cookies or learner-record uploads.
+- Backup/export and import are planned, not implemented.
+- Read the public [Privacy Policy](https://manayab.github.io/Growvidence/privacy/).
 
 ## Documentation
 
 - [README](https://github.com/MANayab/Growvidence/blob/main/README.md)
 - [Roadmap](https://github.com/MANayab/Growvidence/blob/main/docs/ROADMAP.md)
 - [Architecture](https://github.com/MANayab/Growvidence/blob/main/docs/ARCHITECTURE.md)
+- [Source](https://github.com/MANayab/Growvidence)

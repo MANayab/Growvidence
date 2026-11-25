@@ -15,7 +15,7 @@ Help learners turn practice into demonstrable capability with transparent eviden
 1. Evidence before scores.
 2. AI-assisted and independent work are distinguished.
 3. Streaks and task completion never establish mastery.
-4. Learners own and can export their data.
+4. Learners own their data; export is planned but not implemented.
 5. Local-first; useful without account or cloud.
 6. Accessible, responsive, low-bandwidth and beginner-friendly.
 7. Public content is accurate, attributable and citable.
@@ -82,7 +82,7 @@ Capture attempted work, understanding, AI-use disclosure, independent implementa
 
 ## Platform constraints
 - GitHub Pages static hosting only in MVP; no server, database, runtime SSR, API routes or account system.
-- IndexedDB local persistence is proposed; JSON export/import and CSV export are planned, not implemented.
+- Tracks, tasks and journal data are stored locally in IndexedDB. JSON backup/export, import and CSV export are planned, not implemented.
 - Public pages indexable; app pages noindex and excluded from sitemap.
 - PWA/offline is optional future scope; requires explicit approval.
 - Optional future backend for opt-in sync/accounts requires a separate decision.
@@ -109,7 +109,8 @@ Guaranteed rankings, employment or accreditation; opaque AI mastery scores; mand
 | 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
 | 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
 | 11 | Bundle/charts | Accepted: 200 KiB gzip initial workspace JS excluding Astro-shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
-| 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
+| 12 | Deletion | Per-record soft-delete and permanent-delete are implemented for tracks, tasks and journal. Delete-all is not implemented; no timed purge. |
+| 13 | License strategy | Accepted: MIT; earlier AGPL/open-core proposal considered and rejected for broad adoption and simple permissive licensing. |
 
 ### Competency levels — NEEDS APPROVAL
 

@@ -1,7 +1,7 @@
 # Growvidence roadmap
 
 **Last updated:** 2026-11-25  
-**Current state:** Phase 1, Slice 1 and Slice 2 (PR #12) are merged. Slice 3 journal and AI disclosure is implemented on `feat/slice-3-journal-ai-disclosure`; exact-head CI is green, awaiting maintainer review, not merged or deployed.
+**Current state:** Phase 1, Slice 1, Slice 2 and Slice 3 (journal and AI-use disclosure) are merged and available in the browser-local workspace. Competency tracking, evidence review, backup/export/import and dashboard remain planned.
 
 ## Completed
 
@@ -24,7 +24,7 @@
 
 ## Current product status
 
-The public landing page and publishing pipeline exist. Slice 1 provides the `/app/` shell and IndexedDB v2 adapter; Slice 2 track/task workflows and v3 task store are merged in PR #12. Slice 3 journal workflows and AI-use disclosure are implemented on the review branch, including the v4 journal store; exact-head CI is green (46 tests, build and verification passed, bundle 102.31 KiB gzip). Competency assessment, evidence manager, backup/import/export and dashboard remain future slices.
+The public landing page and publishing pipeline exist. Slice 1 provides the `/app/` shell and IndexedDB v2 adapter; Slice 2 track/task workflows and v3 task store are merged in PR #12. Slice 3 journal workflows and AI-use disclosure are merged, including the v4 journal store. Competency assessment, evidence manager, backup/import/export and dashboard remain future slices.
 
 ## Slice 2 — Tracks and tasks (merged in PR #12)
 
@@ -41,8 +41,8 @@ Merged in PR #12; exact-head CI was green (runs 45498961099 push and 45498975171
 MVP platform constraints:
 - GitHub Pages static files only; no server, runtime SSR, API routes or database server.
 - No account system or cloud sync in the MVP.
-- Learner records remain in browser storage; Slice 1 introduced IndexedDB v2 through a typed `idb` adapter. Slice 2 adds a version-3 tasks store and typed track/task repositories on its review branch.
-- Public content is indexable. Future `/app/` HTML must carry build-time noindex and remain out of the sitemap. Do not disallow it in robots.txt because crawlers must be able to read the noindex directive.
+- Learner records remain in browser IndexedDB; Slice 1 introduced IndexedDB v2 through a typed `idb` adapter. Slice 2 added the version-3 tasks store and typed track/task repositories; Slice 3 added the v4 journal store.
+- Public content is indexable. `/app/` HTML carries build-time noindex and remains out of the sitemap. Do not disallow it in robots.txt because crawlers must be able to read the noindex directive.
 - PWA/offline is optional future scope and must be explicitly confirmed before implementation.
 - No analytics or third-party scripts by default.
 - Browser storage is not encrypted storage or a backup; explain browser cleanup and device-loss risks.
@@ -115,7 +115,8 @@ Update this roadmap only through focused pull requests. The maintainer reviews a
 | 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
 | 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
 | 11 | Bundle/charts | Accepted: 200 KiB gzip for all JavaScript loaded by the initial workspace, including React runtime, Astro renderer, island and shared assets; hand-built SVG or lazy-loaded charts; bundle-size check required. |
-| 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
+| 12 | Deletion | Per-record soft-delete and permanent-delete are implemented for tracks, tasks and journal. Delete-all is not implemented; no timed purge. |
+| 13 | License strategy | Accepted: MIT; earlier AGPL/open-core proposal considered and rejected for broad adoption and simple permissive licensing. |
 
 ### Competency levels — NEEDS APPROVAL
 

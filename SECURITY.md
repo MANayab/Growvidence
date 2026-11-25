@@ -6,7 +6,7 @@ Growvidence is in the planning / foundation stage. There is no production applic
 
 ## Reporting a vulnerability
 
-Please do not publish exploitable vulnerability details in a public issue. Use GitHub's private vulnerability reporting feature for this repository if it is enabled. If that feature is unavailable, contact the repository owner through GitHub privately and ask for a secure reporting channel. Do not include secrets or real user evidence in the report.
+Please do not publish exploitable vulnerability details in a public issue. Use GitHub's private vulnerability reporting feature for this repository if it is enabled. If private reporting is unavailable, email the maintainer at manayab2@gmail.com. I cannot independently confirm whether GitHub private vulnerability reporting is enabled for this repository. Do not include secrets or real user evidence in the report.
 
 Include, where safe:
 - Affected component, commit, or version
@@ -21,6 +21,8 @@ There is no formal response-time SLA yet. The maintainer will assess reports as 
 ## Scope
 
 When software is released, security scope and supported versions will be documented here. Until then, report security concerns in repository infrastructure, documentation, or any prototype code responsibly.
+
+Questions: open an issue at https://github.com/MANayab/Growvidence/issues or email manayab2@gmail.com
 
 ## Secure development expectations
 

@@ -1,10 +1,10 @@
 # Growvidence project memory
 
-**Last updated:** 2026-11-25 — Slice 3 CI green; documentation sync pending  
-**Current phase:** Slice 3 — learning journal and AI-use disclosure  
-**Latest verified main:** ef58a84c86710cb79ca889d3c442e27a89e70bea  
-**Current branch:** feat/slice-3-journal-ai-disclosure  
-**Current PR:** [PR #13 — Slice 3 journal and AI-use disclosure](https://github.com/MANayab/Growvidence/pull/13) (Draft; exact-head CI green)
+**Last updated:** 2026-11-25 — Slice 3 merged; license/privacy PR in progress  
+**Current phase:** Legal, license and privacy documentation  
+**Latest verified main:** 8353d82752f99c729de87a8eb700196235c6741a
+**Current branch:** legal/mit-license-privacy
+**Current PR:** legal/mit-license-privacy — license, privacy page and public-site truth updates (draft)
 
 ## Repository and product
 
@@ -34,18 +34,18 @@
 - The public landing page is live.
 - Slice 1 is merged in PR #10 at commit `c93c5e89b67194fcf6c08bca00e0d01c73347660`; merge commit on main: `8e61768fc0db709c7b6db047d0f0dc8035200dee`. It adds the `/app/` shell, React island, hash navigation, theme preference, IndexedDB v2 adapter, settings/minimal tracks repositories and initial persistence tests. Deployment of this merged app shell has not been independently verified in this update.
 - The measured JavaScript loaded by `/app/` is **95.51 KiB gzip of the 200 KiB budget**, including the workspace island, Astro renderer and React runtime. CI bundle-size check passed on the PR #10 head.
-- Track/task management from Slice 2 is merged in PR #12. Slice 3 Journal is implemented on `feat/slice-3-journal-ai-disclosure`, PR #13 awaiting review; not merged or deployed. Exact-head CI run 45515783505 is green; maintainer reports 46 tests, build/verify-build passed and bundle 102.31 KiB gzip. Competency assessment, evidence manager, backup/import/export and dashboard remain unimplemented.
+- Track/task management from Slice 2 is merged in PR #12. Slice 3 journal and AI-use disclosure are merged and available in the workspace. Exact-head CI run 45515783505 is green; maintainer reports 46 tests, build/verify-build passed and bundle 102.31 KiB gzip. Competency assessment, evidence manager, backup/import/export and dashboard remain unimplemented.
 - No authentication, backend, cloud sync, analytics or payments.
 - PWA/offline remains optional future scope and requires explicit confirmation.
-- The current sitemap contains only the public homepage. Future app routes must be noindex and excluded from sitemap; robots.txt must not disallow them.
+- Sitemap includes the homepage and indexable public pages; `/app/` remains noindex and excluded from sitemap. Do not disallow it in robots.txt.
 
-## Slice 3 implementation (PR #13, draft and not merged)
+## Slice 3 implementation (merged)
 
 - Journal entries use canonical local date-only `date` (replaces `attemptedAt`), `learned`, `blocked`, `next`, confidence, minutes, optional track/task context, and AI-use disclosure.
 - Disclosure modes: assisted, unassisted, partially_assisted, unknown and not_recorded. Unknown/not_recorded remain separate from unassisted in filters and summaries.
 - IndexedDB schema v4 journal store and migration; migration tests cover success and abort safety.
 - Latest exact-head CI run 45515783505 passed all jobs and steps. Maintainer reports local checks and 46 tests passed with no unhandled errors; bundle-size 102.31 KiB gzip.
-- No journal export/import is implemented.
+- No backup, export, import or delete-all workflow is implemented.
 
 
 ## Slice 2 implementation (merged in PR #12)
@@ -103,7 +103,7 @@ PR #8 merged. This follow-up branch starts from main SHA `11dee6e216da49bdee3a6a
 - One PR at a time; maintainer reviews and merges.
 - Stop after each PR and wait for “next”.
 - No secrets or real credentials.
-- No LICENSE file, package.json license field, license badge, SPDX header, or edit to ADR-0002. The maintainer decides later.
+- MIT License adopted in this legal/privacy PR; keep the exact root license and package metadata synchronized.
 - Never claim tests, formatting, deployment or live behavior passed without evidence.
 - Assistant does not run Prettier or tests in this workflow; maintainer runs local commands before final push.
 
@@ -113,7 +113,7 @@ PR #8 established the Phase 2 design package and has been merged. Its open-decis
 
 ## Current handoff
 
-PR #12 is merged. PR #13 (`feat/slice-3-journal-ai-disclosure`) is open as Draft with exact-head CI green. Maintainer review/merge is pending; do not merge or push to `main`. PR #14 README SVG visuals remain separate and untouched.
+PR #13 (Slice 3) and PR #14 (README SVG visuals) are merged. Latest verified `main` is `8353d82752f99c729de87a8eb700196235c6741a`. Current work is the legal/privacy Draft PR on `legal/mit-license-privacy`; do not merge or push to `main`.
 
 ## Decisions log — 2026-11-21
 
@@ -130,10 +130,19 @@ PR #12 is merged. PR #13 (`feat/slice-3-journal-ai-disclosure`) is open as Draft
 | 9 | CSV | Accepted: task-centric convenience export; neutralize cells beginning with =, +, - or @; unit tests required. JSON is full backup. |
 | 10 | PWA | Accepted: defer until after Slice 7; separate explicit approval required. |
 | 11 | Bundle/charts | Accepted: 200 KiB gzip for all JavaScript loaded by `/app/`, including Astro renderer, React runtime, island and shared/imported chunks; measured Slice 1 total is 95.51 KiB gzip. Hand-built SVG or lazy-loaded charts; bundle-size check required. |
-| 12 | Deletion | Accepted: soft-deleted records remain in JSON backups; per-record Permanently delete and Delete all local data; no timed purge. |
+| 12 | Deletion | Per-record soft-delete and permanent-delete are implemented for tracks, tasks and journal. Delete-all is not implemented; no timed purge. |
+| 13 | License strategy | Accepted: MIT; earlier AGPL/open-core proposal considered and rejected for broad adoption and simple permissive licensing. |
 
 ### Competency levels — NEEDS APPROVAL
 
 - **Demonstrated (NEEDS APPROVAL):** every mandatory criterion has at least one independent artifact.
 - **Consistent (NEEDS APPROVAL):** the demonstration is repeated in a different task or context.
 - Proposed Consistent corroboration: external review weight 2, self review weight 1. Reviews cannot replace the required independent artifact or repeated demonstration.
+
+
+## License decision — MIT
+- Adopt MIT for the repository core, with copyright notice and license text preserved.
+- This supports broad adoption of a local-first static application; paid services may be separate code later.
+- The earlier AGPL/open-core recommendation was considered and rejected in favor of a simple permissive license. MIT does not prevent commercial reuse or competing hosted forks.
+- Contributions use inbound = outbound MIT licensing. No DCO or CLA requirement is currently documented.
+- Privacy page work must state only code-audited facts; local browser data is IndexedDB. No accounts, analytics, app-set cookies, uploads or third-party runtime requests were found in the source files reviewed; this was not a full built-output/network audit.

@@ -21,9 +21,9 @@
 <p align="center"><em>Learning becomes more meaningful when practice produces evidence that can be independently reviewed.</em></p>
 
 > [!IMPORTANT]
-> **Current status (25 November 2026):** The public Astro landing page is live. Slice 1 (app shell) and Slice 2 (tracks/tasks, PR #12) are merged on `main`; the merged app shell has not been independently verified on the published site. Slice 3 (journal and AI-use disclosure, PR #13) is implemented on its review branch and exact-head CI is green, but it is not merged/deployed. Competencies, evidence, backup/import/export and dashboard remain future slices
+> **Current status (25 November 2026):** Tracks, tasks and the learning journal are available in the local browser workspace. Competency tracking and evidence review remain planned.
 
-**Live site:** [https://manayab.github.io/Growvidence/](https://manayab.github.io/Growvidence/)
+**Live site:** [https://manayab.github.io/Growvidence/](https://manayab.github.io/Growvidence/) · [Privacy Policy](https://manayab.github.io/Growvidence/privacy/)
 
 ---
 
@@ -58,13 +58,15 @@ No single artifact automatically proves a broad competency. Criteria, context, i
 ### Available now
 
 - Public, static Astro landing page hosted on GitHub Pages.
+- Browser-local tracks, tasks and journal in `/app/`.
+- Public, indexable Privacy Policy at `/privacy/`.
 - Responsive shared layout, generated 404 page and light/dark system styling.
 - Build-time SEO metadata and Organization/WebSite JSON-LD.
 - Google Search Console verification meta tag in the shared page head.
-- `robots.txt`, homepage sitemap, `llms.txt` and SVG favicon.
+- `robots.txt`, `sitemap.xml`, `llms.txt` and SVG favicon.
 - GitHub Actions CI and Astro static deployment workflow.
 
-### Merged in Slice 1 (deployment not independently verified)
+### Merged in Slice 1 — app shell and local persistence
 
 - Static `/app/` entry with React island, hash navigation, noindex metadata, local theme preference and IndexedDB v2 persistence foundation.
 
@@ -77,18 +79,19 @@ No single artifact automatically proves a broad competency. Criteria, context, i
 - CI verified on PR #12 head `54e15c95fe72f830c9c2b6458bfa6d47eda844e3`: Astro/TypeScript, lint, formatting, 37 unit tests, build, verify-build, bundle gate and informational audits all passed.
 - `/app/` bundle at Slice 2 head: 99.39 KiB gzip total, 3 files; budget 200 KiB. Slice 1 was 95.51 KiB, growth 3.88 KiB gzip.
 
-### Implemented on Slice 3 review branch — PR #13 (not merged/deployed)
+### Implemented in Slice 3 — Journal and AI-use disclosure
 
 - Learning journal with local date-only `date`, learned/blocked/next reflections, confidence and time spent, optional track/task links.
 - AI-use disclosure has five distinct modes, with filters and summaries; unknown/not_recorded are not counted as unassisted.
 - Journal deletion lifecycle and IndexedDB v4 migration.
-- Exact-head CI run 45515783505 passed; maintainer reports 46 local tests passed with no unhandled errors and bundle 102.31 KiB gzip.
+- Slice 3 is merged and available in the local browser workspace.
 
 ### Planned — not implemented
 
 - Learner dashboard.
 - Competency criteria, evidence records and reviewer feedback.
-- Versioned JSON backup/restore, CSV export and data deletion UX.
+- Versioned JSON backup/restore and CSV export.
+- Delete-all-data workflow (per-record deletion is available now).
 - Optional PWA/offline support, subject to scope confirmation.
 - Optional account/sync service only after a separate product, privacy and security decision.
 
@@ -394,7 +397,7 @@ No. Authentication and cloud accounts are not implemented and are outside the cu
 
 ### Is the learner workspace ready?
 
-The public landing page is live. App shell and Slice 2 tracks/tasks are merged; Slice 3 journal and AI disclosure are implemented in draft PR #13 but not merged/deployed. Competency and evidence features remain planned.
+Tracks, tasks and journal are available in the browser-local workspace. Competency tracking and evidence review remain planned.
 
 ### Does checking a task mean I have mastered a skill?
 
@@ -402,7 +405,7 @@ No. Task status records activity. Competency requires measurable criteria and re
 
 ### Does Growvidence upload my learning records?
 
-The current public landing page does not collect learner records. The planned MVP is local-first, with browser storage and user-controlled exports. Do not interpret this planned design as an already implemented storage guarantee.
+Learner records are stored in this browser's IndexedDB. The application does not upload these records. Backup/export and import are planned, not yet implemented.
 
 ### Is AI use allowed?
 
@@ -410,7 +413,7 @@ Slice 3 implements the journal and five AI-disclosure states (assisted, unassist
 
 ### Is my browser data backed up automatically?
 
-No. IndexedDB is planned, and browser storage is not a backup. A versioned export/import workflow is planned.
+No. Records are saved in IndexedDB in this browser. Browser site data can be cleared and is not a backup. Versioned export/import is planned but not implemented.
 
 ### Is Growvidence a certification?
 
@@ -431,7 +434,7 @@ Offline/PWA behavior is not currently offered as a learner feature. It remains a
 
 ## Security
 
-Please do not report security vulnerabilities in public issues. Use GitHub's private vulnerability reporting for this repository if it is enabled; otherwise contact the repository maintainer privately through GitHub.
+Please do not report security vulnerabilities in public issues. Use GitHub's private vulnerability reporting for this repository if enabled; if unavailable, email manayab2@gmail.com privately.
 
 Security expectations:
 
@@ -450,3 +453,10 @@ Growvidence is built with the open web platform and the Astro static-site toolch
 ---
 
 <p align="center"><sub>Growvidence is a working project name. Product scope and architecture decisions remain subject to maintainer review.</sub></p>
+
+
+## License
+
+Growvidence is licensed under the [MIT License](LICENSE). See the root LICENSE file for the exact terms.
+
+**Trademark note:** “Growvidence” is a working name and has not been cleared. The MIT License grants no trademark rights.
