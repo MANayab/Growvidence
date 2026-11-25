@@ -71,11 +71,11 @@ describe("database migrations", () => {
     });
     expect(await upgraded.get("meta", "schemaVersion")).toEqual({
       key: "schemaVersion",
-      value: 4,
+      value: 5,
     });
   });
 
-  it("upgrades the version 2 schema to version 4 and creates task and journal stores", async () => {
+  it("upgrades the version 2 schema to version 5 and creates task and journal stores", async () => {
     const name = nextName();
     const previous = await openDB<GrowvidenceDB>(name, 2, {
       upgrade(db) {
@@ -89,7 +89,7 @@ describe("database migrations", () => {
 
     const upgraded = await openDatabase({ databaseName: name });
     opened.push(upgraded);
-    expect(upgraded.version).toBe(4);
+    expect(upgraded.version).toBe(5);
     const taskStore = upgraded.transaction("tasks").store;
     expect(taskStore.indexNames.contains("by_trackId")).toBe(true);
     expect(taskStore.indexNames.contains("by_status")).toBe(true);
@@ -106,11 +106,11 @@ describe("database migrations", () => {
       expect(journalStore.indexNames.contains(index)).toBe(true);
     expect(await upgraded.get("meta", "schemaVersion")).toEqual({
       key: "schemaVersion",
-      value: 4,
+      value: 5,
     });
   });
 
-  it("preserves tracks, tasks and settings during the v3-to-v4 upgrade", async () => {
+  it("preserves tracks, tasks and settings during the v3-to-v5 upgrade", async () => {
     const name = nextName();
     const existingSettings = {
       id: "user-settings" as const,
@@ -127,7 +127,7 @@ describe("database migrations", () => {
       updatedAt: "2026-11-21T00:00:00.000Z",
       deletedAt: null,
       title: "Preserved track",
-      description: "Track record must survive the v4 upgrade.",
+      description: "Track record must survive the v5 upgrade.",
       archivedAt: null,
     };
     const existingTask = {
@@ -138,7 +138,7 @@ describe("database migrations", () => {
       deletedAt: null,
       trackId: existingTrack.id,
       title: "Preserved task",
-      description: "Task record must survive the v4 upgrade.",
+      description: "Task record must survive the v5 upgrade.",
       status: "today" as const,
       priority: "high" as const,
       dueDate: "2026-11-21",
@@ -168,7 +168,7 @@ describe("database migrations", () => {
 
     const upgraded = await openDatabase({ databaseName: name });
     opened.push(upgraded);
-    expect(upgraded.version).toBe(4);
+    expect(upgraded.version).toBe(5);
     expect(upgraded.objectStoreNames.contains("journalEntries")).toBe(true);
     expect(await upgraded.get("settings", existingSettings.id)).toEqual(
       existingSettings,
@@ -183,7 +183,7 @@ describe("database migrations", () => {
     });
     expect(await upgraded.get("meta", "schemaVersion")).toEqual({
       key: "schemaVersion",
-      value: 4,
+      value: 5,
     });
   });
 
