@@ -34,3 +34,9 @@ Never commit secrets or personal evidence. Report suspected vulnerabilities priv
 ## Code of conduct
 
 Participation is subject to [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+
+## License of contributions
+
+Contributions are licensed under the project's MIT License. Inbound = outbound: submitted contributions are accepted under the same MIT terms as the project. You retain copyright; this is not a copyright assignment. No DCO sign-off requirement is documented or introduced in this PR.
+
+Questions: open an issue at https://github.com/MANayab/Growvidence/issues or email manayab2@gmail.com

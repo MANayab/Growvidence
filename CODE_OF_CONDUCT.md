@@ -24,3 +24,8 @@ Project maintainers may edit or remove contributions and may restrict participat
 ## Reporting
 
 Report conduct concerns privately to the repository maintainers through GitHub's available private contact or reporting mechanisms. Do not post sensitive details in a public issue. This policy is a community standard, not a substitute for applicable law or platform rules.
+
+
+## Contact
+
+Questions: open an issue at https://github.com/MANayab/Growvidence/issues or email manayab2@gmail.com
