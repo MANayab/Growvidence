@@ -145,3 +145,8 @@ A slice is not ready for review until:
 - Bundle-size check lists every JavaScript file loaded by `/app/`, reports each file's gzip size and the summed total, and fails when the total exceeds 200 KiB.
 - Slice 1 smoke test renders workspace navigation and an honest initial storage state.
 - Storage error mapping covers quota exhaustion, unavailable storage and unexpected database closure; blocked-upgrade and migration-failure messages must not imply data was deleted.
+
+## Slice 4 competency tests (draft)
+- Domain: task independence, unknown/not_recorded for unassisted, soft-deleted evidence, same-day repeat, 14-day boundary, external vs self review, stale hint.
+- Migration v4-to-v5: verify preservation of settings, tracks, tasks and journal entries; forced abort must retain v4 and avoid unhandled rejection.
+- Manual browser: link evidence, associate criteria/journal/task, check unknown/not_recorded exclusion, external review and 14-day repeat, delete and verify recalculation; keyboard-only, screen-reader, focus and reduced-motion checks.
