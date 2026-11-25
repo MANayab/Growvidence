@@ -81,4 +81,10 @@ export const JournalEntrySchema = BaseRecordSchema.extend({
   }),
 });
 export type JournalEntry = z.infer<typeof JournalEntrySchema>;
+export const CompetencySlugSchema=z.enum(["independent_coding","debugging","architecture","testing","commercial_validation","technical_fundamentals"]);
+export type CompetencySlug=z.infer<typeof CompetencySlugSchema>;
+export const EvidenceSchema=BaseRecordSchema.extend({competencySlug:CompetencySlugSchema,criterionKey:z.string().trim().min(2).max(20),title:z.string().trim().min(1).max(160),description:z.string().max(4000).default(""),context:z.string().trim().max(120).default(""),linkUrl:z.string().max(2048).nullable().default(null).refine(value=>value===null||(()=>{try{const u=new URL(value);return u.protocol==="http:"||u.protocol==="https";}catch{return false;}})(),"Only http and https URLs are allowed"),journalEntryId:z.uuid().nullable().default(null),taskId:z.uuid().nullable().default(null)});
+export type Evidence=z.infer<typeof EvidenceSchema>;
+export const ReviewSchema=BaseRecordSchema.extend({evidenceId:z.uuid(),reviewerType:z.enum(["self","external"]),reviewerLabel:z.string().trim().min(1).max(120),feedback:z.string().trim().min(1).max(5000),outcome:z.enum(["confirm","mixed","needs_revision","informational"]),reviewedAt:IsoDateTimeSchema});
+export type Review=z.infer<typeof ReviewSchema>;
 \n// test patch marker
