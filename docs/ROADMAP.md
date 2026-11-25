@@ -123,3 +123,6 @@ Update this roadmap only through focused pull requests. The maintainer reviews a
 - **Demonstrated (NEEDS APPROVAL):** every mandatory criterion has at least one independent artifact.
 - **Consistent (NEEDS APPROVAL):** the demonstration is repeated in a different task or context.
 - Proposed Consistent corroboration: external review weight 2, self review weight 1. Reviews cannot replace the required independent artifact or repeated demonstration.
+
+## Slice 4 — competency/evidence implementation (Draft PR)
+Competency/evidence engine and v5 migration are being implemented for review. Criteria and assessment defaults remain **NEEDS APPROVAL**. No merge or release yet. Privacy policy proposal is separate; live page remains untouched.
