@@ -460,3 +460,6 @@ Growvidence is built with the open web platform and the Astro static-site toolch
 Growvidence is licensed under the [MIT License](LICENSE). See the root LICENSE file for the exact terms.
 
 **Trademark note:** “Growvidence” is a working name and has not been cleared. The MIT License grants no trademark rights.
+
+## Slice 4 — competency/evidence engine (Draft)
+The competency engine computes status from evidence and reviews; it does not store status or derive it from task completion. Evidence and reviewer feedback are stored in local IndexedDB. Artifact links accept HTTP/HTTPS and are never fetched or embedded. Rule defaults remain **NEEDS APPROVAL**. The live privacy page is unchanged; see `docs/PRIVACY_UPDATE_PROPOSAL.md`.
