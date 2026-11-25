@@ -27,3 +27,8 @@ All notable changes to Growvidence will be documented here. This project follows
 - Version 0.2.0 remains a historical draft milestone. Slice 2 and Slice 3 are merged. The v0.3.0 tag and published GitHub pre-release already exist; this PR does not change either
 - Competency assessment, evidence manager, backup/import/export, dashboard and PWA remain unimplemented.
 - License status in this draft is historical; the MIT license decision is adopted in the current legal/privacy PR.
+## Unreleased — Slice 4 draft
+- Add competency rubric configuration, evidence and review records, computed statuses, and v5 migration.
+- Add tests for status boundaries and migration behavior.
+- Add a separate privacy wording proposal; privacy page unchanged.
+
