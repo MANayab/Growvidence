@@ -6,7 +6,7 @@ import {
 } from "idb";
 
 export const DATABASE_NAME = "growvidence-local";
-export const DATABASE_VERSION = 5
+export const DATABASE_VERSION = 5;
 
 interface MetaRecord {
   key: string;
