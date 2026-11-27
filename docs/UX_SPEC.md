@@ -219,3 +219,7 @@ Use plain, supportive language. Prefer “You have evidence for…” over “Yo
 
 ## Slice 4 recovery and review trust update — 2026-11-27
 Competency view includes a deleted evidence/review archive with restore and permanent deletion controls. Evidence permanent deletion removes associated reviews. Review restoration is blocked until linked evidence is active. Reviewer labels are self-entered; “External” does not authenticate identity or verify review independence. Restore actions should provide visible status feedback. Keyboard/focus and responsive behavior remain pending manual validation.
+
+
+### Implemented draft details — 2026-11-27
+The competency component now loads deleted records, presents restore and permanent-delete actions, disables review restoration when parent evidence is deleted, and moves focus to status feedback after updates. This is incomplete accessibility work; manual keyboard, screen-reader and responsive validation remains necessary.
