@@ -53,6 +53,7 @@ export function computeCompetencies(
   now = new Date(),
 ): CompetencyAssessment[] {
   void tasks;
+  void reviews;
   const today = now.toISOString().slice(0, 10);
   return COMPETENCY_RULES.map((comp) => {
     const criteria = comp.criteria.map((rule) => {
@@ -88,7 +89,7 @@ export function computeCompetencies(
     });
     const valid = criteria.flatMap((x) => x.evidence),
       complete = criteria.every((x) => x.satisfied);
-    // Reviewer labels and external-review claims are self-entered locally, not authenticated.
+    // Review labels and external-review claims are self-entered locally, not authenticated.
     // Reviews therefore never independently elevate competency status.
     const repeat = valid.some((a) =>
       valid.some((b) => {
