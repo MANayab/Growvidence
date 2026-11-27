@@ -214,7 +214,7 @@ describe("competency computation", () => {
       tasks,
       new Date("2026-11-27T12:00:00Z"),
     )[0];
-    expect(result.status).toBe("In progress");
+    expect(result.status).toBe("Not started");
     expect(result.criteria[0].satisfied).toBe(false);
     expect(result.criteria[0].evidence).toHaveLength(0);
     expect(result.status).not.toBe("Consistent");
