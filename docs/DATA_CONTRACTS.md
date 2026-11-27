@@ -289,3 +289,11 @@ See the consolidated Open decisions section in `docs/TESTING_PLAN.md` and PR des
 
 ## Slice 4 runtime evidence contract — NEEDS APPROVAL
 The historical persisted `CompetencyAssessment` and `AssessmentStatusSchema` proposal above is superseded: status is computed from evidence/reviews and never stored. DB v5 adds evidence and review stores. Evidence records include competency slug, criterion, title, description, context, optional HTTP/HTTPS artifact URL, optional journal/task links. Evidence must have a link or journal to qualify. URLs are never fetched, previewed or embedded. Reviews include evidence ID, self/external reviewer type, reviewer label, feedback, outcome and reviewedAt. External confirming review may support Consistent; self reviews cannot. Every criterion is mandatory and configurable; rules remain **NEEDS APPROVAL**. Demonstrated requires each mandatory criterion; unassisted criteria require a linked journal entry explicitly marked unassisted. Consistent requires Demonstrated plus a repeat in another task/context at least 14 days later or an external confirming review. Soft-delete recomputes; permanent evidence deletion also removes associated reviews. No expiry; stale hint after 180 days.
+
+
+## Slice 4 integrity corrections — 2026-11-27
+
+Runtime evidence and review records are now present in the draft PR branch. Evidence must use a criterion key belonging to its competency and optional journal/task references must resolve to existing, active records when saved. Review records must point to existing, active evidence. Soft-delete records can be restored; restoring a review requires its evidence to be active. Permanent evidence deletion cascades to associated reviews.
+
+
+**Trust-model correction:** Reviewer type and reviewer label are learner-entered and are not authenticated. A review marked `external` is not independent verification and no review outcome alone elevates competency status. The current consistency rule uses qualifying, chronologically later evidence at least 14 days apart in a distinct task/context. Future-dated or invalid calendar dates do not qualify or contribute to progress. Rubric and assessment thresholds remain **NEEDS APPROVAL**. Local verification pending.
