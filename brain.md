@@ -149,3 +149,11 @@ PR #13 (Slice 3) and PR #14 (README SVG visuals) are merged. Latest verified `ma
 
 ## Slice 4 status (draft branch)
 Competency status is computed from evidence/reviews, not stored and never task-derived. v5 adds evidence/reviews IndexedDB stores. Criteria/defaults remain NEEDS APPROVAL. Privacy page untouched; see docs/PRIVACY_UPDATE_PROPOSAL.md.
+
+
+## Slice 4 integrity follow-up — 2026-11-27
+PR #16 remains a Draft. New commits on `feat/slice-4-competencies-evidence`:
+- `54bdf069`: exclude future evidence dates from qualification; enforce chronological 14-day repeat; reviews are self-entered and no longer elevate competency status.
+- `708f0f7`: explicitly mark the review argument unused in computation (follow-up clean-up).
+- `abf951f`: domain regression tests for 13-day boundary, future evidence, and external-labelled self-entered reviews.
+These commits were written through GitHub file updates; the code has not yet been run through local TypeScript, lint, Prettier, test, build, or CI. Repository relationship checks, deleted-record recovery UI, accessibility, persistence tests and docs synchronization remain to do. Do not claim merge-ready.
