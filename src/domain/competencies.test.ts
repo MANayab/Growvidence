@@ -96,7 +96,7 @@ describe("competency computation", () => {
     expect(a.criteria[0].satisfied).toBe(true);
     expect(a.status).toBe("In progress");
   });
-  it("14-day boundary requires different task/context", () => {
+  it("14-day boundary requires different task/context and later evidence", () => {
     const js = [
       journal("j1", "2026-11-01", "unassisted"),
       journal("j2", "2026-11-15", "unassisted"),
@@ -122,6 +122,22 @@ describe("competency computation", () => {
     expect(computeCompetencies(e, reviews, js, tasks)[0].status).toBe(
       "Consistent",
     );
+  });
+  it("13-day repeat remains Demonstrated", () => {
+    const e = [
+      make("a", "IC-1", "2026-11-01", "task-a", "context-a"),
+      make("b", "IC-1", "2026-11-14", "task-b", "context-b"),
+      make("c", "IC-2", "2026-11-14", "task-c"),
+      make("d", "IC-3", "2026-11-14", "task-d"),
+    ];
+    const result = computeCompetencies(
+      e,
+      reviews,
+      [],
+      tasks,
+      new Date("2026-11-20T12:00:00Z"),
+    )[0];
+    expect(result.status).toBe("Demonstrated");
   });
   it("same-day repeat remains Demonstrated", () => {
     const journals = [
@@ -150,7 +166,7 @@ describe("competency computation", () => {
       computeCompetencies(evidence, reviews, journals, tasks)[0].status,
     ).toBe("Demonstrated");
   });
-  it("self review does not raise status; external confirm does", () => {
+  it("self and externally labelled confirm reviews do not elevate status", () => {
     const e = [
       {
         ...make("a", "IC-1", "2026-11-01", "a"),
@@ -182,7 +198,26 @@ describe("competency computation", () => {
     expect(
       computeCompetencies(e, [{ ...r, reviewerType: "external" }], j, tasks)[0]
         .status,
-    ).toBe("Consistent");
+    ).toBe("Demonstrated");
+  });
+  it("future-dated evidence cannot satisfy a criterion or repeat consistency", () => {
+    const e = [
+      make("future-a", "IC-1", "2026-12-01", "task-a", "context-a"),
+      make("future-b", "IC-1", "2026-12-15", "task-b", "context-b"),
+      make("future-c", "IC-2", "2026-12-15", "task-c"),
+      make("future-d", "IC-3", "2026-12-15", "task-d"),
+    ];
+    const result = computeCompetencies(
+      e,
+      reviews,
+      [],
+      tasks,
+      new Date("2026-11-27T12:00:00Z"),
+    )[0];
+    expect(result.status).toBe("In progress");
+    expect(result.criteria[0].satisfied).toBe(false);
+    expect(result.criteria[0].evidence).toHaveLength(0);
+    expect(result.status).not.toBe("Consistent");
   });
   it("soft deleted evidence is ignored and old evidence flagged stale", () => {
     const e = [
