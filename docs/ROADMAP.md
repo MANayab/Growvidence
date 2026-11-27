@@ -126,3 +126,10 @@ Update this roadmap only through focused pull requests. The maintainer reviews a
 
 ## Slice 4 — competency/evidence implementation (Draft PR)
 Competency/evidence engine and v5 migration are being implemented for review. Criteria and assessment defaults remain **NEEDS APPROVAL**. No merge or release yet. Privacy policy proposal is separate; live page remains untouched.
+
+
+## Slice 4 finishing work — 2026-11-27 (draft branch)
+
+The competency integrity follow-up is in progress. A focused code update excludes future-dated evidence from qualification, requires chronological repeat evidence at least 14 days later with a distinct task/context, and prevents self-entered review labels (including "external") from independently elevating Consistent. Added domain tests cover the 13-day boundary and future-dated evidence/repeats, and updated the external-review test expectation. These changes are not yet locally tested or formatter-verified.
+
+**Remaining Slice 4 work:** repository/domain cross-record validation (evidence ↔ journals/tasks and reviews ↔ evidence), deleted-records archive and restore/permanent deletion UI with evidence-review cascade, accessibility and focus behavior, repository CRUD/transaction tests, and complete documentation alignment. Do not mark Slice 4 complete until these items and exact-head CI are verified.
