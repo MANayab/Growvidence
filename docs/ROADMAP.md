@@ -137,3 +137,7 @@ The competency integrity follow-up is in progress. A focused code update exclude
 
 ### Latest implementation update — 2026-11-27
 The draft now contains active-record relationship checks for evidence and reviews, restore validation, deleted evidence/review archive controls, and regression tests for repository lifecycle and invalid references. These are implementation updates, not verified acceptance: local checks and CI on the final branch head are still required. Accessibility work remains partially done (status feedback is focusable/focused after updates); manual keyboard, screen-reader, reduced-motion and narrow viewport checks are still outstanding.
+
+
+### Linked-record computation safeguard — 2026-11-27
+The domain computation now also excludes evidence with missing or soft-deleted linked journal/task records from both qualifying evidence and progress counts. Regression test added. Awaiting local format/tests/build and exact-head CI.
