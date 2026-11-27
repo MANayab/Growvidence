@@ -87,3 +87,7 @@ Validate imported files, sizes, encodings and relationships. Render learner-auth
 - Repeat evidence must be chronologically later by at least 14 days and show a distinct task or context; same-day and reversed chronology cannot count.
 - Locally entered reviewer type/label is not authenticated. Reviews (including records labeled external) no longer independently elevate computed competency to Consistent.
 - These are focused integrity corrections on the draft Slice 4 branch. Repository relationship validation, deleted-record restore UI, complete accessibility and repository integration coverage remain outstanding and must not be assumed implemented. Verification is pending maintainer-local checks.
+
+
+### Superseding status — 2026-11-27
+Repository checks have since been added for competency criterion keys, active linked journal/task records, and review links to active evidence. Restore also revalidates evidence links. Deleted evidence/review recovery controls have been added. These remain unverified until local checks and exact-head CI pass.
