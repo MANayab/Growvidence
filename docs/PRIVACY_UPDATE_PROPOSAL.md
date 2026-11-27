@@ -17,3 +17,7 @@ Do not apply this proposal to the live privacy page without separate approval.
 ## Data handling
 
 Artifact URLs are not fetched, previewed or embedded. They are ordinary external links with `rel="noopener noreferrer"`. No backend, analytics, telemetry or upload behavior is introduced. Navigating to a user-selected external artifact may expose ordinary request data to that external site.
+
+
+## Integrity-model disclosure update — 2026-11-27
+The review form accepts reviewer type and reviewer label as learner-entered text. The app does not authenticate reviewers; therefore a record marked "external" is not independently verified. Avoid wording that implies the app validates reviewer identity. This is a trust-model correction and does not add any external data transmission. The proposal remains unapproved; the live `/privacy/` page was not changed.
