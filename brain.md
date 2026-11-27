@@ -161,3 +161,7 @@ These commits were written through GitHub file updates; the code has not yet bee
 
 ### Follow-up update — 2026-11-27 (after integrity/recovery implementation)
 Additional draft commits add repository checks for active evidence references, criterion membership, and reviews bound to active evidence; evidence restore checks linked records; and the competency UI has an archive for soft-deleted evidence/reviews with restore and permanent-delete controls. Evidence permanent deletion cascades review deletion. The component now focuses its status feedback after updates and the review restore control is disabled when its parent evidence is deleted. These updates have not been locally tested or CI-verified. The GitHub file-update API created a no-op commit when a test edit failed to match; that commit has no content diff.
+
+
+### Computation integrity addendum — 2026-11-27
+Read-time competency computation also ignores evidence whose optional linked journal/task is unavailable or soft-deleted, preventing stale links from contributing either qualification or progress. Test added; verification pending.
