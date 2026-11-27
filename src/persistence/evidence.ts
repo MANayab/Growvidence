@@ -58,11 +58,31 @@ export class IndexedDbEvidenceRepository {
   async restore(id: string): Promise<void> {
     const item = await this.get(id);
     if (!item || !item.deletedAt) return;
+    const rule = COMPETENCY_RULES.find((x) => x.slug === item.competencySlug);
+    if (!rule?.criteria.some((c) => c.key === item.criterionKey)) {
+      throw new Error("The evidence criterion is no longer valid.");
+    }
+    const tx = this.database.transaction(["evidence", "journalEntries", "tasks"], "readwrite");
+    void tx.done.catch(() => undefined);
+    if (item.journalEntryId) {
+      const journal = await tx.objectStore("journalEntries").get(item.journalEntryId);
+      if (!journal || journal.deletedAt) {
+        tx.abort();
+        throw new Error("Restore the linked journal entry first.");
+      }
+    }
+    if (item.taskId) {
+      const task = await tx.objectStore("tasks").get(item.taskId);
+      if (!task || task.deletedAt) {
+        tx.abort();
+        throw new Error("Restore the linked task first.");
+      }
+    }
     const now = new Date().toISOString();
-    await this.database.put(
-      "evidence",
+    await tx.objectStore("evidence").put(
       EvidenceSchema.parse({ ...item, deletedAt: null, updatedAt: now }),
     );
+    await tx.done;
   }
   async permanentlyDelete(id: string): Promise<void> {
     const tx = this.database.transaction(["evidence", "reviews"], "readwrite");
