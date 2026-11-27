@@ -158,3 +158,8 @@ A slice is not ready for review until:
 - Self-entered external reviewer labels do not independently elevate competency status.
 - Persistence tests added for evidence and review reference validation, soft-delete/restore, review restoration guard, and permanent evidence deletion cascading reviews.
 - Still required: run tests locally, add/verify all repository integration cases, and perform keyboard/focus/screen-reader/reduced-motion/responsive manual checks. Automated coverage is not proof of accessibility.
+
+
+### Follow-up integrity case — 2026-11-27
+- Added a domain regression case proving evidence linked to deleted journal/task records does not qualify or contribute to In progress status.
+- Confirm final branch-head formatting, domain tests, persistence tests, full checks/build/size gates and manual accessibility review after maintainer-local formatting.
