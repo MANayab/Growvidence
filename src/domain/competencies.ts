@@ -35,7 +35,8 @@ const evidenceDate = (e: Evidence, journals: JournalEntry[]) =>
   e.createdAt.slice(0, 10);
 const isValidDate = (date: string) =>
   /^\d{4}-\d{2}-\d{2}$/.test(date) &&
-  Number.isFinite(Date.parse(date + "T00:00:00Z")) &&\n  new Date(Date.parse(date + "T00:00:00Z")).toISOString().slice(0, 10) === date;
+  Number.isFinite(Date.parse(date + "T00:00:00Z")) &&
+  new Date(Date.parse(date + "T00:00:00Z")).toISOString().slice(0, 10) === date;
 function qualifies(e: Evidence, rule: CriterionRuleLike, journals: JournalEntry[]) {
   const hasLink = !!e.linkUrl && /^https?:\/\//i.test(e.linkUrl);
   const entry = journals.find((x) => x.id === e.journalEntryId && !x.deletedAt);
