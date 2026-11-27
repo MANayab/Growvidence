@@ -133,3 +133,7 @@ Competency/evidence engine and v5 migration are being implemented for review. Cr
 The competency integrity follow-up is in progress. A focused code update excludes future-dated evidence from qualification, requires chronological repeat evidence at least 14 days later with a distinct task/context, and prevents self-entered review labels (including "external") from independently elevating Consistent. Added domain tests cover the 13-day boundary and future-dated evidence/repeats, and updated the external-review test expectation. These changes are not yet locally tested or formatter-verified.
 
 **Remaining Slice 4 work:** repository/domain cross-record validation (evidence ↔ journals/tasks and reviews ↔ evidence), deleted-records archive and restore/permanent deletion UI with evidence-review cascade, accessibility and focus behavior, repository CRUD/transaction tests, and complete documentation alignment. Do not mark Slice 4 complete until these items and exact-head CI are verified.
+
+
+### Latest implementation update — 2026-11-27
+The draft now contains active-record relationship checks for evidence and reviews, restore validation, deleted evidence/review archive controls, and regression tests for repository lifecycle and invalid references. These are implementation updates, not verified acceptance: local checks and CI on the final branch head are still required. Accessibility work remains partially done (status feedback is focusable/focused after updates); manual keyboard, screen-reader, reduced-motion and narrow viewport checks are still outstanding.
