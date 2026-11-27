@@ -301,3 +301,7 @@ Runtime evidence and review records are now present in the draft PR branch. Evid
 
 ### Restore integrity addendum — 2026-11-27
 Evidence restoration revalidates its criterion and any linked journal/task records, refusing restore when those records remain deleted or unavailable. The evidence/review recovery archive is implemented in the draft UI; review restore is blocked when evidence is deleted. Verification is pending.
+
+
+### Computation guard for deleted linked records — 2026-11-27
+Evidence linked to a journal entry or task that is missing or soft-deleted is excluded from both qualifying evidence and competency progress. This is distinct from save/restore validation: calculation must also guard against records becoming deleted after evidence was saved. Regression coverage added; local execution remains pending.
