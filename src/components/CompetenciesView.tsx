@@ -31,7 +31,9 @@ export default function CompetenciesView({
   tasks,
 }: Props) {
   const [evidence, setEvidence] = useState<Evidence[]>([]),
-    [reviews, setReviews] = useState<Review[]>([]);
+    [reviews, setReviews] = useState<Review[]>([]),
+    [deletedEvidence, setDeletedEvidence] = useState<Evidence[]>([]),
+    [deletedReviews, setDeletedReviews] = useState<Review[]>([]);
   const [slug, setSlug] = useState<CompetencySlug>("independent_coding"),
     [criterion, setCriterion] = useState("IC-1"),
     [title, setTitle] = useState(""),
@@ -50,11 +52,13 @@ export default function CompetenciesView({
     [statusMessage, setStatusMessage] = useState("");
   async function refresh() {
     const [e, r] = await Promise.all([
-      persistence.evidence.list(),
-      persistence.reviews.list(),
+      persistence.evidence.list({ includeDeleted: true }),
+      persistence.reviews.list({ includeDeleted: true }),
     ]);
-    setEvidence(e);
-    setReviews(r);
+    setEvidence(e.filter((item) => !item.deletedAt));
+    setReviews(r.filter((item) => !item.deletedAt));
+    setDeletedEvidence(e.filter((item) => !!item.deletedAt));
+    setDeletedReviews(r.filter((item) => !!item.deletedAt));
   }
   useEffect(() => {
     void refresh();
@@ -487,8 +491,7 @@ export default function CompetenciesView({
         </div>
       </form>
       <p>
-        Self reviews never establish Consistent. External confirmations may.
-        These defaults remain NEEDS APPROVAL.
+        Reviews and reviewer labels are self-reported. Selecting “External” does not authenticate the reviewer or independently verify the feedback. Competency thresholds remain NEEDS APPROVAL.
       </p>
     </section>
   );
