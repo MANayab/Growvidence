@@ -91,3 +91,7 @@ Validate imported files, sizes, encodings and relationships. Render learner-auth
 
 ### Superseding status — 2026-11-27
 Repository checks have since been added for competency criterion keys, active linked journal/task records, and review links to active evidence. Restore also revalidates evidence links. Deleted evidence/review recovery controls have been added. These remain unverified until local checks and exact-head CI pass.
+
+
+### Linked-record lifecycle guard — 2026-11-27
+Competency calculation must validate optional journal/task references at read-time as well as save/restore time. Evidence with a missing or soft-deleted linked record is excluded from both qualification and partial-progress counts. Regression coverage is added but not yet executed locally.
