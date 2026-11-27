@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { FormEvent } from "react";
+import type { SyntheticEvent } from "react";
 import { COMPETENCY_RULES } from "../domain/competencyRules";
 import { computeCompetencies } from "../domain/competencies";
 import type {
@@ -70,7 +70,7 @@ export default function CompetenciesView({
     setJournalId("");
     setTaskId("");
   }
-  async function saveEvidence(event: FormEvent) {
+  async function saveEvidence(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     const old = evidence.find((x) => x.id === editId);
     try {
@@ -94,7 +94,7 @@ export default function CompetenciesView({
       );
     }
   }
-  async function saveReview(event: FormEvent) {
+  async function saveReview(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     const old = reviews.find((x) => x.id === reviewId);
     try {
