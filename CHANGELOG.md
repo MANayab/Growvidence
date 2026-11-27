@@ -40,3 +40,6 @@ All notable changes to Growvidence will be documented here. This project follows
 - Validate evidence criterion and active journal/task links; validate review-to-active-evidence relationships.
 - Add restore operations and deleted evidence/review recovery UI; permanent evidence deletion cascades to reviews.
 - Add domain and repository regression tests. All changes remain draft and pending maintainer-local verification.
+
+
+- Follow-up: added evidence restore validation against linked journal/task records; recovery archive controls for soft-deleted evidence and reviews; review restore guard; focusable status feedback and reviewer-authentication disclosure. Pending local and CI verification.
