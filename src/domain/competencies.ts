@@ -64,7 +64,6 @@ export function computeCompetencies(
   tasks: Task[],
   now = new Date(),
 ): CompetencyAssessment[] {
-  void tasks;
   void reviews;
   const today = now.toISOString().slice(0, 10);
   return COMPETENCY_RULES.map((comp) => {
@@ -85,6 +84,7 @@ export function computeCompetencies(
         const date = evidenceDate(e, journals);
         return (
           !e.deletedAt &&
+          linkedRecordsAreActive(e, journals, tasks) &&
           e.competencySlug === comp.slug &&
           e.criterionKey === rule.key &&
           isValidDate(date) &&
