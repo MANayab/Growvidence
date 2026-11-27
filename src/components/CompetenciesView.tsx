@@ -490,6 +490,30 @@ export default function CompetenciesView({
           </button>
         </div>
       </form>
+      <section className="deleted-records" aria-labelledby="deleted-competency-records">
+        <h3 id="deleted-competency-records">Deleted evidence and reviews</h3>
+        <p>Restore evidence before restoring its reviews. Permanently deleting evidence also deletes its associated reviews.</p>
+        {deletedEvidence.length === 0 && deletedReviews.length === 0 ? <p>No deleted competency records.</p> : null}
+        {deletedEvidence.map((item) => (
+          <article className="evidence-row" key={item.id}>
+            <strong>{item.title}</strong> · {item.criterionKey} · deleted {item.deletedAt}
+            <div className="form-actions">
+              <button type="button" className="secondary" onClick={() => void persistence.evidence.restore(item.id).then(refresh).then(() => setStatusMessage("Evidence restored; status recalculated."))}>Restore</button>
+              <button type="button" className="danger" onClick={() => { if (confirm("Permanently delete this evidence and all associated reviews? This cannot be undone.")) void persistence.evidence.permanentlyDelete(item.id).then(refresh).then(() => setStatusMessage("Evidence and associated reviews permanently deleted.")); }}>Permanently delete</button>
+            </div>
+          </article>
+        ))}
+        {deletedReviews.map((item) => (
+          <article className="review-row" key={item.id}>
+            <strong>{item.reviewerLabel}</strong> · {item.outcome} · deleted {item.deletedAt}
+            <p>{item.feedback}</p>
+            <div className="form-actions">
+              <button type="button" className="secondary" onClick={() => void persistence.reviews.restore(item.id).then(refresh).then(() => setStatusMessage("Review restored."))}>Restore</button>
+              <button type="button" className="danger" onClick={() => { if (confirm("Permanently delete this review? This cannot be undone.")) void persistence.reviews.permanentlyDelete(item.id).then(refresh).then(() => setStatusMessage("Review permanently deleted.")); }}>Permanently delete</button>
+            </div>
+          </article>
+        ))}
+      </section>
       <p>
         Reviews and reviewer labels are self-reported. Selecting “External” does not authenticate the reviewer or independently verify the feedback. Competency thresholds remain NEEDS APPROVAL.
       </p>
