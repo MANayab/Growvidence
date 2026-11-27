@@ -32,3 +32,11 @@ All notable changes to Growvidence will be documented here. This project follows
 - Add tests for status boundaries and migration behavior.
 - Add a separate privacy wording proposal; privacy page unchanged.
 
+
+
+## Unreleased — Slice 4 draft integrity work (2026-11-27)
+- Correct competency calculation to exclude future-dated/invalid evidence from qualifying and progress, and require chronological repeats at least 14 days later in distinct task/context.
+- Remove competency elevation based on self-entered external-review labels.
+- Validate evidence criterion and active journal/task links; validate review-to-active-evidence relationships.
+- Add restore operations and deleted evidence/review recovery UI; permanent evidence deletion cascades to reviews.
+- Add domain and repository regression tests. All changes remain draft and pending maintainer-local verification.
