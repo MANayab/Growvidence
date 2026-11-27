@@ -297,3 +297,7 @@ Runtime evidence and review records are now present in the draft PR branch. Evid
 
 
 **Trust-model correction:** Reviewer type and reviewer label are learner-entered and are not authenticated. A review marked `external` is not independent verification and no review outcome alone elevates competency status. The current consistency rule uses qualifying, chronologically later evidence at least 14 days apart in a distinct task/context. Future-dated or invalid calendar dates do not qualify or contribute to progress. Rubric and assessment thresholds remain **NEEDS APPROVAL**. Local verification pending.
+
+
+### Restore integrity addendum — 2026-11-27
+Evidence restoration revalidates its criterion and any linked journal/task records, refusing restore when those records remain deleted or unavailable. The evidence/review recovery archive is implemented in the draft UI; review restore is blocked when evidence is deleted. Verification is pending.
