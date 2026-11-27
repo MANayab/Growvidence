@@ -46,6 +46,17 @@ function qualifies(e: Evidence, rule: CriterionRuleLike, journals: JournalEntry[
   );
 }
 type CriterionRuleLike = { requiresUnassisted: boolean };
+function linkedRecordsAreActive(e: Evidence, journals: JournalEntry[], tasks: Task[]) {
+  if (e.journalEntryId) {
+    const journal = journals.find((x) => x.id === e.journalEntryId);
+    if (!journal || journal.deletedAt) return false;
+  }
+  if (e.taskId) {
+    const task = tasks.find((x) => x.id === e.taskId);
+    if (!task || task.deletedAt) return false;
+  }
+  return true;
+}
 export function computeCompetencies(
   evidence: Evidence[],
   reviews: Review[],
@@ -62,6 +73,7 @@ export function computeCompetencies(
         const date = evidenceDate(e, journals);
         return (
           !e.deletedAt &&
+          linkedRecordsAreActive(e, journals, tasks) &&
           e.competencySlug === comp.slug &&
           e.criterionKey === rule.key &&
           isValidDate(date) &&
