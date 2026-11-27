@@ -116,7 +116,7 @@ export function computeCompetencies(
       ? repeat
         ? "Consistent"
         : "Demonstrated"
-      : evidence.some((e) => !e.deletedAt && e.competencySlug === comp.slug)
+      : criteria.some((criterion) => criterion.evidence.length > 0)
         ? "In progress"
         : "Not started";
     const dated = valid.map((e) => evidenceDate(e, journals)).sort();
