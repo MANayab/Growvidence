@@ -35,7 +35,7 @@ const evidenceDate = (e: Evidence, journals: JournalEntry[]) =>
   e.createdAt.slice(0, 10);
 const isValidDate = (date: string) =>
   /^\d{4}-\d{2}-\d{2}$/.test(date) &&
-  Number.isFinite(Date.parse(date + "T00:00:00Z"));
+  Number.isFinite(Date.parse(date + "T00:00:00Z")) &&\n  new Date(Date.parse(date + "T00:00:00Z")).toISOString().slice(0, 10) === date;
 function qualifies(e: Evidence, rule: CriterionRuleLike, journals: JournalEntry[]) {
   const hasLink = !!e.linkUrl && /^https?:\/\//i.test(e.linkUrl);
   const entry = journals.find((x) => x.id === e.journalEntryId && !x.deletedAt);
@@ -68,12 +68,16 @@ export function computeCompetencies(
           qualifies(e, rule, journals)
         );
       });
-      const any = evidence.some(
-        (e) =>
+      const any = evidence.some((e) => {
+        const date = evidenceDate(e, journals);
+        return (
           !e.deletedAt &&
           e.competencySlug === comp.slug &&
-          e.criterionKey === rule.key,
-      );
+          e.criterionKey === rule.key &&
+          isValidDate(date) &&
+          date <= today
+        );
+      });
       return {
         criterionKey: rule.key,
         label: rule.label,
