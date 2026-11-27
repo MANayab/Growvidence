@@ -215,3 +215,11 @@ Use plain, supportive language. Prefer “You have evidence for…” over “Yo
 - Evidence URLs accept HTTP/HTTPS only. Reject javascript:, data: and other schemes. External links use rel="noopener noreferrer"; never fetch, preview or embed.
 - Provide soft delete, per-record “Permanently delete” and “Delete all local data”. State clearly: **Soft-deleted items remain in JSON backups until permanently deleted.**
 - All JavaScript loaded by `/app/` is included in the 200 KiB gzip budget, including Astro renderer, React runtime, island and shared/imported chunks. Slice 1 measured 95.51 KiB gzip. Charts are hand-built lightweight SVG or lazy-loaded; provide text/table alternatives and a bundle-size check.
+
+
+## Slice 4 recovery and review trust update — 2026-11-27
+Competency view includes a deleted evidence/review archive with restore and permanent deletion controls. Evidence permanent deletion removes associated reviews. Review restoration is blocked until linked evidence is active. Reviewer labels are self-entered; “External” does not authenticate identity or verify review independence. Restore actions should provide visible status feedback. Keyboard/focus and responsive behavior remain pending manual validation.
+
+
+### Implemented draft details — 2026-11-27
+The competency component now loads deleted records, presents restore and permanent-delete actions, disables review restoration when parent evidence is deleted, and moves focus to status feedback after updates. This is incomplete accessibility work; manual keyboard, screen-reader and responsive validation remains necessary.

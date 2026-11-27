@@ -145,3 +145,21 @@ A slice is not ready for review until:
 - Bundle-size check lists every JavaScript file loaded by `/app/`, reports each file's gzip size and the summed total, and fails when the total exceeds 200 KiB.
 - Slice 1 smoke test renders workspace navigation and an honest initial storage state.
 - Storage error mapping covers quota exhaustion, unavailable storage and unexpected database closure; blocked-upgrade and migration-failure messages must not imply data was deleted.
+
+## Slice 4 competency tests (draft)
+- Domain: task independence, unknown/not_recorded for unassisted, soft-deleted evidence, same-day repeat, 14-day boundary, external vs self review, stale hint.
+- Migration v4-to-v5: verify preservation of settings, tracks, tasks and journal entries; forced abort must retain v4 and avoid unhandled rejection.
+- Manual browser: link evidence, associate criteria/journal/task, check unknown/not_recorded exclusion, external review and 14-day repeat, delete and verify recalculation; keyboard-only, screen-reader, focus and reduced-motion checks.
+
+
+## Slice 4 integrity/recovery regression additions — 2026-11-27
+- Future-dated evidence is excluded from criterion qualification and progress; invalid/non-canonical date-only values are rejected by computation.
+- Repeat evidence must be chronologically later by at least 14 days and distinct by task/context; 13-day and future-date tests are included.
+- Self-entered external reviewer labels do not independently elevate competency status.
+- Persistence tests added for evidence and review reference validation, soft-delete/restore, review restoration guard, and permanent evidence deletion cascading reviews.
+- Still required: run tests locally, add/verify all repository integration cases, and perform keyboard/focus/screen-reader/reduced-motion/responsive manual checks. Automated coverage is not proof of accessibility.
+
+
+### Follow-up integrity case — 2026-11-27
+- Added a domain regression case proving evidence linked to deleted journal/task records does not qualify or contribute to In progress status.
+- Confirm final branch-head formatting, domain tests, persistence tests, full checks/build/size gates and manual accessibility review after maintainer-local formatting.

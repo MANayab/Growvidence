@@ -155,18 +155,15 @@ export const EvidenceLinkSchema = BaseRecord.extend({
   rationale: z.string().min(1).max(2000),
 });
 
-export const AssessmentStatusSchema = z.enum([
-  "not_assessed", "emerging", "developing", "demonstrated", "consistent", "needs_more_evidence"
-]);
-export const CompetencyAssessmentSchema = BaseRecord.extend({
-  competencySlug: CompetencySlugSchema,
-  rubricVersion: z.number().int().positive(),
-  status: AssessmentStatusSchema,
-  rationale: z.string().max(3000),
-  evidenceLinkIds: z.array(Id).max(200),
-  assessedAt: IsoDateTime.nullable().default(null),
-});
-export type CompetencyAssessment = z.infer<typeof CompetencyAssessmentSchema>;
+// Slice 4 supersedes the persisted status sketch: status is derived and is never stored.
+export type CompetencyStatus = "Not started" | "In progress" | "Demonstrated" | "Consistent";
+export interface CompetencyAssessment {
+  competencySlug: CompetencySlug;
+  status: CompetencyStatus; // computed from evidence/reviews only
+  criteria: CriterionAssessment[];
+  lastEvidenced: string | null;
+  mayBeStale: boolean;
+}
 
 export const ReviewSchema = BaseRecord.extend({
   evidenceId: Id,
@@ -289,3 +286,22 @@ See the consolidated Open decisions section in `docs/TESTING_PLAN.md` and PR des
 - **Demonstrated (NEEDS APPROVAL):** every mandatory criterion has at least one independent artifact.
 - **Consistent (NEEDS APPROVAL):** the demonstration is repeated in a different task or context.
 - Proposed Consistent corroboration: external review weight 2, self review weight 1. Reviews cannot replace the required independent artifact or repeated demonstration.
+
+## Slice 4 runtime evidence contract — NEEDS APPROVAL
+The historical persisted `CompetencyAssessment` and `AssessmentStatusSchema` proposal above is superseded: status is computed from evidence/reviews and never stored. DB v5 adds evidence and review stores. Evidence records include competency slug, criterion, title, description, context, optional HTTP/HTTPS artifact URL, optional journal/task links. Evidence must have a link or journal to qualify. URLs are never fetched, previewed or embedded. Reviews include evidence ID, self/external reviewer type, reviewer label, feedback, outcome and reviewedAt. External confirming review may support Consistent; self reviews cannot. Every criterion is mandatory and configurable; rules remain **NEEDS APPROVAL**. Demonstrated requires each mandatory criterion; unassisted criteria require a linked journal entry explicitly marked unassisted. Consistent requires Demonstrated plus a repeat in another task/context at least 14 days later or an external confirming review. Soft-delete recomputes; permanent evidence deletion also removes associated reviews. No expiry; stale hint after 180 days.
+
+
+## Slice 4 integrity corrections — 2026-11-27
+
+Runtime evidence and review records are now present in the draft PR branch. Evidence must use a criterion key belonging to its competency and optional journal/task references must resolve to existing, active records when saved. Review records must point to existing, active evidence. Soft-delete records can be restored; restoring a review requires its evidence to be active. Permanent evidence deletion cascades to associated reviews.
+
+
+**Trust-model correction:** Reviewer type and reviewer label are learner-entered and are not authenticated. A review marked `external` is not independent verification and no review outcome alone elevates competency status. The current consistency rule uses qualifying, chronologically later evidence at least 14 days apart in a distinct task/context. Future-dated or invalid calendar dates do not qualify or contribute to progress. Rubric and assessment thresholds remain **NEEDS APPROVAL**. Local verification pending.
+
+
+### Restore integrity addendum — 2026-11-27
+Evidence restoration revalidates its criterion and any linked journal/task records, refusing restore when those records remain deleted or unavailable. The evidence/review recovery archive is implemented in the draft UI; review restore is blocked when evidence is deleted. Verification is pending.
+
+
+### Computation guard for deleted linked records — 2026-11-27
+Evidence linked to a journal entry or task that is missing or soft-deleted is excluded from both qualifying evidence and competency progress. This is distinct from save/restore validation: calculation must also guard against records becoming deleted after evidence was saved. Regression coverage added; local execution remains pending.

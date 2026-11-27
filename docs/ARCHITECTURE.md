@@ -79,3 +79,19 @@ A separate ADR must assess Supabase or alternatives for account linking, authent
 ## Security and accessibility
 
 Validate imported files, sizes, encodings and relationships. Render learner-authored content safely. Never embed secrets in client assets. No analytics/third-party scripts by default. Target WCAG 2.2 AA with keyboard, focus, labels, semantic structure and reduced motion.
+
+
+## Slice 4 integrity follow-up (2026-11-27)
+
+- Competency computation now excludes evidence dated after the supplied/current date from qualifying evidence, including repeat checks.
+- Repeat evidence must be chronologically later by at least 14 days and show a distinct task or context; same-day and reversed chronology cannot count.
+- Locally entered reviewer type/label is not authenticated. Reviews (including records labeled external) no longer independently elevate computed competency to Consistent.
+- These are focused integrity corrections on the draft Slice 4 branch. Repository relationship validation, deleted-record restore UI, complete accessibility and repository integration coverage remain outstanding and must not be assumed implemented. Verification is pending maintainer-local checks.
+
+
+### Superseding status — 2026-11-27
+Repository checks have since been added for competency criterion keys, active linked journal/task records, and review links to active evidence. Restore also revalidates evidence links. Deleted evidence/review recovery controls have been added. These remain unverified until local checks and exact-head CI pass.
+
+
+### Linked-record lifecycle guard — 2026-11-27
+Competency calculation must validate optional journal/task references at read-time as well as save/restore time. Evidence with a missing or soft-deleted linked record is excluded from both qualification and partial-progress counts. Regression coverage is added but not yet executed locally.

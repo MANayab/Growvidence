@@ -123,3 +123,14 @@ Guaranteed rankings, employment or accreditation; opaque AI mastery scores; mand
 - Journal learning date is the single canonical `date` field: local date-only `YYYY-MM-DD`, never converted through UTC. `attemptedAt` is removed and must not be stored.
 - Entries include title, learned, blocked, next, optional trackId/taskId, confidence 1–5, minutesSpent, and AI-use disclosure.
 - AI disclosure states are assisted, unassisted, partially_assisted, unknown and not_recorded. New/imported entries default to not_recorded; unknown and not_recorded remain separate and are never treated as unassisted.
+
+## Slice 4 competency defaults — NEEDS APPROVAL
+All six criterion rubrics and assessment thresholds are defaults marked **NEEDS APPROVAL** in this file and `docs/DATA_CONTRACTS.md`. Rules are centralized in `src/domain/competencyRules.ts`. Computed levels: Not started, In progress, Demonstrated, Consistent. Demonstrated requires all mandatory criteria with valid evidence. Consistent requires a repeat in a distinct task/context at least 14 days later or an external confirmation. Self reviews cannot establish Consistent. IC-1 and IC-3 require a linked journal entry explicitly marked unassisted; unknown/not_recorded never qualify. Task completion is irrelevant. Evidence does not expire; show a may-be-stale hint after 180 days.
+
+
+## Slice 4 implementation trust boundary — updated 2026-11-27
+Competency status is calculated from qualifying evidence, not completed tasks. Future-dated evidence is excluded from qualification and consistency repeats must be chronological, at least 14 days apart, and differ by task/context. Review labels are self-entered, not authenticated: a record labeled external is not independently verified and cannot by itself elevate status to Consistent. Rubric criteria and status thresholds remain **NEEDS APPROVAL**. Do not claim certification, job readiness or independent verification from this app's local review form.
+
+
+### Linked-record integrity update — 2026-11-27
+Competency computation now guards active linked journal/task references: missing or deleted linked records are excluded from status progress and qualifying evidence. This does not change rubric thresholds; they remain NEEDS APPROVAL. Tests await local verification.

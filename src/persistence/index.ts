@@ -12,6 +12,10 @@ import {
   type StorageNotice,
 } from "./errors";
 import {
+  IndexedDbEvidenceRepository,
+  IndexedDbReviewsRepository,
+} from "./evidence";
+import {
   IndexedDbSettingsRepository,
   IndexedDbTasksRepository,
   IndexedDbTracksRepository,
@@ -31,6 +35,9 @@ export {
   JournalEntrySchema,
   AiUseDisclosureSchema,
   AiUseModeSchema,
+  CompetencySlugSchema,
+  EvidenceSchema,
+  ReviewSchema,
 } from "./schemas";
 export type {
   Track,
@@ -41,6 +48,9 @@ export type {
   ThemePreference,
   JournalEntry,
   AiUseDisclosure,
+  Evidence,
+  Review,
+  CompetencySlug,
 } from "./schemas";
 export { DATABASE_NAME, DATABASE_VERSION, applyMigrations } from "./database";
 
@@ -50,6 +60,8 @@ export interface PersistenceHandle {
   tracks: IndexedDbTracksRepository;
   tasks: IndexedDbTasksRepository;
   journal: IndexedDbJournalEntriesRepository;
+  evidence: IndexedDbEvidenceRepository;
+  reviews: IndexedDbReviewsRepository;
   close(): void;
 }
 export interface OpenPersistenceOptions extends DatabaseOpenOptions {
@@ -84,6 +96,8 @@ export async function openPersistence(
       tracks: new IndexedDbTracksRepository(database),
       tasks: new IndexedDbTasksRepository(database),
       journal: new IndexedDbJournalEntriesRepository(database),
+      evidence: new IndexedDbEvidenceRepository(database),
+      reviews: new IndexedDbReviewsRepository(database),
       close: () => database.close(),
     };
   } catch (error) {

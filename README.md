@@ -460,3 +460,14 @@ Growvidence is built with the open web platform and the Astro static-site toolch
 Growvidence is licensed under the [MIT License](LICENSE). See the root LICENSE file for the exact terms.
 
 **Trademark note:** “Growvidence” is a working name and has not been cleared. The MIT License grants no trademark rights.
+
+## Slice 4 — competency/evidence engine (Draft)
+The competency engine computes status from evidence and reviews; it does not store status or derive it from task completion. Evidence and reviewer feedback are stored in local IndexedDB. Artifact links accept HTTP/HTTPS and are never fetched or embedded. Rule defaults remain **NEEDS APPROVAL**. The live privacy page is unchanged; see `docs/PRIVACY_UPDATE_PROPOSAL.md`.
+
+
+## Slice 4 (Draft PR #16)
+The draft branch adds local evidence/review records and computed competency statuses. Integrity follow-up excludes future-dated evidence, requires chronological repeats at least 14 days apart in a distinct task/context, and treats all reviewer labels as self-reported (an “external” label is not authenticated). Evidence/review relationship validation and recovery controls are being added. Competency rubrics remain **NEEDS APPROVAL**; this feature is not certification or job-readiness assessment. See PR #16 and `docs/PRIVACY_UPDATE_PROPOSAL.md`; the live privacy page has not been edited.
+
+
+### Slice 4 status note
+The competency/evidence workflows are in open Draft PR #16. Relationship validation, deleted-record recovery and focusable status feedback are present in the branch but not verified. Rubric thresholds remain **NEEDS APPROVAL**; external reviewer labels are not authenticated. See the PR and privacy wording proposal for limitations.
