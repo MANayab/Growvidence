@@ -79,3 +79,11 @@ A separate ADR must assess Supabase or alternatives for account linking, authent
 ## Security and accessibility
 
 Validate imported files, sizes, encodings and relationships. Render learner-authored content safely. Never embed secrets in client assets. No analytics/third-party scripts by default. Target WCAG 2.2 AA with keyboard, focus, labels, semantic structure and reduced motion.
+
+
+## Slice 4 integrity follow-up (2026-11-27)
+
+- Competency computation now excludes evidence dated after the supplied/current date from qualifying evidence, including repeat checks.
+- Repeat evidence must be chronologically later by at least 14 days and show a distinct task or context; same-day and reversed chronology cannot count.
+- Locally entered reviewer type/label is not authenticated. Reviews (including records labeled external) no longer independently elevate computed competency to Consistent.
+- These are focused integrity corrections on the draft Slice 4 branch. Repository relationship validation, deleted-record restore UI, complete accessibility and repository integration coverage remain outstanding and must not be assumed implemented. Verification is pending maintainer-local checks.
