@@ -43,3 +43,6 @@ All notable changes to Growvidence will be documented here. This project follows
 
 
 - Follow-up: added evidence restore validation against linked journal/task records; recovery archive controls for soft-deleted evidence and reviews; review restore guard; focusable status feedback and reviewer-authentication disclosure. Pending local and CI verification.
+
+
+- Slice 4 draft: exclude evidence from competency progress when a linked journal/task record is missing or soft-deleted; recovery-action failures now surface through the shared status message instead of unhandled promises. Tests/CI pending.
