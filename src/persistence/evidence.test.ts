@@ -84,4 +84,13 @@ describe("evidence/review persistence", () => {
     await p.reviews.softDelete(ids.review);
     await expect(p.reviews.restore(ids.review)).rejects.toThrow("linked evidence first");
   });
+  it("refuses evidence restore while a linked journal is deleted", async () => {
+    const p = await setup();
+    await p.evidence.save(evidence);
+    await p.journal.softDelete(ids.journal);
+    await p.evidence.softDelete(ids.evidence);
+    await expect(p.evidence.restore(ids.evidence)).rejects.toThrow(
+      "Restore the linked journal entry first.",
+    );
+  });
 });
