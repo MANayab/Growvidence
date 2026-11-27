@@ -239,4 +239,33 @@ describe("competency computation", () => {
       true,
     );
   });
+  it("ignores evidence whose linked journal or task is deleted", () => {
+    const deletedJournal = {
+      ...journal("j-deleted", "2026-11-01", "unassisted"),
+      deletedAt: "2026-11-02T00:00:00Z",
+    };
+    const deletedTask = {
+      ...common,
+      id: "task-deleted",
+      deletedAt: "2026-11-02T00:00:00Z",
+    } as Task;
+    const e = [
+      {
+        ...make("journal-evidence", "IC-1", "2026-11-01", null),
+        linkUrl: null,
+        journalEntryId: "j-deleted",
+      },
+      make("task-evidence", "IC-2", "2026-11-01", "task-deleted"),
+    ];
+    const result = computeCompetencies(
+      e,
+      reviews,
+      [deletedJournal],
+      [deletedTask],
+      new Date("2026-11-27T12:00:00Z"),
+    )[0];
+    expect(result.criteria[0].satisfied).toBe(false);
+    expect(result.criteria[1].satisfied).toBe(false);
+    expect(result.status).toBe("Not started");
+  });
 });
