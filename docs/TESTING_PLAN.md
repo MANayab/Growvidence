@@ -150,3 +150,11 @@ A slice is not ready for review until:
 - Domain: task independence, unknown/not_recorded for unassisted, soft-deleted evidence, same-day repeat, 14-day boundary, external vs self review, stale hint.
 - Migration v4-to-v5: verify preservation of settings, tracks, tasks and journal entries; forced abort must retain v4 and avoid unhandled rejection.
 - Manual browser: link evidence, associate criteria/journal/task, check unknown/not_recorded exclusion, external review and 14-day repeat, delete and verify recalculation; keyboard-only, screen-reader, focus and reduced-motion checks.
+
+
+## Slice 4 integrity/recovery regression additions — 2026-11-27
+- Future-dated evidence is excluded from criterion qualification and progress; invalid/non-canonical date-only values are rejected by computation.
+- Repeat evidence must be chronologically later by at least 14 days and distinct by task/context; 13-day and future-date tests are included.
+- Self-entered external reviewer labels do not independently elevate competency status.
+- Persistence tests added for evidence and review reference validation, soft-delete/restore, review restoration guard, and permanent evidence deletion cascading reviews.
+- Still required: run tests locally, add/verify all repository integration cases, and perform keyboard/focus/screen-reader/reduced-motion/responsive manual checks. Automated coverage is not proof of accessibility.
