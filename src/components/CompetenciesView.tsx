@@ -61,6 +61,17 @@ export default function CompetenciesView({
     setDeletedEvidence(e.filter((item) => !!item.deletedAt));
     setDeletedReviews(r.filter((item) => !!item.deletedAt));
   }
+  async function runAction(action: () => Promise<unknown>, success: string) {
+    try {
+      await action();
+      await refresh();
+      setStatusMessage(success);
+    } catch (error) {
+      setStatusMessage(
+        error instanceof Error ? error.message : "Action could not be completed.",
+      );
+    }
+  }
   useEffect(() => {
     void refresh();
   }, [persistence]);
@@ -218,14 +229,10 @@ export default function CompetenciesView({
                             "Soft-delete this evidence? Competency status will recalculate immediately.",
                           )
                         )
-                          void persistence.evidence
-                            .softDelete(ev.id)
-                            .then(refresh)
-                            .then(() =>
-                              setStatusMessage(
-                                "Evidence deleted; status recalculated.",
-                              ),
-                            );
+                          void runAction(
+                            () => persistence.evidence.softDelete(ev.id),
+                            "Evidence deleted; status recalculated.",
+                          );
                       }}
                     >
                       Delete
@@ -239,14 +246,10 @@ export default function CompetenciesView({
                             "Permanently delete this evidence and its reviews?",
                           )
                         )
-                          void persistence.evidence
-                            .permanentlyDelete(ev.id)
-                            .then(refresh)
-                            .then(() =>
-                              setStatusMessage(
-                                "Evidence and reviews permanently deleted.",
-                              ),
-                            );
+                          void runAction(
+                            () => persistence.evidence.permanentlyDelete(ev.id),
+                            "Evidence and reviews permanently deleted.",
+                          );
                       }}
                     >
                       Permanently delete
@@ -285,9 +288,10 @@ export default function CompetenciesView({
                           className="danger"
                           onClick={() => {
                             if (confirm("Soft-delete review?"))
-                              void persistence.reviews
-                                .softDelete(r.id)
-                                .then(refresh);
+                              void runAction(
+                                () => persistence.reviews.softDelete(r.id),
+                                "Review deleted.",
+                              );
                           }}
                         >
                           Delete review
@@ -297,9 +301,10 @@ export default function CompetenciesView({
                           className="secondary"
                           onClick={() => {
                             if (confirm("Permanently delete review?"))
-                              void persistence.reviews
-                                .permanentlyDelete(r.id)
-                                .then(refresh);
+                              void runAction(
+                                () => persistence.reviews.permanentlyDelete(r.id),
+                                "Review permanently deleted.",
+                              );
                           }}
                         >
                           Permanently delete
@@ -502,8 +507,8 @@ export default function CompetenciesView({
           <article className="evidence-row" key={item.id}>
             <strong>{item.title}</strong> · {item.criterionKey} · deleted {item.deletedAt}
             <div className="form-actions">
-              <button type="button" className="secondary" onClick={() => void persistence.evidence.restore(item.id).then(refresh).then(() => setStatusMessage("Evidence restored; status recalculated."))}>Restore</button>
-              <button type="button" className="danger" onClick={() => { if (confirm("Permanently delete this evidence and all associated reviews? This cannot be undone.")) void persistence.evidence.permanentlyDelete(item.id).then(refresh).then(() => setStatusMessage("Evidence and associated reviews permanently deleted.")); }}>Permanently delete</button>
+              <button type="button" className="secondary" onClick={() => void runAction(() => persistence.evidence.restore(item.id), "Evidence restored; status recalculated.")}>Restore</button>
+              <button type="button" className="danger" onClick={() => { if (confirm("Permanently delete this evidence and all associated reviews? This cannot be undone.")) void runAction(() => persistence.evidence.permanentlyDelete(item.id), "Evidence and associated reviews permanently deleted."); }}>Permanently delete</button>
             </div>
           </article>
         ))}
@@ -512,8 +517,8 @@ export default function CompetenciesView({
             <strong>{item.reviewerLabel}</strong> · {item.outcome} · deleted {item.deletedAt}
             <p>{item.feedback}</p>
             <div className="form-actions">
-              <button type="button" className="secondary" disabled={deletedEvidence.some((e) => e.id === item.evidenceId)} onClick={() => void persistence.reviews.restore(item.id).then(refresh).then(() => setStatusMessage("Review restored."))}>Restore</button>
-              <button type="button" className="danger" onClick={() => { if (confirm("Permanently delete this review? This cannot be undone.")) void persistence.reviews.permanentlyDelete(item.id).then(refresh).then(() => setStatusMessage("Review permanently deleted.")); }}>Permanently delete</button>
+              <button type="button" className="secondary" disabled={deletedEvidence.some((e) => e.id === item.evidenceId)} onClick={() => void runAction(() => persistence.reviews.restore(item.id), "Review restored.")}>Restore</button>
+              <button type="button" className="danger" onClick={() => { if (confirm("Permanently delete this review? This cannot be undone.")) void runAction(() => persistence.reviews.permanentlyDelete(item.id), "Review permanently deleted."); }}>Permanently delete</button>
             </div>
           </article>
         ))}
