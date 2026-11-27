@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { SyntheticEvent } from "react";
 import { COMPETENCY_RULES } from "../domain/competencyRules";
 import { computeCompetencies } from "../domain/competencies";
@@ -43,6 +43,7 @@ export default function CompetenciesView({
     [journalId, setJournalId] = useState(""),
     [taskId, setTaskId] = useState(""),
     [editId, setEditId] = useState<string | null>(null);
+  const statusRef = useRef<HTMLParagraphElement>(null);
   const [reviewEvidence, setReviewEvidence] = useState(""),
     [reviewId, setReviewId] = useState<string | null>(null),
     [reviewType, setReviewType] = useState<"self" | "external">("self"),
@@ -63,6 +64,9 @@ export default function CompetenciesView({
   useEffect(() => {
     void refresh();
   }, [persistence]);
+  useEffect(() => {
+    if (statusMessage) statusRef.current?.focus();
+  }, [statusMessage]);
   const def = COMPETENCY_RULES.find((x) => x.slug === slug)!;
   const computed = computeCompetencies(evidence, reviews, journals, tasks);
   function resetEvidence() {
@@ -134,7 +138,7 @@ export default function CompetenciesView({
         Task completion never changes competency status. Deleting evidence
         recalculates status immediately.
       </p>
-      <p role="status" aria-live="polite">
+      <p id="competency-status-message" ref={statusRef} role="status" aria-live="polite" tabIndex={-1}>
         {statusMessage}
       </p>
       {computed.map((item) => (
@@ -308,7 +312,7 @@ export default function CompetenciesView({
           ))}
         </article>
       ))}
-      <form className="workspace-form" onSubmit={saveEvidence}>
+      <form className="workspace-form" onSubmit={saveEvidence} aria-describedby="competency-status-message">
         <h3>{editId ? "Edit evidence" : "Add evidence"}</h3>
         <label>
           Competency
@@ -417,7 +421,7 @@ export default function CompetenciesView({
           )}
         </div>
       </form>
-      <form className="workspace-form" onSubmit={saveReview}>
+      <form className="workspace-form" onSubmit={saveReview} aria-describedby="competency-status-message">
         <h3>{reviewId ? "Edit review" : "Add review"}</h3>
         <label>
           Evidence
@@ -508,7 +512,7 @@ export default function CompetenciesView({
             <strong>{item.reviewerLabel}</strong> · {item.outcome} · deleted {item.deletedAt}
             <p>{item.feedback}</p>
             <div className="form-actions">
-              <button type="button" className="secondary" onClick={() => void persistence.reviews.restore(item.id).then(refresh).then(() => setStatusMessage("Review restored."))}>Restore</button>
+              <button type="button" className="secondary" disabled={deletedEvidence.some((e) => e.id === item.evidenceId)} onClick={() => void persistence.reviews.restore(item.id).then(refresh).then(() => setStatusMessage("Review restored."))}>Restore</button>
               <button type="button" className="danger" onClick={() => { if (confirm("Permanently delete this review? This cannot be undone.")) void persistence.reviews.permanentlyDelete(item.id).then(refresh).then(() => setStatusMessage("Review permanently deleted.")); }}>Permanently delete</button>
             </div>
           </article>
