@@ -157,3 +157,7 @@ PR #16 remains a Draft. New commits on `feat/slice-4-competencies-evidence`:
 - `708f0f7`: explicitly mark the review argument unused in computation (follow-up clean-up).
 - `abf951f`: domain regression tests for 13-day boundary, future evidence, and external-labelled self-entered reviews.
 These commits were written through GitHub file updates; the code has not yet been run through local TypeScript, lint, Prettier, test, build, or CI. Repository relationship checks, deleted-record recovery UI, accessibility, persistence tests and docs synchronization remain to do. Do not claim merge-ready.
+
+
+### Follow-up update — 2026-11-27 (after integrity/recovery implementation)
+Additional draft commits add repository checks for active evidence references, criterion membership, and reviews bound to active evidence; evidence restore checks linked records; and the competency UI has an archive for soft-deleted evidence/reviews with restore and permanent-delete controls. Evidence permanent deletion cascades review deletion. The component now focuses its status feedback after updates and the review restore control is disabled when its parent evidence is deleted. These updates have not been locally tested or CI-verified. The GitHub file-update API created a no-op commit when a test edit failed to match; that commit has no content diff.
