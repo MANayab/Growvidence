@@ -130,3 +130,7 @@ All six criterion rubrics and assessment thresholds are defaults marked **NEEDS 
 
 ## Slice 4 implementation trust boundary — updated 2026-11-27
 Competency status is calculated from qualifying evidence, not completed tasks. Future-dated evidence is excluded from qualification and consistency repeats must be chronological, at least 14 days apart, and differ by task/context. Review labels are self-entered, not authenticated: a record labeled external is not independently verified and cannot by itself elevate status to Consistent. Rubric criteria and status thresholds remain **NEEDS APPROVAL**. Do not claim certification, job readiness or independent verification from this app's local review form.
+
+
+### Linked-record integrity update — 2026-11-27
+Competency computation now guards active linked journal/task references: missing or deleted linked records are excluded from status progress and qualifying evidence. This does not change rubric thresholds; they remain NEEDS APPROVAL. Tests await local verification.
